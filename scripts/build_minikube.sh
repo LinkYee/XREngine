@@ -86,8 +86,6 @@ else
   NODE_ENV=$NODE_ENV
 fi
 
-EEVERSION=$(jq -r .version ../packages/server-core/package.json)
-
 docker start xrengine_minikube_db
 eval $(minikube docker-env)
 
@@ -112,7 +110,5 @@ DOCKER_BUILDKIT=1 docker build -t xrengine \
   --build-arg VITE_DISABLE_LOG=$VITE_VITE_DISABLE_LOG \
   --build-arg VITE_8TH_WALL=$VITE_VITE_8TH_WALL \
   --build-arg VITE_LOGIN_WITH_WALLET=$VITE_LOGIN_WITH_WALLET .
-
-docker tag
 
 #DOCKER_BUILDKIT=1 docker build -t xrengine-testbot -f ./dockerfiles/testbot/Dockerfile-testbot .

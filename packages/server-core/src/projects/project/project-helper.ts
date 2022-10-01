@@ -15,7 +15,7 @@ import {Params} from "@feathersjs/feathers";
 import {compareVersions} from "compare-versions";
 
 const publicECRRegex = /^public.ecr.aws\/[a-zA-Z0-9]+\/([\w\d\s\-_]+)$/
-const privateECRRegex = /^[a-zA-Z0-9]+.dkr.ecr.([\w\d\s\-_]+).amazonaws.com/
+const privateECRRegex = /^[a-zA-Z0-9]+.dkr.ecr.([\w\d\s\-_]+).amazonaws.com\/([\w\d\s\-_]+)$/
 
 export const updateBuilder = async (app: Application, tag, storageProviderName?: string) => {
   try {
@@ -25,8 +25,6 @@ export const updateBuilder = async (app: Application, tag, storageProviderName?:
     logger.error(e, `[Project Rebuild]: Failed to invalidate cache with error: ${e.message}`)
   }
 
-  console.log('builderRepo', process.env.BUILDER_REPOSITORY)
-  console.log('tag', tag)
   // trigger k8s to re-run the builder service
   if (app.k8AppsClient) {
     try {
@@ -38,10 +36,11 @@ export const updateBuilder = async (app: Application, tag, storageProviderName?:
         {
           spec: {
             template: {
-              containers: {
-                'xrengine-builder': {
-                  Image: `${builderRepo}/${tag}`
-                }
+              spec: {
+                containers: [{
+                  name: 'xrengine-builder',
+                  image: `${builderRepo}:${tag}`
+                }]
               }
             }
           }
@@ -389,10 +388,11 @@ export const findBuilderTags = async(app: Application, params?: Params) => {
     const result = await ecr.describeImages({
       repositoryName: publicECRExec[1]
     }).promise()
-    return result.imageDetails.sort((a, b) => b.imagePushedAt - a.imagePushedAt).map(imageDetails => {
+    return result.imageDetails.sort((a, b) => b.imagePushedAt - a.imagePushedAt).filter(imageDetails => imageDetails.imageTags != null).map(imageDetails => {
       const tag = imageDetails.imageTags.find(tag => !/latest/.test(tag))
-      const tagSplit = tag.split('-')
+      const tagSplit = tag.split('_')
       return {
+        tag,
         commitSHA: tagSplit.length === 1 ? tagSplit[0] : tagSplit[1],
         engineVersion: tagSplit.length === 1 ? 'unknown' : tagSplit[0],
         pushedAt: imageDetails.imagePushedAt.toJSON()
@@ -405,12 +405,13 @@ export const findBuilderTags = async(app: Application, params?: Params) => {
       region: privateECRExec[1]
     })
     const result = await ecr.describeImages({
-      repositoryName: privateECRRegex[2]
+      repositoryName: privateECRExec[2]
     }).promise()
-    return result.imageDetails.sort((a, b) => b.imagePushedAt - a.imagePushedAt).map(imageDetails => {
+    return result.imageDetails.sort((a, b) => b.imagePushedAt - a.imagePushedAt).filter(imageDetails => imageDetails.imageTags != null).map(imageDetails => {
       const tag = imageDetails.imageTags.find(tag => !/latest/.test(tag))
-      const tagSplit = tag.split('-')
+      const tagSplit = tag.split('_')
       return {
+        tag,
         commitSHA: tagSplit.length === 1 ? tagSplit[0] : tagSplit[1],
         engineVersion: tagSplit.length === 1 ? 'unknown' : tagSplit[0],
         pushedAt: imageDetails.imagePushedAt.toJSON()
@@ -423,7 +424,7 @@ export const findBuilderTags = async(app: Application, params?: Params) => {
     const result = await axios.get(`https://registry.hub.docker.com/v2/repositories/${registry}/${repo}/tags?page_size=100`)
     return result.data.results.map(imageDetails => {
       const tag = imageDetails.name
-      const tagSplit = tag.split('-')
+      const tagSplit = tag.split('_')
       return {
         tag,
         commitSHA: tagSplit.length === 1 ? tagSplit[0] : tagSplit[1],
