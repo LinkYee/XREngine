@@ -210,14 +210,15 @@ export const ProjectService = {
     }
   },
 
-  checkSourceMatchesDestination: async ({ sourceURL, destinationURL, sourceIsPublicURL=true, destinationIsPublicURL=true  }) => {
+  checkSourceMatchesDestination: async ({ sourceURL, destinationURL, sourceIsPublicURL=true, destinationIsPublicURL=true, existingProject=false  }: { sourceURL: string, destinationURL: string, sourceIsPublicURL: boolean, destinationIsPublicURL: boolean, existingProject: boolean }) => {
     try {
       return API.instance.client.service('project-check-source-destination-match').find({
         query: {
           sourceURL,
           destinationURL,
           sourceIsPublicURL,
-          destinationIsPublicURL
+          destinationIsPublicURL,
+          existingProject
         }
       })
     } catch(err) {

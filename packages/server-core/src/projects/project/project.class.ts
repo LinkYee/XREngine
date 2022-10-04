@@ -6,7 +6,7 @@ import fs from 'fs'
 import path from 'path'
 import { Op } from 'sequelize'
 
-import { GITHUB_URL_REGEX } from '@xrengine/common/src/constants/GitHubConstants'
+import { GITHUB_URL_REGEX, PUBLIC_SIGNED_REGEX } from '@xrengine/common/src/constants/GitHubConstants'
 import { ProjectInterface } from '@xrengine/common/src/interfaces/ProjectInterface'
 import { processFileName } from '@xrengine/common/src/utils/processFileName'
 import templateProjectJson from '@xrengine/projects/template-project/package.json'
@@ -279,6 +279,7 @@ export class Project extends Service {
     let repoPath = await getAuthenticatedRepo(data.sourceURL)
     if (!repoPath) repoPath = data.sourceURL //public repo
 
+    console.log('repoPath', repoPath)
     const gitCloner = useGit(projectLocalDirectory)
     await gitCloner.clone(repoPath, projectDirectory)
     const git = useGit(projectDirectory)
@@ -308,14 +309,20 @@ export class Project extends Service {
         name: projectName
       }
     })
-    console.log('data.destinationURL', data.destinationURL)
+    let repositoryPath = data.destinationURL || data.sourceURL
+    const publicSignedExec = PUBLIC_SIGNED_REGEX.exec(repositoryPath)
+    //In testing, intermittently the signed URL was being entered into the database, which made matching impossible.
+    //Stripping the signed portion out if it's about to be inserted.
+    if (publicSignedExec)
+      repositoryPath = `https://github.com/${publicSignedExec[1]}/${publicSignedExec[2]}`
+
     const returned = !existingProjectResult
       ? // Add to DB
         await super.create(
           {
             thumbnail: projectConfig.thumbnail,
             name: projectName,
-            repositoryPath: data.destinationURL || data.sourceURL,
+            repositoryPath,
             needsRebuild: data.needsRebuild ? data.needsRebuild : true
           },
           params || {}

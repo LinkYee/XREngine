@@ -103,6 +103,7 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
     setSourceValid(false)
     setSourceProjectName('')
     setSourceProjectMatchesDestination(false)
+    setSourceVsDestinationError('')
   }
 
   const resetDestinationState = ({ resetDestinationURL=true, resetDestinationType=true}) => {
@@ -114,6 +115,7 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
     setSourceProjectMatchesDestination(false)
     setDestinationProjectName('')
     setDestinationRepoEmpty(false)
+    setSourceVsDestinationError('')
   }
 
   const handleChangeDestinationType = (e) => {
@@ -222,6 +224,7 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
   const hasGithubProvider = selfUser.identityProviders.value.find(ip => ip.type === 'github')
 
   const handleTagChange = async (e) => {
+    console.log('handleTagChange', e.target.value)
     setSelectedSHA(e.target.value)
     const matchingTag = tagData.find(data => data.commitSHA === e.target.value)
     setSourceProjectName(matchingTag.projectName || '')
@@ -264,7 +267,7 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
   useEffect(() => {
     if (destinationValid && sourceValid) {
       setSourceVsDestinationProcessing(true)
-      ProjectService.checkSourceMatchesDestination({ sourceURL, destinationURL, sourceIsPublicURL: sourceType === 'url', destinationIsPublicURL: destinationType === 'url'})
+      ProjectService.checkSourceMatchesDestination({ sourceURL, destinationURL, sourceIsPublicURL: sourceType === 'url', destinationIsPublicURL: destinationType === 'url', existingProject: (existingProject || false) })
           .then(res => {
             setSourceVsDestinationProcessing(false)
             if (res.error) {
@@ -272,6 +275,7 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
               setSubmitDisabled(true)
               setSourceProjectMatchesDestination(false)
               setSourceVsDestinationError(res.text)
+              setSourceValid(false)
             } else {
               setProjectName(res.projectName)
               setSubmitDisabled(!res.sourceProjectMatchesDestination)

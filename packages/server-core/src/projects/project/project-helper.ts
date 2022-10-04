@@ -248,12 +248,14 @@ export const checkProjectDestinationMatch = async(app: Application, params?: Par
   const sourceContent = JSON.parse(Buffer.from(sourceBlobResponse.data.content, 'base64').toString())
   if (!existingProject) {
     const projectExists = await app.service('project').find({
-      name: sourceContent.name
+      query: {
+        name: sourceContent.name
+      }
     })
-    if (projectExists.total > 0) return {
+    if (projectExists.data.length > 0) return {
       sourceProjectMatchesDestination: false,
       error: 'projectExists',
-      text: 'The source project is already installed'
+      text: `The source project, ${sourceContent.name}, is already installed`
     }
   }
   if (destinationBlobResponse.error && destinationBlobResponse.error !== 'destinationPackageMissing') return destinationBlobResponse
