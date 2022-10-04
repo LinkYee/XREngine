@@ -286,7 +286,12 @@ export class Project extends Service {
     try {
       const branchExists = await git.raw(['ls-remote', '--heads', repoPath, `${branchName}`])
       if (data.commitSHA) git.checkout(data.commitSHA)
-      if (branchExists.length === 0 || data.reset) await git.checkoutLocalBranch(branchName)
+      if (branchExists.length === 0 || data.reset) {
+        try {
+          await git.deleteLocalBranch(branchName)
+        } catch(err) {}
+        await git.checkoutLocalBranch(branchName)
+      }
       else await git.checkout(branchName)
     } catch (err) {
       logger.error(err)
@@ -303,6 +308,7 @@ export class Project extends Service {
         name: projectName
       }
     })
+    console.log('data.destinationURL', data.destinationURL)
     const returned = !existingProjectResult
       ? // Add to DB
         await super.create(

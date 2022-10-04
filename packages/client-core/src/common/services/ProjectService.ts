@@ -226,10 +226,11 @@ export const ProjectService = {
     }
   },
 
-  updateEngine: async(tag: string, updateProjects: boolean) => {
+  updateEngine: async(tag: string, updateProjects: boolean, projectsToUpdate: string[]) => {
     try {
       await API.instance.client.service('project-build').patch(tag, {
-        updateProjects
+        updateProjects,
+        projectsToUpdate
       })
     } catch(err) {
       logger.error('Error with updating engine version', err)

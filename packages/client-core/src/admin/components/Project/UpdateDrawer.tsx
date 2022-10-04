@@ -14,7 +14,7 @@ import styles from "../../styles/admin.module.scss";
 import React, { useEffect, useState } from "react";
 import InputSelect, {InputMenuItem} from "../../common/InputSelect";
 import {BuilderTag} from "@xrengine/common/src/interfaces/BuilderTags";
-import {ProjectService} from "../../../common/services/ProjectService";
+import {ProjectService, useProjectState} from "../../../common/services/ProjectService";
 
 interface Props {
     open: boolean
@@ -28,10 +28,16 @@ const UpdateDrawer = ({ open, builderTags, onClose }: Props) => {
     const [error, setError] = useState('')
     const [selectedTag, setSelectedTag] = useState('')
     const [updateProjects, setUpdateProjects] = useState(false)
+    const [projectsToUpdate, setProjectsToUpdate] = useState({})
+
+    const adminProjectState = useProjectState()
+    const adminProjects = adminProjectState.projects
 
     const handleClose = () => {
         setError('')
         setSelectedTag('')
+        setUpdateProjects(false)
+        setProjectsToUpdate({})
         onClose()
     }
 
@@ -48,8 +54,18 @@ const UpdateDrawer = ({ open, builderTags, onClose }: Props) => {
     })
 
     const handleSubmit = async() => {
-        await ProjectService.updateEngine(selectedTag, updateProjects)
+        await ProjectService.updateEngine(selectedTag, updateProjects, Object.keys(projectsToUpdate))
         handleClose()
+    }
+
+    const toggleProjectToUpdate = async(projectName: string) => {
+        if (projectsToUpdate[projectName]) {
+            delete projectsToUpdate[projectName]
+            setProjectsToUpdate(projectsToUpdate)
+        } else {
+            projectsToUpdate[projectName] = true
+            setProjectsToUpdate(projectsToUpdate)
+        }
     }
 
     return (
@@ -78,14 +94,29 @@ const UpdateDrawer = ({ open, builderTags, onClose }: Props) => {
                             onChange={() => setUpdateProjects(!updateProjects)}
                         />
                     }
-                    label="Update all projects to matching engine version (or latest)"
+                    label={t('admin:components.project.updateSelector')}
                 />
 
                 {updateProjects &&
+                    <>
                     <div className={styles.projectUpdateWarning}>
                         <WarningAmberIcon />
                         {t('admin:components.project.projectWarning')}
                     </div>
+                        <div className={styles.projectSelector}>
+                        {adminProjects.value?.map(project =>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={projectsToUpdate[project.name]}
+                                        onChange={() => toggleProjectToUpdate(project.name) }
+                                    />
+                                }
+                                label={project.name}
+                            />
+                        )}
+                        </div>
+                    </>
                 }
 
                 <DialogActions>

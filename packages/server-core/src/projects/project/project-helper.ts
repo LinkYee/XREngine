@@ -33,7 +33,7 @@ export const updateBuilder = async (app: Application, tag: string, data, params:
     const projects = await app.service('project').find({
       query: {
         name: {
-          $ne: 'default-project'
+          $in: data.projectsToUpdate
         },
         repositoryPath: {
           $ne: null
@@ -217,9 +217,7 @@ export const checkProjectDestinationMatch = async(app: Application, params?: Par
   const [sourceBlobResponse, destinationBlobResponse] = await Promise.all([
     new Promise(async (resolve, reject) => {
       try {
-        console.log('Getting source package.json')
         const sourcePackage = await sourceOctoKit.request(`GET /repos/${sourceOwner}/${sourceRepo}/contents/package.json`)
-        console.log('sourcePackage', sourcePackage)
         resolve(sourcePackage)
       } catch(err) {
         logger.error(err)

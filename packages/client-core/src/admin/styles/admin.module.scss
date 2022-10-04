@@ -731,3 +731,8 @@
 .projectVersion {
   color: var(--yellow);
 }
+
+.projectSelector {
+  display: flex;
+  flex-direction: column;
+}

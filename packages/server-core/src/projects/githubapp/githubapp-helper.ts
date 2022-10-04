@@ -389,7 +389,6 @@ export const getGithubOwnerRepo = (url: string) => {
 }
 
 export const getOctokitForChecking = async (app: Application, url: string, params: Params) => {
-  console.log('getOctokitForChecking', params)
   url = url.toLowerCase()
   const isPublicURL = params.query?.isPublicURL
   const githubIdentityProvider = await app.service('identity-provider').Model.findOne({
