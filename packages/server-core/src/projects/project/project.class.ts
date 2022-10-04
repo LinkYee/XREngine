@@ -30,13 +30,17 @@ import {
   getAuthenticatedRepo,
   getGitHubAppRepos,
   getUserRepos,
-  pushProjectToGithub
 } from '../githubapp/githubapp-helper'
 import { getEnginePackageJson, getProjectConfig, getProjectPackageJson, onProjectEvent } from './project-helper'
+import {UserInterface} from "@xrengine/common/src/interfaces/User";
 
 const templateFolderDirectory = path.join(appRootPath.path, `packages/projects/template-project/`)
 
 const projectsRootFolder = path.join(appRootPath.path, 'packages/projects/projects/')
+
+export interface ProjectParams extends Params {
+  user?: UserInterface
+}
 
 export const copyDefaultProject = () => {
   deleteFolderRecursive(path.join(projectsRootFolder, `default-project`))
@@ -325,7 +329,7 @@ export class Project extends Service {
       let repoPath = await getAuthenticatedRepo(data.destinationURL)
       if (!repoPath) repoPath = data.destinationURL //public repo
       await git.addRemote('destination', repoPath)
-      await git.push('destination', branchName, ['-f'])
+      await git.push('destination', branchName, ['-f', '--tags'])
     }
     // run project install script
     if (projectConfig.onEvent) {

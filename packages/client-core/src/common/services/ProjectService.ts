@@ -226,9 +226,11 @@ export const ProjectService = {
     }
   },
 
-  updateEngine: async(tag: string) => {
+  updateEngine: async(tag: string, updateProjects: boolean) => {
     try {
-      await API.instance.client.service('project-build').patch(tag)
+      await API.instance.client.service('project-build').patch(tag, {
+        updateProjects
+      })
     } catch(err) {
       logger.error('Error with updating engine version', err)
       throw err
@@ -238,7 +240,6 @@ export const ProjectService = {
   fetchBuilderTags: async () => {
     try {
       const result = await API.instance.client.service('project-builder-tags').find()
-      console.log('builder tag result', result)
       dispatchAction(ProjectAction.builderTagsFetched({ builderTags: result }))
     } catch(err) {
       logger.error('Error with getting builder tags', err)

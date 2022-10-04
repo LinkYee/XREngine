@@ -25,7 +25,7 @@ import {
   getTags,
   updateBuilder
 } from './project-helper'
-import { Project } from './project.class'
+import {Project, ProjectParams} from './project.class'
 import projectDocs from './project.docs'
 import hooks from './project.hooks'
 import createModel from './project.model'
@@ -95,8 +95,15 @@ export default (app: Application): void => {
     find: async (data, params) => {
       return await checkBuilderService(app)
     },
-    patch: async (tag: string, params) => {
-      return await updateBuilder(app, tag)
+    patch: async (tag: string, data: any, params: ProjectParams) => {
+      return await updateBuilder(app, tag, data, params)
+    }
+  })
+
+  app.service('project-build').hooks({
+    before: {
+      find: [authenticate(), verifyScope('admin', 'admin')],
+      patch: [authenticate(), verifyScope('admin', 'admin')]
     }
   })
 
@@ -105,13 +112,6 @@ export default (app: Application): void => {
       if (projectName) {
         return await getStorageProvider(storageProviderName).createInvalidation([`projects/${projectName}*`])
       }
-    }
-  })
-
-  app.service('project-build').hooks({
-    before: {
-      find: [authenticate(), verifyScope('admin', 'admin')],
-      patch: [authenticate(), verifyScope('admin', 'admin')]
     }
   })
 

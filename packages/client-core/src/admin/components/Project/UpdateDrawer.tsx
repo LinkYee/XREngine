@@ -2,9 +2,12 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
 import Button from '@mui/material/Button'
+import Checkbox from '@mui/material/Checkbox'
 import Container from '@mui/material/Container'
 import DialogActions from '@mui/material/DialogActions'
 import DialogTitle from '@mui/material/DialogTitle'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 
 import DrawerView from '../../common/DrawerView'
 import styles from "../../styles/admin.module.scss";
@@ -24,6 +27,7 @@ const UpdateDrawer = ({ open, builderTags, onClose }: Props) => {
     const { t } = useTranslation()
     const [error, setError] = useState('')
     const [selectedTag, setSelectedTag] = useState('')
+    const [updateProjects, setUpdateProjects] = useState(false)
 
     const handleClose = () => {
         setError('')
@@ -44,7 +48,7 @@ const UpdateDrawer = ({ open, builderTags, onClose }: Props) => {
     })
 
     const handleSubmit = async() => {
-        await ProjectService.updateEngine(selectedTag)
+        await ProjectService.updateEngine(selectedTag, updateProjects)
         handleClose()
     }
 
@@ -65,6 +69,23 @@ const UpdateDrawer = ({ open, builderTags, onClose }: Props) => {
                         error={error}
                         onChange={handleTagChange}
                     />
+                }
+
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={updateProjects}
+                            onChange={() => setUpdateProjects(!updateProjects)}
+                        />
+                    }
+                    label="Update all projects to matching engine version (or latest)"
+                />
+
+                {updateProjects &&
+                    <div className={styles.projectUpdateWarning}>
+                        <WarningAmberIcon />
+                        {t('admin:components.project.projectWarning')}
+                    </div>
                 }
 
                 <DialogActions>

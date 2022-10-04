@@ -1,6 +1,7 @@
 import appRootPath from 'app-root-path'
 import axios from 'axios'
 import AWS from 'aws-sdk'
+import _ from 'lodash'
 import path from 'path'
 
 import { ProjectPackageJsonType } from '@xrengine/common/src/interfaces/ProjectInterface'
@@ -10,19 +11,61 @@ import { Application } from '../../../declarations'
 import config from '../../appconfig'
 import { getStorageProvider } from '../../media/storageprovider/storageprovider'
 import logger from '../../ServerLogger'
-import {getOctokitForChecking} from "../githubapp/githubapp-helper";
+import {getGitHubAppRepos, getOctokitForChecking} from "../githubapp/githubapp-helper";
 import {Params} from "@feathersjs/feathers";
 import {compareVersions} from "compare-versions";
+import {ProjectParams} from "./project.class";
 
 const publicECRRegex = /^public.ecr.aws\/[a-zA-Z0-9]+\/([\w\d\s\-_]+)$/
 const privateECRRegex = /^[a-zA-Z0-9]+.dkr.ecr.([\w\d\s\-_]+).amazonaws.com\/([\w\d\s\-_]+)$/
 
-export const updateBuilder = async (app: Application, tag, storageProviderName?: string) => {
+export const updateBuilder = async (app: Application, tag: string, data, params: ProjectParams, storageProviderName?: string) => {
   try {
     // invalidate cache for all installed projects
     await getStorageProvider(storageProviderName).createInvalidation(['projects*'])
   } catch (e) {
     logger.error(e, `[Project Rebuild]: Failed to invalidate cache with error: ${e.message}`)
+  }
+
+  if (!params.query) params.query = {}
+
+  if (data.updateProjects) {
+    const projects = await app.service('project').find({
+      query: {
+        name: {
+          $ne: 'default-project'
+        },
+        repositoryPath: {
+          $ne: null
+        }
+      }
+    })
+
+    await Promise.all(projects.data.map(async (project) => {
+      if (!params.query) params.query = {}
+      params.query.branchName = `${config.server.releaseName}-deployment`
+      let commitSHA
+      const repos = await getGitHubAppRepos()
+      const paramsCopy = _.cloneDeep(params)
+      paramsCopy.query.isPublic = repos.find((repo) => {
+        repo.repositoryPath = repo.repositoryPath.toLowerCase()
+        return repo.repositoryPath === project.repositoryPath || repo.repositoryPath === project.repositoryPath + '.git'
+      }) == null
+      const tags = await getTags(app, project.repositoryPath, params)
+      const engineVersion = '1.0.0-rc1'//getEnginePackageJson().version
+      const tagMatchingEngineVersion = tags.find(tag => tag.engineVersion === engineVersion)
+      if (tagMatchingEngineVersion) commitSHA = tagMatchingEngineVersion.commitSHA
+      else commitSHA = tags[0].commitSHA
+
+      const updateParams = {
+        sourceURL: project.repositoryPath,
+        destinationURL: project.repositoryPath,
+        name: project.name,
+        reset: true,
+        commitSHA
+      }
+      await app.service('project').update(updateParams)
+    }))
   }
 
   // trigger k8s to re-run the builder service
@@ -375,7 +418,7 @@ export const getTags = async(app: Application, url: string, params?: Params) => 
 }
 
 
-export const findBuilderTags = async(app: Application, params?: Params) => {
+export const findBuilderTags = async() => {
   const builderRepo = process.env.BUILDER_REPOSITORY
   const publicECRExec = publicECRRegex.exec(builderRepo)
   const privateECRExec = privateECRRegex.exec(builderRepo)
