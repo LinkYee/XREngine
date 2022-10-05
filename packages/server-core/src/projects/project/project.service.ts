@@ -14,18 +14,17 @@ import projectPermissionAuthenticate from '../../hooks/project-permission-authen
 import verifyScope from '../../hooks/verify-scope'
 import { getStorageProvider } from '../../media/storageprovider/storageprovider'
 import { UserParams } from '../../user/user/user.class'
-import {
-  pushProjectToGithub
-} from '../githubapp/githubapp-helper'
+import { pushProjectToGithub } from '../githubapp/githubapp-helper'
 import {
   checkBuilderService,
   checkDestination,
-  checkProjectDestinationMatch, findBuilderTags,
+  checkProjectDestinationMatch,
+  findBuilderTags,
   getBranches,
   getTags,
   updateBuilder
 } from './project-helper'
-import {Project, ProjectParams} from './project.class'
+import { Project, ProjectParams } from './project.class'
 import projectDocs from './project.docs'
 import hooks from './project.hooks'
 import createModel from './project.model'
@@ -41,7 +40,7 @@ declare module '@xrengine/common/declarations' {
     'project-invalidate': any
     'project-github-push': any
     'project-branches': any
-    'project-tags': any,
+    'project-tags': any
     'project-destination-check': any
     'project-check-source-destination-match'
     'project-builder-tags': any
@@ -49,13 +48,6 @@ declare module '@xrengine/common/declarations' {
   interface Models {
     project: ReturnType<typeof createModel>
   }
-}
-
-interface ProjectTagResponse {
-  projectVersion: string
-  engineVersion: string
-  commitSHA: string
-  matchesEngineVersion: boolean
 }
 
 /**
@@ -122,17 +114,14 @@ export default (app: Application): void => {
   })
 
   app.use('project-check-source-destination-match', {
-    find: async(params?: Params): Promise<any> => {
+    find: async (params: ProjectParams): Promise<any> => {
       return checkProjectDestinationMatch(app, params)
     }
   })
 
   app.service('project-check-source-destination-match').hooks({
     before: {
-      find: [
-        authenticate(),
-        iff(isProvider('external'), verifyScope('projects', 'read') as any)
-      ]
+      find: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
     }
   })
 
@@ -158,62 +147,50 @@ export default (app: Application): void => {
   })
 
   app.use('project-destination-check', {
-    get: async (url: string, params?: Params): Promise<any> => {
+    get: async (url: string, params?: ProjectParams): Promise<any> => {
       return checkDestination(app, url, params)
     }
   })
 
   app.service('project-destination-check').hooks({
     before: {
-      get: [
-        authenticate(),
-        iff(isProvider('external'), verifyScope('projects', 'read') as any)
-      ]
+      get: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
     }
   })
 
   app.use('project-branches', {
-    get: async (url: string, params?: Params): Promise<any> => {
+    get: async (url: string, params?: ProjectParams): Promise<any> => {
       return getBranches(app, url, params)
     }
   })
 
   app.service('project-branches').hooks({
     before: {
-      get: [
-        authenticate(),
-        iff(isProvider('external'), verifyScope('projects', 'read') as any)
-      ]
+      get: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
     }
   })
 
   app.use('project-tags', {
-    get: async (url: string, params?: Params): Promise<any> => {
+    get: async (url: string, params?: ProjectParams): Promise<any> => {
       return getTags(app, url, params)
     }
   })
 
   app.service('project-tags').hooks({
     before: {
-      get: [
-        authenticate(),
-        iff(isProvider('external'), verifyScope('projects', 'read') as any)
-      ]
+      get: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
     }
   })
 
   app.use('project-builder-tags', {
-    find: async (params?: Params): Promise<any> => {
-      return findBuilderTags(app, params)
+    find: async (): Promise<any> => {
+      return findBuilderTags()
     }
   })
 
   app.service('project-builder-tags').hooks({
     before: {
-      find: [
-        authenticate(),
-        iff(isProvider('external'), verifyScope('projects', 'read') as any)
-      ]
+      find: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
     }
   })
 
@@ -221,7 +198,7 @@ export default (app: Application): void => {
 
   service.hooks(hooks)
 
-  service.publish('patched', async (data: UserInterface, params): Promise<any> => {
+  service.publish('patched', async (data: UserInterface): Promise<any> => {
     try {
       let targetIds = []
       const projectOwners = await app.service('project-permission').Model.findAll({

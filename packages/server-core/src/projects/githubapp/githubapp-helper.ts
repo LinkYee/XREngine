@@ -1,4 +1,5 @@
-import {BadRequest, Forbidden} from '@feathersjs/errors'
+import { BadRequest, Forbidden } from '@feathersjs/errors'
+import { Params } from '@feathersjs/feathers'
 import { App } from '@octokit/app'
 import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
@@ -25,8 +26,7 @@ import logger from '../../ServerLogger'
 import { refreshAppConfig } from '../../updateAppConfig'
 import { deleteFolderRecursive, writeFileSyncRecursive } from '../../util/fsHelperFunctions'
 import { useGit } from '../../util/gitHelperFunctions'
-import error from "@xrengine/editor/src/components/Error";
-import {Params} from "@feathersjs/feathers";
+import { ProjectParams } from '../project/project.class'
 
 let app, appOctokit
 
@@ -62,7 +62,7 @@ export const createGitHubApp = async () => {
   }
 }
 
-export const getGitHubAppRepos = async (): Promise<Array<GithubAppInterface> | error> => {
+export const getGitHubAppRepos = async (): Promise<Array<GithubAppInterface>> => {
   try {
     if (!config.server.gitPem || config.server.gitPem == '') await refreshAppConfig()
     if (!config.server.gitPem || config.server.gitPem == '') return []
@@ -265,7 +265,8 @@ export const pushProjectToGithub = async (
       if (commitSHA) git.checkout(commitSHA)
       await git.checkoutLocalBranch(deploymentBranch)
       await git.push('origin', deploymentBranch, ['-f'])
-    } else await uploadToRepo(octoKit, files, owner, repo, deploymentBranch, project.name, githubIdentityProvider != null)
+    } else
+      await uploadToRepo(octoKit, files, owner, repo, deploymentBranch, project.name, githubIdentityProvider != null)
   } catch (err) {
     logger.error(err)
     throw err
@@ -371,15 +372,17 @@ export const getGithubOwnerRepo = (url: string) => {
   url = url.toLowerCase()
 
   const githubPathRegexExec = GITHUB_URL_REGEX.exec(url)
-  if (!githubPathRegexExec) return {
-    error: 'invalidUrl',
-    text: 'Project URL is not a valid GitHub URL, or the GitHub repo is private'
-  }
+  if (!githubPathRegexExec)
+    return {
+      error: 'invalidUrl',
+      text: 'Project URL is not a valid GitHub URL, or the GitHub repo is private'
+    }
   const split = githubPathRegexExec[1].split('/')
-  if (!split[0] || !split[1]) return {
-    error: 'invalidUrl',
-    text: 'Project URL is not a valid GitHub URL, or the GitHub repo is private'
-  }
+  if (!split[0] || !split[1])
+    return {
+      error: 'invalidUrl',
+      text: 'Project URL is not a valid GitHub URL, or the GitHub repo is private'
+    }
   const owner = split[0]
   const repo = split[1].replace('.git', '')
   return {
@@ -388,7 +391,7 @@ export const getGithubOwnerRepo = (url: string) => {
   }
 }
 
-export const getOctokitForChecking = async (app: Application, url: string, params: Params) => {
+export const getOctokitForChecking = async (app: Application, url: string, params: ProjectParams) => {
   url = url.toLowerCase()
   const isPublicURL = params.query?.isPublicURL
   const githubIdentityProvider = await app.service('identity-provider').Model.findOne({
@@ -397,26 +400,28 @@ export const getOctokitForChecking = async (app: Application, url: string, param
       type: 'github'
     }
   })
-  if (isPublicURL && !githubIdentityProvider) throw new Forbidden('You must have a connected GitHub account to access public repos')
+  if (isPublicURL && !githubIdentityProvider)
+    throw new Forbidden('You must have a connected GitHub account to access public repos')
   const { owner, repo } = getGithubOwnerRepo(url)
   const repos = await getGitHubAppRepos()
-  const octoKit = (isPublicURL && githubIdentityProvider)
+  const octoKit =
+    isPublicURL && githubIdentityProvider
       ? new Octokit({ auth: githubIdentityProvider.oauthToken })
       : await (async () => {
-        await createGitHubApp()
-        return getInstallationOctokit(
+          await createGitHubApp()
+          return getInstallationOctokit(
             repos.find((repo) => {
               repo.repositoryPath = repo.repositoryPath.toLowerCase()
               return repo.repositoryPath === url || repo.repositoryPath === url + '.git'
-            }))
-      })()
+            })
+          )
+        })()
   return {
     owner,
     repo,
     octoKit
   }
 }
-
 
 const createBlobForFile = (octo: Octokit, org: string, repo: string) => async (filePath: string) => {
   const encoding = isBase64Encoded(filePath) ? 'base64' : 'utf-8'

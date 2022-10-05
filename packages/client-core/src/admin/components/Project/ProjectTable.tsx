@@ -22,11 +22,11 @@ import { useAuthState } from '../../../user/services/AuthService'
 import ConfirmDialog from '../../common/ConfirmDialog'
 import TableComponent from '../../common/Table'
 import { projectsColumns } from '../../common/variables/projects'
+import { GithubAppService, useAdminGithubAppState } from '../../services/GithubAppService'
 import styles from '../../styles/admin.module.scss'
+import ProjectDrawer from './ProjectDrawer'
 import ProjectFilesDrawer from './ProjectFilesDrawer'
 import UserPermissionDrawer from './UserPermissionDrawer'
-import ProjectDrawer from "./ProjectDrawer";
-import {GithubAppService, useAdminGithubAppState} from "../../services/GithubAppService";
 
 const logger = multiLogger.child({ component: 'client-core:ProjectTable' })
 
@@ -78,7 +78,7 @@ const ProjectTable = ({ className }: Props) => {
   ProjectService.useAPIListeners()
 
   useEffect(() => {
-    if (user?.scopes?.value?.find(scope => scope.type === 'projects:read')) GithubAppService.fetchGithubAppRepos()
+    if (user?.scopes?.value?.find((scope) => scope.type === 'projects:read')) GithubAppService.fetchGithubAppRepos()
   }, [user])
 
   useEffect(() => {
@@ -169,7 +169,7 @@ const ProjectTable = ({ className }: Props) => {
     setShowProjectFiles(true)
   }
 
-  const handleOpenProjectDrawer = (row, changeDestination=false) => {
+  const handleOpenProjectDrawer = (row, changeDestination = false) => {
     setProject(row)
     setChangeDestination(changeDestination)
     setOpenProjectDrawer(true)
@@ -318,7 +318,14 @@ const ProjectTable = ({ className }: Props) => {
       />
 
       {openProjectDrawer && project && (
-        <ProjectDrawer open={openProjectDrawer} repos={githubAppRepos} changeDestination={changeDestination} inputProject={project} existingProject={true} onClose={() => handleCloseProjectDrawer()} />
+        <ProjectDrawer
+          open={openProjectDrawer}
+          repos={githubAppRepos}
+          changeDestination={changeDestination}
+          inputProject={project}
+          existingProject={true}
+          onClose={() => handleCloseProjectDrawer()}
+        />
       )}
 
       {project && (

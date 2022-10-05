@@ -38,7 +38,7 @@ const Projects = () => {
   }, [])
 
   useEffect(() => {
-    if (user?.scopes?.value?.find(scope => scope.type === 'projects:read')) {
+    if (user?.scopes?.value?.find((scope) => scope.type === 'projects:read')) {
       GithubAppService.fetchGithubAppRepos()
       ProjectService.fetchBuilderTags()
     }

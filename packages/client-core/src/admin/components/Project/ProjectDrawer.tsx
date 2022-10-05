@@ -1,8 +1,11 @@
 import classNames from 'classnames'
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { GithubAppInterface } from '@xrengine/common/src/interfaces/GithubAppInterface'
+import { ProjectInterface } from '@xrengine/common/src/interfaces/ProjectInterface'
+import { ProjectBranchInterface } from '@xrengine/common/src/interfaces/ProjectBranchInterface'
+import { ProjectTagInterface } from '@xrengine/common/src/interfaces/ProjectTagInterface'
 
 import Cancel from '@mui/icons-material/Cancel'
 import CheckCircle from '@mui/icons-material/CheckCircle'
@@ -14,14 +17,13 @@ import DialogTitle from '@mui/material/DialogTitle'
 
 import { NotificationService } from '../../../common/services/NotificationService'
 import { ProjectService } from '../../../common/services/ProjectService'
-import { useAuthState } from "../../../user/services/AuthService";
+import { useAuthState } from '../../../user/services/AuthService'
 import DrawerView from '../../common/DrawerView'
 import InputRadio from '../../common/InputRadio'
 import InputSelect, { InputMenuItem } from '../../common/InputSelect'
 import InputText from '../../common/InputText'
 import LoadingView from '../../common/LoadingView'
 import styles from '../../styles/admin.module.scss'
-import {ProjectInterface} from "@xrengine/common/src/interfaces/ProjectInterface";
 
 interface Props {
   open: boolean
@@ -32,7 +34,14 @@ interface Props {
   changeDestination?: boolean
 }
 
-const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClose, changeDestination=false }: Props) => {
+const ProjectDrawer = ({
+  open,
+  repos,
+  inputProject,
+  existingProject = false,
+  onClose,
+  changeDestination = false
+}: Props) => {
   const { t } = useTranslation()
   const [sourceURL, setSourceURL] = useState('')
   const [destinationURL, setDestinationURL] = useState('')
@@ -65,13 +74,15 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
 
   const selfUser = useAuthState().user
 
+  const matchingTag = tagData.find((tag: ProjectTagInterface) => tag.commitSHA === selectedSHA)
+  const matchesEngineVersion = matchingTag ? (matchingTag as ProjectTagInterface).matchesEngineVersion : false
+
   const handleSubmit = async () => {
     try {
       if (existingProject && changeDestination) {
-        await ProjectService.setRepositoryPath(inputProject.id, destinationURL)
+        if (inputProject) await ProjectService.setRepositoryPath(inputProject.id, destinationURL)
         handleClose()
-      }
-      else if (sourceURL) {
+      } else if (sourceURL) {
         setProcessing(true)
         await ProjectService.uploadProject(sourceURL, destinationURL, projectName, true, selectedSHA)
         setProcessing(false)
@@ -85,7 +96,7 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
     }
   }
 
-  const resetSourceState = ({ resetSourceURL=true, resetBranch=true, resetSourceType=false }) => {
+  const resetSourceState = ({ resetSourceURL = true, resetBranch = true, resetSourceType = false }) => {
     if (resetSourceURL) setSourceURL('')
     if (resetSourceType) setSourceType('url')
     if (resetBranch) {
@@ -106,7 +117,7 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
     setSourceVsDestinationError('')
   }
 
-  const resetDestinationState = ({ resetDestinationURL=true, resetDestinationType=true}) => {
+  const resetDestinationState = ({ resetDestinationURL = true, resetDestinationType = true }) => {
     setSubmitDisabled(true)
     if (resetDestinationURL) setDestinationURL('')
     if (resetDestinationType) setDestinationType('url')
@@ -141,14 +152,14 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
   }
 
   const handleClose = () => {
-    resetSourceState({ resetSourceURL: true, resetSourceType: true})
-    resetDestinationState({resetDestinationType: true})
+    resetSourceState({ resetSourceURL: true, resetSourceType: true })
+    resetDestinationState({ resetDestinationType: true })
     onClose()
   }
 
   const handleChangeSourceRepo = async (e) => {
     try {
-      resetSourceState({resetSourceURL: false, resetSourceType: false })
+      resetSourceState({ resetSourceURL: false, resetSourceType: false })
       setBranchProcessing(true)
       const branchResponse = await ProjectService.fetchProjectBranches(e.target.value, sourceType === 'url')
       setBranchProcessing(false)
@@ -159,7 +170,7 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
         setShowBranchSelector(true)
         setBranchData(branchResponse)
       }
-    } catch(err) {
+    } catch (err) {
       setBranchProcessing(false)
       setShowBranchSelector(false)
       console.log('Branch fetch error', err)
@@ -169,7 +180,7 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
   const handleChangeDestinationRepo = async (e) => {
     if (e.target.value && e.target.value.length > 0) {
       try {
-        resetDestinationState({resetDestinationURL: false, resetDestinationType: false})
+        resetDestinationState({ resetDestinationURL: false, resetDestinationType: false })
         setDestinationValid(false)
         setDestinationProcessing(true)
         const destinationResponse = await ProjectService.checkDestinationURLValid({
@@ -200,9 +211,9 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
     }
   }
 
-  const handleChangeBranch = async(e) => {
+  const handleChangeBranch = async (e) => {
     try {
-      resetSourceState({resetSourceURL: false, resetBranch: false })
+      resetSourceState({ resetSourceURL: false, resetBranch: false })
       setSelectedBranch(e.target.value)
       setTagsProcessing(true)
       const projectResponse = await ProjectService.fetchProjectTags(sourceURL, e.target.value, sourceType === 'url')
@@ -214,19 +225,18 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
         setShowTagSelector(true)
         setTagData(projectResponse)
       }
-    } catch(err) {
+    } catch (err) {
       setTagsProcessing(false)
       setShowTagSelector(false)
       console.log('projectResponse error', err)
     }
   }
 
-  const hasGithubProvider = selfUser.identityProviders.value.find(ip => ip.type === 'github')
+  const hasGithubProvider = selfUser?.identityProviders?.value?.find((ip) => ip.type === 'github')
 
   const handleTagChange = async (e) => {
-    console.log('handleTagChange', e.target.value)
     setSelectedSHA(e.target.value)
-    const matchingTag = tagData.find(data => data.commitSHA === e.target.value)
+    const matchingTag = (tagData as any).find((data) => data.commitSHA === e.target.value)
     setSourceProjectName(matchingTag.projectName || '')
     setTagError('')
     setSourceValid(true)
@@ -239,20 +249,23 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
     }
   })
 
-  const branchMenu: InputMenuItem[] = branchData.map(el => {
+  const branchMenu: InputMenuItem[] = branchData.map((el: ProjectBranchInterface) => {
     return {
       value: el.name,
       label: `Branch: ${el.name} ${el.isMain ? '(Root branch)' : '(Deployment branch)'}`
     }
   })
 
-  const tagMenu: InputMenuItem[] = tagData.map(el => {
+  const tagMenu: InputMenuItem[] = tagData.map((el: ProjectTagInterface) => {
     return {
       value: el.commitSHA,
-      label: `Project Version ${el.projectVersion} -- Engine Version ${el.engineVersion} -- Commit ${el.commitSHA.slice(0, 8)}`
+      label: `Project Version ${el.projectVersion} -- Engine Version ${el.engineVersion} -- Commit ${el.commitSHA.slice(
+        0,
+        8
+      )}`
     }
   })
-  
+
   useEffect(() => {
     if (open && inputProject) {
       setDestinationURL(inputProject.repositoryPath)
@@ -267,21 +280,26 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
   useEffect(() => {
     if (destinationValid && sourceValid) {
       setSourceVsDestinationProcessing(true)
-      ProjectService.checkSourceMatchesDestination({ sourceURL, destinationURL, sourceIsPublicURL: sourceType === 'url', destinationIsPublicURL: destinationType === 'url', existingProject: (existingProject || false) })
-          .then(res => {
-            setSourceVsDestinationProcessing(false)
-            if (res.error) {
-              setProjectName('')
-              setSubmitDisabled(true)
-              setSourceProjectMatchesDestination(false)
-              setSourceVsDestinationError(res.text)
-              setSourceValid(false)
-            } else {
-              setProjectName(res.projectName)
-              setSubmitDisabled(!res.sourceProjectMatchesDestination)
-              setSourceProjectMatchesDestination(res.sourceProjectMatchesDestination)
-            }
-          })
+      ProjectService.checkSourceMatchesDestination({
+        sourceURL,
+        destinationURL,
+        sourceIsPublicURL: sourceType === 'url',
+        destinationIsPublicURL: destinationType === 'url',
+        existingProject: existingProject || false
+      }).then((res) => {
+        setSourceVsDestinationProcessing(false)
+        if (res.error) {
+          setProjectName('')
+          setSubmitDisabled(true)
+          setSourceProjectMatchesDestination(false)
+          setSourceVsDestinationError(res.text)
+          setSourceValid(false)
+        } else {
+          setProjectName(res.projectName)
+          setSubmitDisabled(!res.sourceProjectMatchesDestination)
+          setSourceProjectMatchesDestination(res.sourceProjectMatchesDestination)
+        }
+      })
     } else {
       if (!(existingProject && changeDestination)) {
         setSourceVsDestinationProcessing(false)
@@ -295,174 +313,241 @@ const ProjectDrawer = ({ open, repos, inputProject, existingProject=false, onClo
   return (
     <DrawerView open={open} onClose={handleClose}>
       <Container maxWidth="sm" className={styles.mt20}>
-        <DialogTitle className={classNames({
-          [styles.textAlign]: true,
-          [styles.drawerHeader]: true
-        })}> {(existingProject && !changeDestination) ? t('admin:components.project.updateProject') : (existingProject && changeDestination) ? t('admin:components.project.changeDestination') : t('admin:components.project.addProject')}</DialogTitle>
+        <DialogTitle
+          className={classNames({
+            [styles.textAlign]: true,
+            [styles.drawerHeader]: true
+          })}
+        >
+          {' '}
+          {existingProject && !changeDestination
+            ? t('admin:components.project.updateProject')
+            : existingProject && changeDestination
+            ? t('admin:components.project.changeDestination')
+            : t('admin:components.project.addProject')}
+        </DialogTitle>
 
-        <DialogTitle className={classNames({
+        <DialogTitle
+          className={classNames({
             [styles.textAlign]: true,
             [styles.drawerSubHeader]: true
-        })}>
+          })}
+        >
           {t('admin:components.project.destination')}
         </DialogTitle>
 
         {!processing && !(existingProject && !changeDestination) && (
-            <InputRadio
-                name="destination"
-                label={t('admin:components.project.destinationType')}
-                value={destinationType}
-                options={repos && repos.length > 0 ? [
-                  { value: 'url', label: t('admin:components.project.publicUrl') },
-                  { value: 'list', label: t('admin:components.project.githubAppInstallation') }
-                ] : [
-                  { value: 'url', label: t('admin:components.project.publicUrl') },
-                ]}
-                onChange={handleChangeDestinationType}
-            />
+          <InputRadio
+            name="destination"
+            label={t('admin:components.project.destinationType')}
+            value={destinationType}
+            options={
+              repos && repos.length > 0
+                ? [
+                    { value: 'url', label: t('admin:components.project.publicUrl') },
+                    { value: 'list', label: t('admin:components.project.githubAppInstallation') }
+                  ]
+                : [{ value: 'url', label: t('admin:components.project.publicUrl') }]
+            }
+            onChange={handleChangeDestinationType}
+          />
         )}
 
         {!(existingProject && !changeDestination) && destinationType === 'list' && repos && repos.length != 0 ? (
-            <InputSelect
-                name="projectURL"
-                label={t('admin:components.project.project')}
-                value={destinationURL}
-                menu={projectMenu}
-                error={destinationError}
-                onChange={(e) => { handleChangeDestination(e); handleChangeDestinationRepo(e);}}
-            />
+          <InputSelect
+            name="projectURL"
+            label={t('admin:components.project.project')}
+            value={destinationURL}
+            menu={projectMenu}
+            error={destinationError}
+            onChange={(e) => {
+              handleChangeDestination(e)
+              handleChangeDestinationRepo(e)
+            }}
+          />
+        ) : hasGithubProvider ? (
+          <InputText
+            name="urlSelect"
+            label={t('admin:components.project.githubPublicUrl')}
+            value={destinationURL}
+            error={destinationError}
+            disabled={(existingProject || false) && !changeDestination}
+            onChange={handleChangeDestination}
+            onBlur={handleChangeDestinationRepo}
+          />
         ) : (
-            hasGithubProvider ?
-              <InputText
-                  name="urlSelect"
-                  label={t('admin:components.project.githubPublicUrl')}
-                  value={destinationURL}
-                  error={destinationError}
-                  disabled={(existingProject || false) && !changeDestination}
-                  onChange={handleChangeDestination}
-                  onBlur={handleChangeDestinationRepo}
-              /> : <div className={styles.textAlign}>{t('admin:components.project.needsGithubProvider')}</div>
+          <div className={styles.textAlign}>{t('admin:components.project.needsGithubProvider')}</div>
         )}
 
-        {!destinationProcessing && destinationProjectName.length > 0 && <div className={styles.projectVersion}>{`${t('admin:components.project.destinationProjectName')}: ${destinationProjectName}`}</div>}
-        {!destinationProcessing && destinationRepoEmpty && <div className={styles.projectVersion}>{t('admin:components.project.destinationRepoEmpty')}</div>}
-        {destinationProcessing && <LoadingView title={t('admin:components.project.destinationProcessing')} variant="body1" fullHeight={false}/>}
+        {!destinationProcessing && destinationProjectName.length > 0 && (
+          <div className={styles.projectVersion}>{`${t(
+            'admin:components.project.destinationProjectName'
+          )}: ${destinationProjectName}`}</div>
+        )}
+        {!destinationProcessing && destinationRepoEmpty && (
+          <div className={styles.projectVersion}>{t('admin:components.project.destinationRepoEmpty')}</div>
+        )}
+        {destinationProcessing && (
+          <LoadingView title={t('admin:components.project.destinationProcessing')} variant="body1" fullHeight={false} />
+        )}
 
-        { !changeDestination && <DialogTitle className={classNames({
-          [styles.textAlign]: true,
-          [styles.drawerSubHeader]: true
-        })}>
-          {t('admin:components.project.source')}
-        </DialogTitle>}
+        {!changeDestination && (
+          <DialogTitle
+            className={classNames({
+              [styles.textAlign]: true,
+              [styles.drawerSubHeader]: true
+            })}
+          >
+            {t('admin:components.project.source')}
+          </DialogTitle>
+        )}
 
         {!processing && !changeDestination && (
           <InputRadio
             name="source"
             label={t('admin:components.project.sourceType')}
             value={sourceType}
-            options={repos && repos.length > 0 ? [
-              { value: 'url', label: t('admin:components.project.publicUrl') },
-              { value: 'list', label: t('admin:components.project.githubAppInstallation') }
-            ] : [
-              { value: 'url', label: t('admin:components.project.publicUrl') },
-            ]}
+            options={
+              repos && repos.length > 0
+                ? [
+                    { value: 'url', label: t('admin:components.project.publicUrl') },
+                    { value: 'list', label: t('admin:components.project.githubAppInstallation') }
+                  ]
+                : [{ value: 'url', label: t('admin:components.project.publicUrl') }]
+            }
             onChange={handleChangeSourceType}
           />
         )}
 
-        {!changeDestination && <div>
-          {sourceType === 'list' && repos && repos.length != 0 ? (
-            <InputSelect
-              name="projectURL"
-              label={t('admin:components.project.project')}
-              value={sourceURL}
-              menu={projectMenu}
-              error={urlError}
-              onChange={(e) => { handleChangeSource(e); handleChangeSourceRepo(e);}}
-            />
-          ) : (
-            hasGithubProvider ?
-            <InputText
-              name="urlSelect"
-              label={t('admin:components.project.githubPublicUrl')}
-              value={sourceURL}
-              error={urlError}
-              onChange={handleChangeSource}
-              onBlur={handleChangeSourceRepo}
-            /> : <div className={styles.textAlign}>{t('admin:components.project.needsGithubProvider')}</div>
-          )}
-
-          {!processing && !branchProcessing && branchData && branchData.length > 0 && showBranchSelector && (
+        {!changeDestination && (
+          <div>
+            {sourceType === 'list' && repos && repos.length != 0 ? (
               <InputSelect
-                  name="branchData"
-                  label={t('admin:components.project.branchData')}
-                  value={selectedBranch}
-                  menu={branchMenu}
-                  error={branchError}
-                  onChange={handleChangeBranch}
+                name="projectURL"
+                label={t('admin:components.project.project')}
+                value={sourceURL}
+                menu={projectMenu}
+                error={urlError}
+                onChange={(e) => {
+                  handleChangeSource(e)
+                  handleChangeSourceRepo(e)
+                }}
               />
-          )}
+            ) : hasGithubProvider ? (
+              <InputText
+                name="urlSelect"
+                label={t('admin:components.project.githubPublicUrl')}
+                value={sourceURL}
+                error={urlError}
+                onChange={handleChangeSource}
+                onBlur={handleChangeSourceRepo}
+              />
+            ) : (
+              <div className={styles.textAlign}>{t('admin:components.project.needsGithubProvider')}</div>
+            )}
 
-          {!processing && !tagsProcessing && tagData && tagData.length > 0 && showTagSelector && (
+            {!processing && !branchProcessing && branchData && branchData.length > 0 && showBranchSelector && (
               <InputSelect
-                  name="tagData"
-                  label={t('admin:components.project.tagData')}
-                  value={selectedSHA}
-                  menu={tagMenu}
-                  error={tagError}
-                  onChange={handleTagChange}
+                name="branchData"
+                label={t('admin:components.project.branchData')}
+                value={selectedBranch}
+                menu={branchMenu}
+                error={branchError}
+                onChange={handleChangeBranch}
               />
+            )}
+
+            {!processing && !tagsProcessing && tagData && tagData.length > 0 && showTagSelector && (
+              <InputSelect
+                name="tagData"
+                label={t('admin:components.project.tagData')}
+                value={selectedSHA}
+                menu={tagMenu}
+                error={tagError}
+                onChange={handleTagChange}
+              />
+            )}
+          </div>
+        )}
+
+        {!processing && !tagsProcessing && sourceProjectName.length > 0 && (
+          <div className={styles.projectVersion}>{`${t(
+            'admin:components.project.sourceProjectName'
+          )}: ${sourceProjectName}`}</div>
+        )}
+
+        {branchProcessing && (
+          <LoadingView title={t('admin:components.project.branchProcessing')} variant="body1" fullHeight={false} />
+        )}
+        {tagsProcessing && (
+          <LoadingView title={t('admin:components.project.tagsProcessing')} variant="body1" fullHeight={false} />
+        )}
+
+        {!processing &&
+          !branchProcessing &&
+          !tagsProcessing &&
+          selectedSHA &&
+          selectedSHA.length > 0 &&
+          tagData.length > 0 &&
+          !matchesEngineVersion && (
+            <div className={styles.projectMismatchWarning}>
+              <WarningAmberIcon />
+              {t('admin:components.project.mismatchedProjectWarning')}
+            </div>
           )}
-        </div>}
 
-        {!processing && !tagsProcessing && sourceProjectName.length > 0 && <div className={styles.projectVersion}>{`${t('admin:components.project.sourceProjectName')}: ${sourceProjectName}`}</div>}
+        {processing && (
+          <LoadingView title={t('admin:components.project.processing')} variant="body1" fullHeight={false} />
+        )}
 
-        {branchProcessing && <LoadingView title={t('admin:components.project.branchProcessing')} variant="body1" fullHeight={false} />}
-        {tagsProcessing && <LoadingView title={t('admin:components.project.tagsProcessing')} variant="body1" fullHeight={false} />}
-
-        {!processing && !branchProcessing && !tagsProcessing && selectedSHA && selectedSHA.length > 0 && tagData.length > 0 && !tagData.find(tag => tag.commitSHA === selectedSHA)?.matchesEngineVersion &&
-            (
-                <div className={styles.projectMismatchWarning}>
-                  <WarningAmberIcon />
-                  {t('admin:components.project.mismatchedProjectWarning')}
-                </div>
-            )
-        }
-
-        {processing && <LoadingView title={t('admin:components.project.processing')} variant="body1" fullHeight={false} />}
-
-        {sourceVsDestinationProcessing && <LoadingView title={t('admin:components.project.sourceVsDestinationProcessing')} variant="body1" fullHeight={false} />}
+        {sourceVsDestinationProcessing && (
+          <LoadingView
+            title={t('admin:components.project.sourceVsDestinationProcessing')}
+            variant="body1"
+            fullHeight={false}
+          />
+        )}
         {sourceVsDestinationError.length > 0 && <div className={styles.errorText}>{sourceVsDestinationError}</div>}
 
-        <div className={classNames({
-          [styles.validContainer]: true,
-          [styles.valid]: destinationValid,
-          [styles.invalid]: !destinationValid
-        })}>
+        <div
+          className={classNames({
+            [styles.validContainer]: true,
+            [styles.valid]: destinationValid,
+            [styles.invalid]: !destinationValid
+          })}
+        >
           {destinationValid && <CheckCircle />}
           {!destinationValid && <Cancel />}
           {t('admin:components.project.destinationURLValid')}
         </div>
 
-        {!(existingProject && changeDestination) && <div className={classNames({
-          [styles.validContainer]: true,
-          [styles.valid]: sourceValid,
-          [styles.invalid]: !sourceValid
-        })}>
-          {sourceValid && <CheckCircle />}
-          {!sourceValid && <Cancel />}
-          {t('admin:components.project.sourceURLValid')}
-        </div>}
+        {!(existingProject && changeDestination) && (
+          <div
+            className={classNames({
+              [styles.validContainer]: true,
+              [styles.valid]: sourceValid,
+              [styles.invalid]: !sourceValid
+            })}
+          >
+            {sourceValid && <CheckCircle />}
+            {!sourceValid && <Cancel />}
+            {t('admin:components.project.sourceURLValid')}
+          </div>
+        )}
 
-        {!(existingProject && changeDestination) && <div className={classNames({
-          [styles.validContainer]: true,
-          [styles.valid]: sourceProjectMatchesDestination,
-          [styles.invalid]: !sourceProjectMatchesDestination
-        })}>
-          {sourceProjectMatchesDestination && <CheckCircle />}
-          {!sourceProjectMatchesDestination && <Cancel />}
-          {t('admin:components.project.sourceMatchesDestination')}
-        </div> }
+        {!(existingProject && changeDestination) && (
+          <div
+            className={classNames({
+              [styles.validContainer]: true,
+              [styles.valid]: sourceProjectMatchesDestination,
+              [styles.invalid]: !sourceProjectMatchesDestination
+            })}
+          >
+            {sourceProjectMatchesDestination && <CheckCircle />}
+            {!sourceProjectMatchesDestination && <Cancel />}
+            {t('admin:components.project.sourceMatchesDestination')}
+          </div>
+        )}
 
         <DialogActions>
           {!processing && (

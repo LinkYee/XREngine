@@ -8,6 +8,7 @@ import { Op } from 'sequelize'
 
 import { GITHUB_URL_REGEX, PUBLIC_SIGNED_REGEX } from '@xrengine/common/src/constants/GitHubConstants'
 import { ProjectInterface } from '@xrengine/common/src/interfaces/ProjectInterface'
+import { UserInterface } from '@xrengine/common/src/interfaces/User'
 import { processFileName } from '@xrengine/common/src/utils/processFileName'
 import templateProjectJson from '@xrengine/projects/template-project/package.json'
 
@@ -29,17 +30,16 @@ import {
   checkUserRepoWriteStatus,
   getAuthenticatedRepo,
   getGitHubAppRepos,
-  getUserRepos,
+  getUserRepos
 } from '../githubapp/githubapp-helper'
 import { getEnginePackageJson, getProjectConfig, getProjectPackageJson, onProjectEvent } from './project-helper'
-import {UserInterface} from "@xrengine/common/src/interfaces/User";
 
 const templateFolderDirectory = path.join(appRootPath.path, `packages/projects/template-project/`)
 
 const projectsRootFolder = path.join(appRootPath.path, 'packages/projects/projects/')
 
 export interface ProjectParams extends Params {
-  user?: UserInterface
+  user: UserInterface
 }
 
 export const copyDefaultProject = () => {
@@ -251,7 +251,14 @@ export class Project extends Service {
    */
   // @ts-ignore
   async update(
-    data: { sourceURL: string; destinationURL: string; name?: string; needsRebuild?: boolean; reset?: boolean; commitSHA?: string },
+    data: {
+      sourceURL: string
+      destinationURL: string
+      name?: string
+      needsRebuild?: boolean
+      reset?: boolean
+      commitSHA?: string
+    },
     placeholder?: null,
     params?: UserParams
   ) {
@@ -279,7 +286,6 @@ export class Project extends Service {
     let repoPath = await getAuthenticatedRepo(data.sourceURL)
     if (!repoPath) repoPath = data.sourceURL //public repo
 
-    console.log('repoPath', repoPath)
     const gitCloner = useGit(projectLocalDirectory)
     await gitCloner.clone(repoPath, projectDirectory)
     const git = useGit(projectDirectory)
@@ -290,10 +296,9 @@ export class Project extends Service {
       if (branchExists.length === 0 || data.reset) {
         try {
           await git.deleteLocalBranch(branchName)
-        } catch(err) {}
+        } catch (err) {}
         await git.checkoutLocalBranch(branchName)
-      }
-      else await git.checkout(branchName)
+      } else await git.checkout(branchName)
     } catch (err) {
       logger.error(err)
       throw err
@@ -313,8 +318,7 @@ export class Project extends Service {
     const publicSignedExec = PUBLIC_SIGNED_REGEX.exec(repositoryPath)
     //In testing, intermittently the signed URL was being entered into the database, which made matching impossible.
     //Stripping the signed portion out if it's about to be inserted.
-    if (publicSignedExec)
-      repositoryPath = `https://github.com/${publicSignedExec[1]}/${publicSignedExec[2]}`
+    if (publicSignedExec) repositoryPath = `https://github.com/${publicSignedExec[1]}/${publicSignedExec[2]}`
 
     const returned = !existingProjectResult
       ? // Add to DB
