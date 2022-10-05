@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { GithubAppInterface } from '@xrengine/common/src/interfaces/GithubAppInterface'
-import { ProjectInterface } from '@xrengine/common/src/interfaces/ProjectInterface'
 import { ProjectBranchInterface } from '@xrengine/common/src/interfaces/ProjectBranchInterface'
+import { ProjectInterface } from '@xrengine/common/src/interfaces/ProjectInterface'
 import { ProjectTagInterface } from '@xrengine/common/src/interfaces/ProjectTagInterface'
 
 import Cancel from '@mui/icons-material/Cancel'
@@ -60,8 +60,8 @@ const ProjectDrawer = ({
   const [submitDisabled, setSubmitDisabled] = useState(true)
   const [showBranchSelector, setShowBranchSelector] = useState(false)
   const [showTagSelector, setShowTagSelector] = useState(false)
-  const [branchData, setBranchData] = useState([])
-  const [tagData, setTagData] = useState([])
+  const [branchData, setBranchData] = useState<ProjectBranchInterface[]>([])
+  const [tagData, setTagData] = useState<ProjectTagInterface[]>([])
   const [selectedBranch, setSelectedBranch] = useState('')
   const [selectedSHA, setSelectedSHA] = useState('')
   const [sourceVsDestinationProcessing, setSourceVsDestinationProcessing] = useState(false)
@@ -161,7 +161,7 @@ const ProjectDrawer = ({
     try {
       resetSourceState({ resetSourceURL: false, resetSourceType: false })
       setBranchProcessing(true)
-      const branchResponse = await ProjectService.fetchProjectBranches(e.target.value, sourceType === 'url')
+      const branchResponse = (await ProjectService.fetchProjectBranches(e.target.value, sourceType === 'url')) as any
       setBranchProcessing(false)
       if (branchResponse.error) {
         setShowBranchSelector(false)
@@ -216,7 +216,11 @@ const ProjectDrawer = ({
       resetSourceState({ resetSourceURL: false, resetBranch: false })
       setSelectedBranch(e.target.value)
       setTagsProcessing(true)
-      const projectResponse = await ProjectService.fetchProjectTags(sourceURL, e.target.value, sourceType === 'url')
+      const projectResponse = (await ProjectService.fetchProjectTags(
+        sourceURL,
+        e.target.value,
+        sourceType === 'url'
+      )) as any
       setTagsProcessing(false)
       if (projectResponse.error) {
         setShowTagSelector(false)

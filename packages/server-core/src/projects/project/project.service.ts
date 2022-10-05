@@ -24,7 +24,7 @@ import {
   getTags,
   updateBuilder
 } from './project-helper'
-import { Project, ProjectParams } from './project.class'
+import { Project, ProjectParams, ProjectParamsClient } from './project.class'
 import projectDocs from './project.docs'
 import hooks from './project.hooks'
 import createModel from './project.model'
@@ -36,14 +36,31 @@ declare module '@xrengine/common/declarations' {
       find: () => ReturnType<typeof getProjectsList>
     }
     project: Project
-    'project-build': any
-    'project-invalidate': any
-    'project-github-push': any
-    'project-branches': any
-    'project-tags': any
-    'project-destination-check': any
-    'project-check-source-destination-match'
-    'project-builder-tags': any
+    'project-build': {
+      find: ReturnType<typeof projectBuildFind>
+      patch: ReturnType<typeof projectBuildPatch>
+    }
+    'project-invalidate': {
+      patch: ReturnType<typeof projectInvalidatePatch>
+    }
+    'project-check-source-destination-match': {
+      find: ReturnType<typeof projectCheckSourceDestinationMatchFind>
+    }
+    'project-github-push': {
+      patch: ReturnType<typeof projectGithubPushPatch>
+    }
+    'project-destination-check': {
+      get: ReturnType<typeof projectDestinationCheckGet>
+    }
+    'project-branches': {
+      get: ReturnType<typeof projectBranchesGet>
+    }
+    'project-tags': {
+      get: ReturnType<typeof projectTagsGet>
+    }
+    'project-builder-tags': {
+      find: ReturnType<typeof projectBuilderTagsGet>
+    }
   }
   interface Models {
     project: ReturnType<typeof createModel>
@@ -57,6 +74,56 @@ export const getProjectsList = async () => {
   return fs
     .readdirSync(projectsRootFolder)
     .filter((projectFolder) => fs.existsSync(path.join(projectsRootFolder, projectFolder, 'xrengine.config.ts')))
+}
+
+export const projectBuildFind = (app: Application) => async () => {
+  return await checkBuilderService(app)
+}
+
+export const projectBuildPatch = (app: Application) => async (tag: string, data: any, params?: ProjectParamsClient) => {
+  return await updateBuilder(app, tag, data, params as ProjectParams)
+}
+
+type InvalidateProps = {
+  projectName?: string
+  storageProviderName?: string
+}
+
+export const projectInvalidatePatch =
+  (app: Application) =>
+  async ({ projectName, storageProviderName }: InvalidateProps) => {
+    if (projectName) {
+      return await getStorageProvider(storageProviderName).createInvalidation([`projects/${projectName}*`])
+    }
+  }
+
+export const projectCheckSourceDestinationMatchFind = (app: Application) => (params?: ProjectParamsClient) => {
+  return checkProjectDestinationMatch(app, params as ProjectParams)
+}
+
+export const projectGithubPushPatch = (app: Application) => async (id: Id, data: any, params?: UserParams) => {
+  const project = await app.service('project').Model.findOne({
+    where: {
+      id
+    }
+  })
+  return pushProjectToGithub(app, project, params!.user!)
+}
+
+export const projectDestinationCheckGet = (app: Application) => async (url: string, params?: ProjectParamsClient) => {
+  return checkDestination(app, url, params as ProjectParams)
+}
+
+export const projectBranchesGet = (app: Application) => async (url: string, params?: ProjectParamsClient) => {
+  return getBranches(app, url, params as ProjectParams)
+}
+
+export const projectTagsGet = (app: Application) => async (url: string, params?: ProjectParamsClient) => {
+  return getTags(app, url, params as ProjectParams)
+}
+
+export const projectBuilderTagsGet = (app: Application) => async () => {
+  return findBuilderTags()
 }
 
 export default (app: Application): void => {
@@ -84,12 +151,8 @@ export default (app: Application): void => {
   })
 
   app.use('project-build', {
-    find: async (data, params) => {
-      return await checkBuilderService(app)
-    },
-    patch: async (tag: string, data: any, params: ProjectParams) => {
-      return await updateBuilder(app, tag, data, params)
-    }
+    find: projectBuildFind(app),
+    patch: projectBuildPatch(app)
   })
 
   app.service('project-build').hooks({
@@ -100,11 +163,7 @@ export default (app: Application): void => {
   })
 
   app.use('project-invalidate', {
-    patch: async ({ projectName, storageProviderName }, params) => {
-      if (projectName) {
-        return await getStorageProvider(storageProviderName).createInvalidation([`projects/${projectName}*`])
-      }
-    }
+    patch: projectInvalidatePatch(app)
   })
 
   app.service('project-invalidate').hooks({
@@ -114,26 +173,17 @@ export default (app: Application): void => {
   })
 
   app.use('project-check-source-destination-match', {
-    find: async (params: ProjectParams): Promise<any> => {
-      return checkProjectDestinationMatch(app, params)
-    }
+    find: projectCheckSourceDestinationMatchFind(app)
   })
 
   app.service('project-check-source-destination-match').hooks({
     before: {
-      find: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
+      find: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any) as any]
     }
   })
 
   app.use('project-github-push', {
-    patch: async (id: Id, data: any, params?: UserParams): Promise<any> => {
-      const project = await app.service('project').Model.findOne({
-        where: {
-          id
-        }
-      })
-      return pushProjectToGithub(app, project, params!.user!)
-    }
+    patch: projectGithubPushPatch(app)
   })
 
   app.service('project-github-push').hooks({
@@ -141,56 +191,48 @@ export default (app: Application): void => {
       patch: [
         authenticate(),
         iff(isProvider('external'), verifyScope('editor', 'write') as any),
-        projectPermissionAuthenticate('write')
+        projectPermissionAuthenticate('write') as any
       ]
     }
   })
 
   app.use('project-destination-check', {
-    get: async (url: string, params?: ProjectParams): Promise<any> => {
-      return checkDestination(app, url, params)
-    }
+    get: projectDestinationCheckGet(app)
   })
 
   app.service('project-destination-check').hooks({
     before: {
-      get: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
+      get: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any) as any]
     }
   })
 
   app.use('project-branches', {
-    get: async (url: string, params?: ProjectParams): Promise<any> => {
-      return getBranches(app, url, params)
-    }
+    get: projectBranchesGet(app)
   })
 
   app.service('project-branches').hooks({
     before: {
-      get: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
+      get: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any) as any]
     }
   })
 
   app.use('project-tags', {
-    get: async (url: string, params?: ProjectParams): Promise<any> => {
-      return getTags(app, url, params)
-    }
+    get: projectTagsGet(app)
   })
 
   app.service('project-tags').hooks({
     before: {
-      get: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
+      get: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any) as any]
     }
   })
 
   app.use('project-builder-tags', {
-    find: async (): Promise<any> => {
-      return findBuilderTags()
-    }
+    find: projectBuilderTagsGet(app)
   })
 
   app.service('project-builder-tags').hooks({
     before: {
-      find: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any)]
+      find: [authenticate(), iff(isProvider('external'), verifyScope('projects', 'read') as any) as any]
     }
   })
 

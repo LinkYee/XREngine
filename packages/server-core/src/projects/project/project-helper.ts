@@ -1,13 +1,15 @@
 import { Params } from '@feathersjs/feathers'
+import { OctokitResponse } from '@octokit/types'
 import appRootPath from 'app-root-path'
 import AWS from 'aws-sdk'
 import axios from 'axios'
 import { compareVersions } from 'compare-versions'
 import _ from 'lodash'
-import { OctokitResponse } from '@octokit/types'
 import path from 'path'
 
+import { ProjectBranchInterface } from '@xrengine/common/src/interfaces/ProjectBranchInterface'
 import { ProjectPackageJsonType } from '@xrengine/common/src/interfaces/ProjectInterface'
+import { ProjectTagInterface } from '@xrengine/common/src/interfaces/ProjectTagInterface'
 import { ProjectConfigInterface, ProjectEventHooks } from '@xrengine/projects/ProjectConfigInterface'
 
 import { Application } from '../../../declarations'
@@ -16,29 +18,28 @@ import { getStorageProvider } from '../../media/storageprovider/storageprovider'
 import logger from '../../ServerLogger'
 import { getGitHubAppRepos, getOctokitForChecking } from '../githubapp/githubapp-helper'
 import { ProjectParams } from './project.class'
-import { ProjectTagInterface } from '@xrengine/common/src/interfaces/ProjectTagInterface'
 
 const publicECRRegex = /^public.ecr.aws\/[a-zA-Z0-9]+\/([\w\d\s\-_]+)$/
 const privateECRRegex = /^[a-zA-Z0-9]+.dkr.ecr.([\w\d\s\-_]+).amazonaws.com\/([\w\d\s\-_]+)$/
 
 interface GitHubFile {
-  status: number,
-  url: string,
+  status: number
+  url: string
   data: {
-    name: string,
-    path: string,
-    sha: string,
-    size: number,
-    url: string,
-    html_url: string,
-    git_url: string,
-    download_url: string,
-    type: string,
-    content: string,
-    encoding: string,
+    name: string
+    path: string
+    sha: string
+    size: number
+    url: string
+    html_url: string
+    git_url: string
+    download_url: string
+    type: string
+    content: string
+    encoding: string
     _links: {
-      self: string,
-      git: string,
+      self: string
+      git: string
       html: string
     }
   }
@@ -250,71 +251,70 @@ export const getProjectEnv = async (app: Application, projectName: string) => {
 }
 
 export const checkProjectDestinationMatch = async (app: Application, params: ProjectParams) => {
-  const {
-    sourceURL,
-    destinationURL,
-    sourceIsPublicURL,
-    destinationIsPublicURL,
-    existingProject
-  } = params.query!
+  const { sourceURL, destinationURL, sourceIsPublicURL, destinationIsPublicURL, existingProject } = params.query!
   const {
     owner: destinationOwner,
     repo: destinationRepo,
     octoKit: destinationOctoKit
-  } = await getOctokitForChecking(app, destinationURL, {
+  } = await getOctokitForChecking(app, destinationURL!, {
     ...params,
-    query: { isPublicURL: destinationIsPublicURL }
+    query: { isPublicURL: destinationIsPublicURL! }
   })
   const {
     owner: sourceOwner,
     repo: sourceRepo,
     octoKit: sourceOctoKit
-  } = await getOctokitForChecking(app, sourceURL, { ...params, query: { isPublicURL: sourceIsPublicURL } })
+  } = await getOctokitForChecking(app, sourceURL!, { ...params, query: { isPublicURL: sourceIsPublicURL } })
 
-  if (!sourceOctoKit) return {
-    error: 'invalidSourceOctokit',
-    text: 'The GitHub app being used by this installation does not have access to the source GitHub repo'
-  }
-  if (!destinationOctoKit) return {
-    error: 'invalidDestinationOctokit',
-    text: 'The GitHub app being used by this installation does not have access to the destination GitHub repo'
-  }
-  const [sourceBlobResponse, destinationBlobResponse]: [sourceBlobResponse: any, destinationBlobResponse: any] = await Promise.all([
-    new Promise(async (resolve, reject) => {
-      try {
-        const sourcePackage = await sourceOctoKit.request(
-          `GET /repos/${sourceOwner}/${sourceRepo}/contents/package.json`
-        )
-        resolve(sourcePackage)
-      } catch (err) {
-        logger.error(err)
-        if (err.status === 404) {
-          resolve({
-            error: 'sourcePackageMissing',
-            text: 'There is no package.json in the source repo'
-          })
-        } else reject(err)
-      }
-    }),
-    new Promise(async (resolve, reject) => {
-      try {
-        const destinationPackage = await destinationOctoKit.request(
-          `GET /repos/${destinationOwner}/${destinationRepo}/contents/package.json`
-        )
-        resolve(destinationPackage)
-      } catch (err) {
-        logger.error('destination package fetch error', err)
-        if (err.status === 404) {
-          resolve({
-            error: 'destinationPackageMissing',
-            text: 'There is no package.json in the source repo'
-          })
-        } else reject(err)
-      }
-    })
-  ])
+  if (!sourceOctoKit)
+    return {
+      error: 'invalidSourceOctokit',
+      text: 'The GitHub app being used by this installation does not have access to the source GitHub repo'
+    }
+  if (!destinationOctoKit)
+    return {
+      error: 'invalidDestinationOctokit',
+      text: 'The GitHub app being used by this installation does not have access to the destination GitHub repo'
+    }
+  const [sourceBlobResponse, destinationBlobResponse]: [sourceBlobResponse: any, destinationBlobResponse: any] =
+    await Promise.all([
+      new Promise(async (resolve, reject) => {
+        try {
+          const sourcePackage = await sourceOctoKit.request(
+            `GET /repos/${sourceOwner}/${sourceRepo}/contents/package.json`
+          )
+          resolve(sourcePackage)
+        } catch (err) {
+          logger.error(err)
+          if (err.status === 404) {
+            resolve({
+              error: 'sourcePackageMissing',
+              text: 'There is no package.json in the source repo'
+            })
+          } else reject(err)
+        }
+      }),
+      new Promise(async (resolve, reject) => {
+        try {
+          const destinationPackage = await destinationOctoKit.request(
+            `GET /repos/${destinationOwner}/${destinationRepo}/contents/package.json`
+          )
+          resolve(destinationPackage)
+        } catch (err) {
+          logger.error('destination package fetch error', err)
+          if (err.status === 404) {
+            resolve({
+              error: 'destinationPackageMissing',
+              text: 'There is no package.json in the source repo'
+            })
+          } else reject(err)
+        }
+      })
+    ])
   if (sourceBlobResponse.error) return sourceBlobResponse
-  const sourceContent = JSON.parse(Buffer.from(sourceBlobResponse.data.content, sourceBlobResponse.data.encoding).toString())
+  const sourceContent = JSON.parse(
+    Buffer.from(sourceBlobResponse.data.content, sourceBlobResponse.data.encoding).toString()
+  )
   if (!existingProject) {
     const projectExists = await app.service('project').find({
       query: {
@@ -343,14 +343,15 @@ export const checkProjectDestinationMatch = async (app: Application, params: Pro
 
 export const checkDestination = async (app: Application, url: string, params?: ProjectParams) => {
   const isPublicURL = params!.query!.isPublicURL
-  const inputProjectURL = params!.query!.inputProjectURL
+  const inputProjectURL = params!.query!.inputProjectURL!
   const octokitResponse = await getOctokitForChecking(app, url, params!)
   const { owner, repo, octoKit } = octokitResponse
 
-  if (!octoKit) return {
-    error: 'invalidDestinationOctokit',
-    text: 'The GitHub app being used by this installation does not have access to the destination GitHub repo'
-  }
+  if (!octoKit)
+    return {
+      error: 'invalidDestinationOctokit',
+      text: 'The GitHub app being used by this installation does not have access to the destination GitHub repo'
+    }
 
   try {
     const repoResponse = await octoKit.request(`GET /repos/${owner}/${repo}`)
@@ -376,10 +377,11 @@ export const checkDestination = async (app: Application, url: string, params?: P
     if (inputProjectURL?.length > 0) {
       const projectOctokitResponse = await getOctokitForChecking(app, inputProjectURL, params!)
       const { owner: existingOwner, repo: existingRepo, octoKit: projectOctoKit } = projectOctokitResponse
-      if (!projectOctoKit) return {
-        error: 'invalidDestinationOctokit',
-        text: 'The GitHub app being used by this installation does not have access to the new GitHub repo'
-      }
+      if (!projectOctoKit)
+        return {
+          error: 'invalidDestinationOctokit',
+          text: 'The GitHub app being used by this installation does not have access to the new GitHub repo'
+        }
       let existingProjectPackage
       try {
         existingProjectPackage = await projectOctoKit.request(
@@ -413,14 +415,15 @@ export const getBranches = async (app: Application, url: string, params?: Projec
   const octokitResponse = await getOctokitForChecking(app, url, params!)
   const { owner, repo, octoKit } = octokitResponse
 
-  if (!octoKit) return {
-    error: 'invalidSourceOctokit',
-    text: 'The GitHub app being used by this installation does not have access to the source GitHub repo'
-  }
+  if (!octoKit)
+    return {
+      error: 'invalidSourceOctokit',
+      text: 'The GitHub app being used by this installation does not have access to the source GitHub repo'
+    }
 
   try {
     const repoResponse = await octoKit.request(`GET /repos/${owner}/${repo}`)
-    const returnedBranches = [{ name: repoResponse.data.default_branch, isMain: true }]
+    const returnedBranches = [{ name: repoResponse.data.default_branch, isMain: true }] as ProjectBranchInterface[]
     const deploymentBranch = `${config.server.releaseName}-deployment`
     try {
       await octoKit.request(`GET /repos/${owner}/${repo}/branches/${deploymentBranch}`)
@@ -452,10 +455,11 @@ export const getTags = async (
     const octokitResponse = await getOctokitForChecking(app, url, params!)
     const { owner, repo, octoKit } = octokitResponse
 
-    if (!octoKit) return {
-      error: 'invalidDestinationOctokit',
-      text: 'The GitHub app being used by this installation does not have access to the destination GitHub repo'
-    }
+    if (!octoKit)
+      return {
+        error: 'invalidDestinationOctokit',
+        text: 'The GitHub app being used by this installation does not have access to the destination GitHub repo'
+      }
 
     let headIsTagged = false
     const enginePackageJson = getEnginePackageJson()
@@ -545,7 +549,9 @@ export const findBuilderTags = async () => {
       .promise()
     if (!result || !result.imageDetails) return []
     return result.imageDetails
-      .filter((imageDetails) => imageDetails.imageTags && imageDetails.imageTags.length > 0 && imageDetails.imagePushedAt)
+      .filter(
+        (imageDetails) => imageDetails.imageTags && imageDetails.imageTags.length > 0 && imageDetails.imagePushedAt
+      )
       .sort((a, b) => b.imagePushedAt!.getTime() - a!.imagePushedAt!.getTime())
       .map((imageDetails) => {
         const tag = imageDetails.imageTags!.find((tag) => !/latest/.test(tag))
@@ -570,7 +576,9 @@ export const findBuilderTags = async () => {
       .promise()
     if (!result || !result.imageDetails) return []
     return result.imageDetails
-      .filter((imageDetails) => imageDetails.imageTags && imageDetails.imageTags.length > 0 && imageDetails.imagePushedAt)
+      .filter(
+        (imageDetails) => imageDetails.imageTags && imageDetails.imageTags.length > 0 && imageDetails.imagePushedAt
+      )
       .sort((a, b) => b.imagePushedAt!.getTime() - a.imagePushedAt!.getTime())
       .map((imageDetails) => {
         const tag = imageDetails.imageTags!.find((tag) => !/latest/.test(tag))

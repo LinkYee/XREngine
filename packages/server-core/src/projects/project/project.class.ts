@@ -38,9 +38,23 @@ const templateFolderDirectory = path.join(appRootPath.path, `packages/projects/t
 
 const projectsRootFolder = path.join(appRootPath.path, 'packages/projects/projects/')
 
-export interface ProjectParams extends Params {
-  user: UserInterface
+export type ProjectQueryParams = {
+  isPublicURL?: boolean
+  isPublic?: boolean
+  sourceURL?: string
+  destinationURL?: string
+  sourceIsPublicURL?: boolean
+  destinationIsPublicURL?: boolean
+  existingProject?: boolean
+  inputProjectURL?: string
+  branchName?: string
 }
+
+export type ProjectParams = {
+  user: UserInterface
+} & Params<ProjectQueryParams>
+
+export type ProjectParamsClient = Omit<ProjectParams, 'user'>
 
 export const copyDefaultProject = () => {
   deleteFolderRecursive(path.join(projectsRootFolder, `default-project`))
