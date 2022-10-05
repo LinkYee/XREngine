@@ -228,7 +228,8 @@ const ProjectsPage = () => {
     fetchInstalledProjects()
     fetchOfficialProjects()
     fetchCommunityProjects()
-    if (user?.scopes?.value?.find((scope) => scope && scope.type === 'projects:read')) GithubAppService.fetchGithubAppRepos()
+    if (user?.scopes?.value?.find((scope) => scope && scope.type === 'projects:read'))
+      GithubAppService.fetchGithubAppRepos()
   }, [authUser.accessToken])
 
   useEffect(() => {
