@@ -14,7 +14,7 @@ import projectPermissionAuthenticate from '../../hooks/project-permission-authen
 import verifyScope from '../../hooks/verify-scope'
 import { getStorageProvider } from '../../media/storageprovider/storageprovider'
 import { UserParams } from '../../user/user/user.class'
-import { pushProjectToGithub } from '../githubapp/githubapp-helper'
+import { pushProjectToGithub } from './github-helper'
 import {
   checkBuilderService,
   checkDestination,

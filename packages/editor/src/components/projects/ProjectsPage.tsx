@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import ProjectDrawer from '@xrengine/client-core/src/admin/components/Project/ProjectDrawer'
-import { GithubAppService, useAdminGithubAppState } from '@xrengine/client-core/src/admin/services/GithubAppService'
 import { ProjectService, useProjectState } from '@xrengine/client-core/src/common/services/ProjectService'
 import { useRouter } from '@xrengine/client-core/src/common/services/RouterService'
 import { useAuthState } from '@xrengine/client-core/src/user/services/AuthService'
@@ -55,12 +54,6 @@ function sortAlphabetical(a, b) {
   if (b > a) return 1
   return 0
 }
-
-const GithubAppSystemInjection = {
-  uuid: 'core.GithubAppSystem',
-  type: 'PRE_RENDER',
-  systemLoader: () => import('@xrengine/client-core/src/systems/GithubAppSystem')
-} as const
 
 const OfficialProjectData = [
   {
@@ -158,11 +151,9 @@ const ProjectsPage = () => {
   const [projectAnchorEl, setProjectAnchorEl] = useState<any>(null)
   const [filter, setFilter] = useState({ installed: false, official: true, community: true })
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false)
-  const [isInstallDialogOpen, setInstallDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [updatingProject, setUpdatingProject] = useState(false)
   const [uploadingProject, setUploadingProject] = useState(false)
-  const [downloadingProject, setDownloadingProject] = useState(false)
   const [repoLinkDialogOpen, setRepoLinkDialogOpen] = useState(false)
   const [editPermissionsDialogOpen, setPermissionsDialogOpen] = useState(false)
   const [projectDrawerOpen, setProjectDrawerOpen] = useState(false)
@@ -172,11 +163,14 @@ const ProjectsPage = () => {
   const authUser = authState.authUser
   const user = authState.user
 
+  const ownsActiveProject =
+    activeProject?.project_permissions &&
+    activeProject.project_permissions.find(
+      (permission) => permission.userId === user.value.id && permission.type === 'owner'
+    )
+
   const { t } = useTranslation()
   const route = useRouter()
-
-  const githubAppState = useAdminGithubAppState()
-  const githubAppRepos = githubAppState.repos.value
 
   const fetchInstalledProjects = async () => {
     setLoading(true)
@@ -228,13 +222,7 @@ const ProjectsPage = () => {
     fetchInstalledProjects()
     fetchOfficialProjects()
     fetchCommunityProjects()
-    if (user?.scopes?.value?.find((scope) => scope && scope.type === 'projects:read'))
-      GithubAppService.fetchGithubAppRepos()
   }, [authUser.accessToken])
-
-  useEffect(() => {
-    initializeCoreSystems([GithubAppSystemInjection])
-  }, [])
 
   // TODO: Implement tutorial
   const openTutorial = () => {
@@ -528,19 +516,19 @@ const ProjectsPage = () => {
               {t(`editor.projects.permissions`)}
             </MenuItem>
           )}
-          {activeProject && isInstalled(activeProject) && hasRepo(activeProject) && (
+          {activeProject && isInstalled(activeProject) && hasRepo(activeProject) && ownsActiveProject && (
             <MenuItem classes={{ root: styles.filterMenuItem }} onClick={() => handleOpenProjectDrawer(false)}>
-              {downloadingProject ? <CircularProgress size={15} className={styles.progressbar} /> : <Download />}
+              <Download />
               {t(`editor.projects.updateFromGithub`)}
             </MenuItem>
           )}
-          {activeProject && isInstalled(activeProject) && !hasRepo(activeProject) && (
+          {activeProject && isInstalled(activeProject) && !hasRepo(activeProject) && ownsActiveProject && (
             <MenuItem classes={{ root: styles.filterMenuItem }} onClick={() => handleOpenProjectDrawer(true)}>
               <Link />
               {t(`editor.projects.link`)}
             </MenuItem>
           )}
-          {activeProject && isInstalled(activeProject) && hasRepo(activeProject) && (
+          {activeProject && isInstalled(activeProject) && hasRepo(activeProject) && ownsActiveProject && (
             <MenuItem classes={{ root: styles.filterMenuItem }} onClick={() => handleOpenProjectDrawer(true)}>
               <LinkOff />
               {t(`editor.projects.unlink`)}
@@ -552,12 +540,13 @@ const ProjectsPage = () => {
               {t(`editor.projects.pushToGithub`)}
             </MenuItem>
           )}
-          {isInstalled(activeProject) ? (
+          {isInstalled(activeProject) && ownsActiveProject && (
             <MenuItem classes={{ root: styles.filterMenuItem }} onClick={openDeleteConfirm}>
               {updatingProject ? <CircularProgress size={15} className={styles.progressbar} /> : <Delete />}
               {t(`editor.projects.uninstall`)}
             </MenuItem>
-          ) : (
+          )}
+          {!isInstalled(activeProject) && (
             <MenuItem classes={{ root: styles.filterMenuItem }} onClick={() => handleOpenProjectDrawer(false)}>
               {updatingProject ? <CircularProgress size={15} className={styles.progressbar} /> : <Download />}
               {t(`editor.projects.install`)}
@@ -583,7 +572,6 @@ const ProjectsPage = () => {
       {activeProject && (
         <ProjectDrawer
           open={projectDrawerOpen}
-          repos={githubAppRepos}
           inputProject={activeProject}
           existingProject={true}
           onClose={handleCloseProjectDrawer}

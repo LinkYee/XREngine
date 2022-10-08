@@ -16,7 +16,7 @@ import { Application } from '../../../declarations'
 import config from '../../appconfig'
 import { getStorageProvider } from '../../media/storageprovider/storageprovider'
 import logger from '../../ServerLogger'
-import { getGitHubAppRepos, getOctokitForChecking } from '../githubapp/githubapp-helper'
+import { getOctokitForChecking } from './github-helper'
 import { ProjectParams } from './project.class'
 
 const publicECRRegex = /^public.ecr.aws\/[a-zA-Z0-9]+\/([\w\d\s\-_]+)$/
@@ -71,21 +71,13 @@ export const updateBuilder = async (
       }
     })
 
+    console.log('projects to update with builder', projects)
+
     await Promise.all(
       projects.data.map(async (project) => {
         if (!params.query) params.query = {}
         params.query.branchName = `${config.server.releaseName}-deployment`
         let commitSHA
-        const repos = await getGitHubAppRepos()
-        const paramsCopy = _.cloneDeep(params)
-        if (!paramsCopy.query) paramsCopy.query = {}
-        paramsCopy.query.isPublic =
-          repos.find((repo) => {
-            repo.repositoryPath = repo.repositoryPath.toLowerCase()
-            return (
-              repo.repositoryPath === project.repositoryPath || repo.repositoryPath === project.repositoryPath + '.git'
-            )
-          }) == null
         const tags = await getTags(app, project.repositoryPath, params)
         if (tags.hasOwnProperty('error')) throw new Error((tags as any).text)
         const engineVersion = '1.0.0-rc1' //getEnginePackageJson().version
@@ -102,7 +94,7 @@ export const updateBuilder = async (
           reset: true,
           commitSHA
         }
-        await app.service('project').update(updateParams)
+        await app.service('project').update(updateParams, null, params)
       })
     )
   }
@@ -458,7 +450,7 @@ export const getTags = async (
     if (!octoKit)
       return {
         error: 'invalidDestinationOctokit',
-        text: 'The GitHub app being used by this installation does not have access to the destination GitHub repo'
+        text: 'You does not have access to the destination GitHub repo'
       }
 
     let headIsTagged = false
@@ -480,6 +472,7 @@ export const getTags = async (
         (tag) =>
           new Promise(async (resolve, reject) => {
             try {
+              console.log('tag', tag, owner, repo)
               if (tag.commit.sha === headResponse.data[0].sha) headIsTagged = true
               const blobResponse = await octoKit.request(`GET /repos/${owner}/${repo}/contents/package.json`, {
                 ref: tag.name
@@ -495,7 +488,7 @@ export const getTags = async (
                   : false
               })
             } catch (err) {
-              logger.error('Error getting tagged package.json %s/%s:%s %o', owner, repo, tag.name, err)
+              logger.error('Error getting tagged package.json %s/%s:%s %s', owner, repo, tag.name, err.toString())
               reject(err)
             }
           })

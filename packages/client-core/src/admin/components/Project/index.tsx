@@ -7,7 +7,6 @@ import Grid from '@mui/material/Grid'
 
 import { ProjectService, useProjectState } from '../../../common/services/ProjectService'
 import { useAuthState } from '../../../user/services/AuthService'
-import { GithubAppService, useAdminGithubAppState } from '../../services/GithubAppService'
 import styles from '../../styles/admin.module.scss'
 import ProjectDrawer from './ProjectDrawer'
 import ProjectTable from './ProjectTable'
@@ -17,8 +16,6 @@ const Projects = () => {
   const authState = useAuthState()
   const user = authState.user
   const adminProjectState = useProjectState()
-  const githubAppState = useAdminGithubAppState()
-  const githubAppRepos = githubAppState.repos.value
   const builderTags = adminProjectState.builderTags.value
   const { t } = useTranslation()
   const [projectDrawerOpen, setProjectDrawerOpen] = useState(false)
@@ -39,7 +36,6 @@ const Projects = () => {
 
   useEffect(() => {
     if (user?.scopes?.value?.find((scope) => scope.type === 'projects:read')) {
-      GithubAppService.fetchGithubAppRepos()
       ProjectService.fetchBuilderTags()
     }
   }, [user])
@@ -103,7 +99,7 @@ const Projects = () => {
 
       <UpdateDrawer open={updateDrawerOpen} builderTags={builderTags} onClose={() => setUpdateDrawerOpen(false)} />
 
-      <ProjectDrawer open={projectDrawerOpen} repos={githubAppRepos} onClose={() => setProjectDrawerOpen(false)} />
+      <ProjectDrawer open={projectDrawerOpen} onClose={() => setProjectDrawerOpen(false)} />
     </div>
   )
 }

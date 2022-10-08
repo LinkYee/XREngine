@@ -25,13 +25,7 @@ import { getContentType } from '../../util/fileUtils'
 import { copyFolderRecursiveSync, deleteFolderRecursive, getFilesRecursive } from '../../util/fsHelperFunctions'
 import { getGitData } from '../../util/getGitData'
 import { useGit } from '../../util/gitHelperFunctions'
-import {
-  checkUserOrgWriteStatus,
-  checkUserRepoWriteStatus,
-  getAuthenticatedRepo,
-  getGitHubAppRepos,
-  getUserRepos
-} from '../githubapp/githubapp-helper'
+import { checkUserOrgWriteStatus, checkUserRepoWriteStatus, getAuthenticatedRepo, getUserRepos } from './github-helper'
 import { getEnginePackageJson, getProjectConfig, getProjectPackageJson, onProjectEvent } from './project-helper'
 
 const templateFolderDirectory = path.join(appRootPath.path, `packages/projects/template-project/`)
@@ -297,7 +291,15 @@ export class Project extends Service {
       deleteFolderRecursive(projectDirectory)
     }
 
-    let repoPath = await getAuthenticatedRepo(data.sourceURL)
+    const user = params!.user!
+    const githubIdentityProvider = await this.app.service('identity-provider').Model.findOne({
+      where: {
+        userId: user.id,
+        type: 'github'
+      }
+    })
+
+    let repoPath = await getAuthenticatedRepo(githubIdentityProvider.oauthToken, data.sourceURL)
     if (!repoPath) repoPath = data.sourceURL //public repo
 
     const gitCloner = useGit(projectLocalDirectory)
@@ -357,7 +359,7 @@ export class Project extends Service {
     }
 
     if (data.reset) {
-      let repoPath = await getAuthenticatedRepo(data.destinationURL)
+      let repoPath = await getAuthenticatedRepo(githubIdentityProvider.oauthToken, data.destinationURL)
       if (!repoPath) repoPath = data.destinationURL //public repo
       await git.addRemote('destination', repoPath)
       await git.push('destination', branchName, ['-f', '--tags'])
@@ -462,6 +464,15 @@ export class Project extends Service {
   async find(params?: UserParams): Promise<{ data: ProjectInterface[] }> {
     let projectPushIds: string[] = []
     if (params?.query?.allowed != null) {
+      // See if the user has a GitHub identity-provider, and if they do, also determine which GitHub repos they personally
+      // can push to.
+      const githubIdentityProvider = await this.app.service('identity-provider').Model.findOne({
+        where: {
+          userId: params.user!.id,
+          type: 'github'
+        }
+      })
+
       // Get all of the projects that this user has permissions for, then calculate push status by whether the GitHub
       // app associated with the installation can push to it. This will make sure no one tries to push to a repo
       // that the app cannot push to.
@@ -471,37 +482,20 @@ export class Project extends Service {
         paginate: false
       })) as any
       let allowedProjects = await projectPermissions.map((permission) => permission.project)
-      const repos = await getGitHubAppRepos()
-      const repoPaths = repos.map((repo) => repo.repositoryPath.replace(/.git/, ''))
-      allowedProjects = allowedProjects.filter(
+      const repos = githubIdentityProvider ? await getUserRepos(githubIdentityProvider.oauthToken) : []
+      const repoPaths = repos.map((repo) => repo.svn_url)
+      const pushableAllowedProjects = allowedProjects.filter(
         (project) => repoPaths.indexOf(project.repositoryPath.replace(/.git/, '')) > -1
       )
-      projectPushIds = projectPushIds.concat(allowedProjects.map((project) => project.id))
+      projectPushIds = projectPushIds.concat(pushableAllowedProjects.map((project) => project.id))
 
-      // See if the user has a GitHub identity-provider, and if they do, also determine which GitHub repos they personally
-      // can push to.
-      const githubIdentityProvider = await this.app.service('identity-provider').Model.findOne({
-        where: {
-          userId: params.user!.id,
-          type: 'github'
-        }
-      })
       if (githubIdentityProvider) {
-        const allowedRepos = await getUserRepos(this.app, githubIdentityProvider.oauthToken)
+        const allowedRepos = await getUserRepos(githubIdentityProvider.oauthToken)
         const matchingAllowedRepos = await this.app.service('project').Model.findAll({
           where: {
-            [Op.or]: [
-              {
-                repositoryPath: {
-                  [Op.in]: allowedRepos
-                }
-              },
-              {
-                repositoryPath: {
-                  [Op.in]: allowedRepos.map((repo) => repo.replace('.git', ''))
-                }
-              }
-            ]
+            repositoryPath: {
+              [Op.in]: allowedRepos.map((repo) => repo.svn_url)
+            }
           }
         })
 
@@ -509,7 +503,7 @@ export class Project extends Service {
       }
 
       if (!params.user!.scopes?.find((scope) => scope.type === 'admin:admin'))
-        params.query.id = { $in: [...new Set(projectPushIds)] }
+        params.query.id = { $in: [...new Set(allowedProjects.map((project) => project.id))] }
       delete params.query.allowed
       if (!params.sequelize) params.sequelize = { raw: false }
       if (!params.sequelize.include) params.sequelize.include = []

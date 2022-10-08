@@ -22,7 +22,6 @@ import { useAuthState } from '../../../user/services/AuthService'
 import ConfirmDialog from '../../common/ConfirmDialog'
 import TableComponent from '../../common/Table'
 import { projectsColumns } from '../../common/variables/projects'
-import { GithubAppService, useAdminGithubAppState } from '../../services/GithubAppService'
 import styles from '../../styles/admin.module.scss'
 import ProjectDrawer from './ProjectDrawer'
 import ProjectFilesDrawer from './ProjectFilesDrawer'
@@ -60,8 +59,6 @@ const ProjectTable = ({ className }: Props) => {
   const [rowsPerPage, setRowsPerPage] = useState(PROJECT_PAGE_LIMIT)
   const [changeDestination, setChangeDestination] = useState(false)
 
-  const githubAppState = useAdminGithubAppState()
-  const githubAppRepos = githubAppState.repos.value
   const adminProjectState = useProjectState()
   const adminProjects = adminProjectState.projects
   const adminProjectCount = adminProjects.value.length
@@ -76,10 +73,6 @@ const ProjectTable = ({ className }: Props) => {
   }
 
   ProjectService.useAPIListeners()
-
-  useEffect(() => {
-    if (user?.scopes?.value?.find((scope) => scope.type === 'projects:read')) GithubAppService.fetchGithubAppRepos()
-  }, [user])
 
   useEffect(() => {
     if (project) setProject(adminProjects.value.find((proj) => proj.name === project.name)!)
@@ -320,7 +313,6 @@ const ProjectTable = ({ className }: Props) => {
       {openProjectDrawer && project && (
         <ProjectDrawer
           open={openProjectDrawer}
-          repos={githubAppRepos}
           changeDestination={changeDestination}
           inputProject={project}
           existingProject={true}

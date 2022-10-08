@@ -6,7 +6,6 @@ import multiLogger from '@xrengine/common/src/logger'
 import { matches, Validator } from '@xrengine/engine/src/common/functions/MatchesUtils'
 import { defineAction, defineState, dispatchAction, getState, useState } from '@xrengine/hyperflux'
 
-import { AdminGithubAppActions } from '../../admin/services/GithubAppService'
 import { API } from '../../API'
 
 const logger = multiLogger.child({ component: 'client-core:projects' })
@@ -177,25 +176,20 @@ export const ProjectService = {
     }, [])
   },
 
-  fetchProjectBranches: async (url: string, isPublicURL = true) => {
+  fetchProjectBranches: async (url: string) => {
     try {
-      return API.instance.client.service('project-branches').get(url, {
-        query: {
-          isPublicURL
-        }
-      })
+      return API.instance.client.service('project-branches').get(url)
     } catch (err) {
       logger.error('Error with fetching tags for a project', err)
       throw err
     }
   },
 
-  fetchProjectTags: async (url: string, branchName: string, isPublicURL = true) => {
+  fetchProjectTags: async (url: string, branchName: string) => {
     try {
       return API.instance.client.service('project-tags').get(url, {
         query: {
-          branchName: branchName,
-          isPublicURL
+          branchName: branchName
         }
       })
     } catch (err) {
@@ -204,19 +198,10 @@ export const ProjectService = {
     }
   },
 
-  checkDestinationURLValid: async ({
-    url,
-    isPublicURL,
-    inputProjectURL
-  }: {
-    url: string
-    isPublicURL: boolean
-    inputProjectURL?: string
-  }) => {
+  checkDestinationURLValid: async ({ url, inputProjectURL }: { url: string; inputProjectURL?: string }) => {
     try {
       return API.instance.client.service('project-destination-check').get(url, {
         query: {
-          isPublicURL,
           inputProjectURL
         }
       })
@@ -229,14 +214,10 @@ export const ProjectService = {
   checkSourceMatchesDestination: async ({
     sourceURL,
     destinationURL,
-    sourceIsPublicURL = true,
-    destinationIsPublicURL = true,
     existingProject = false
   }: {
     sourceURL: string
     destinationURL: string
-    sourceIsPublicURL: boolean
-    destinationIsPublicURL: boolean
     existingProject: boolean
   }) => {
     try {
@@ -244,8 +225,6 @@ export const ProjectService = {
         query: {
           sourceURL,
           destinationURL,
-          sourceIsPublicURL,
-          destinationIsPublicURL,
           existingProject
         }
       })
