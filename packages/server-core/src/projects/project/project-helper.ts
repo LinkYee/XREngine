@@ -80,7 +80,7 @@ export const updateBuilder = async (
         let commitSHA
         const tags = await getTags(app, project.repositoryPath, params)
         if (tags.hasOwnProperty('error')) throw new Error((tags as any).text)
-        const engineVersion = '1.0.0-rc1' //getEnginePackageJson().version
+        const engineVersion = getEnginePackageJson().version
         const tagMatchingEngineVersion = (tags as ProjectTagInterface[]).find(
           (tag) => tag.engineVersion === engineVersion
         )
