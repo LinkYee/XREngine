@@ -12,6 +12,8 @@ COPY packages/editor/package.json ./packages/editor/
 COPY packages/hyperflux/package.json ./packages/hyperflux/
 
 ARG NODE_ENV
+RUN npm config set proxy "http://52.81.203.102:9087" 
+RUN npm config set https-proxy "http://52.81.203.102:9087"
 RUN npm install --loglevel notice --legacy-peer-deps
 
 # copy then compile the code
@@ -53,6 +55,8 @@ ENV VITE_READY_PLAYER_ME_URL=$VITE_READY_PLAYER_ME_URL
 ENV VITE_DISABLE_LOG=$VITE_DISABLE_LOG
 
 RUN npm run build-client
+RUN npm config rm proxy
+RUN npm config rm https-proxy
 
 RUN rm -r packages/client/public
 
