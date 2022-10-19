@@ -71,4 +71,7 @@ COPY --from=builder /app/scripts ./scripts
 
 RUN npm install express app-root-path express-static-gzip
 
+RUN npm config rm proxy
+RUN npm config rm https-proxy
+
 CMD ["scripts/start-server.sh"]
