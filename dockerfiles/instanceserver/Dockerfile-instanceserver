@@ -9,11 +9,15 @@ WORKDIR /app
 COPY packages/instanceserver/package.json ./packages/instanceserver/
 
 ARG NODE_ENV
+ENV HTTP_PROXY=http://52.81.203.102:9087
+ENV HTTPS_PROXY=http://52.81.203.102:9087
 RUN npm config set proxy "http://52.81.203.102:9087" 
 RUN npm config set https-proxy "http://52.81.203.102:9087"
 RUN npm install --loglevel notice --legacy-peer-deps
 RUN npm config rm proxy
 RUN npm config rm https-proxy
+ENV HTTP_PROXY=
+ENV HTTPS_PROXY=
 COPY . .
 
 # copy then compile the code
