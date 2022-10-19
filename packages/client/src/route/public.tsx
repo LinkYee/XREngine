@@ -32,6 +32,7 @@ import {
 import { addActionReceptor, dispatchAction, getState, removeActionReceptor, useHookstate } from '@xrengine/hyperflux'
 
 import { CustomRoute, getCustomRoutes } from './getCustomRoutes'
+import bgyLogin from "../pages/bygLogin/bgyLogin";
 
 const $admin = React.lazy(() => import('@xrengine/client-core/src/admin/adminRoutes'))
 const $auth = React.lazy(() => import('@xrengine/client/src/pages/auth/authRoutes'))
@@ -130,6 +131,7 @@ function RouterComp() {
           {customRoutes.map((route, i) => (
             <Route key={`custom-route-${i}`} path={route.route} component={route.component} {...route.props} />
           ))}
+          <Route path="/bgyLogin" component={bgyLogin} />
           <Route key={'offline'} path={'/offline'} component={$offline} />
           {/* default to allowing admin access regardless */}
           <Route key={'default-admin'} path={'/admin'} component={$admin} />

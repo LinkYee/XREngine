@@ -1,95 +1,95 @@
 {
   "location": {
-    "youHaveBeenBannedMsg": "You have been banned from this location",
+    "youHaveBeenBannedMsg": "您已被禁止进入此位置",
     "locationName": {
-      "pageTitle": "Home"
+      "pageTitle": "家"
     }
   },
   "editor": {
     "projects": {
-      "title": "Projects",
-      "header": "Please Login",
-      "welcomeMsg": "Welcome",
-      "locationHeader": "Locations",
-      "projectHeader": "Projects",
-      "sceneHeader": "Scenes",
-      "description": "If you are new here we recommend going through the tutorial. Otherwise, jump right in and create a project from scratch or from one of our templates.",
-      "lbl-startTutorial": "Start Tutorial",
-      "lbl-newProject": "New Project",
-      "lbl-createProject": "Create",
-      "lbl-newScene": "New Scene",
-      "lbl-searchProject": "Search Existing Projects...",
-      "back": "Back",
-      "contextMenu": "Delete Project",
-      "installed": "Installed Projects",
-      "official": "Official Projects",
-      "community": "Community Projects",
-      "install": "Install",
-      "uninstall": "Uninstall",
-      "rename": "Rename",
-      "createProject": "Create Project",
-      "installProject": "Install Project",
-      "processing": "Processing",
-      "projectName": "Project Name",
-      "projectURL": "Project URL",
-      "link": "Link to GitHub repo",
-      "unlink": "Edit/Remove GitHub link",
-      "resetToMain": "Reset to Main Branch",
-      "updateFromGithub": "Update project from GitHub",
-      "pushToGithub": "Push to GitHub",
-      "githubURL": "GitHub repo URL",
-      "linkRepo": "Link to GitHub repo",
-      "linkButton": "Link",
-      "changeLinkButton": "Change Link",
-      "unLinkButton": "Unlink",
-      "userInviteCode": "User's Invite Code",
-      "editProjectPermissions": "Manage User Permissions on Project",
-      "addUser": "Add User",
-      "permissions": "Project Permissions"
+      "title": "项目",
+      "header": "请登录",
+      "welcomeMsg": "欢迎",
+      "locationHeader": "地点",
+      "projectHeader": "项目",
+      "sceneHeader": "场景",
+      "description": "如果您是新来的，我们建议您浏览教程。否则，请直接跳进去，从头开始或从我们的模板中创建一个项目.",
+      "lbl-startTutorial": "开始教程",
+      "lbl-newProject": "新项目",
+      "lbl-createProject": "创造",
+      "lbl-newScene": "新场景",
+      "lbl-searchProject": "搜索现有项目...",
+      "back": "后退",
+      "contextMenu": "删除项目",
+      "installed": "已安装的项目",
+      "official": "官方项目",
+      "community": "社区项目",
+      "install": "安装",
+      "uninstall": "不安装",
+      "rename": "重新命名",
+      "createProject": "创建项目",
+      "installProject": "安装项目",
+      "processing": "处理中",
+      "projectName": "项目名称",
+      "projectURL": "项目链接",
+      "link": "链接到GitHub repo",
+      "unlink": "编辑/删除GitHub链接",
+      "resetToMain": "重置为主分支",
+      "updateFromGithub": "从GitHub更新项目",
+      "pushToGithub": "推送到GitHub",
+      "githubURL": "GitHub repo 链接",
+      "linkRepo": "链接到GitHub repo",
+      "linkButton": "链接",
+      "changeLinkButton": "更改链接",
+      "unLinkButton": "取消链接",
+      "userInviteCode": "用户的邀请代码",
+      "editProjectPermissions": "管理项目的用户权限",
+      "addUser": "添加用户",
+      "permissions": "项目权限"
     }
   },
   "error": {
-    "goHomeLink": "Go Home",
-    "withStatusCode": "An error {{code}} occurred on server",
-    "withoutStatusCode": "An error occurred on server"
+    "goHomeLink": "回家去",
+    "withStatusCode": "服务器上出现错误{{代码}}",
+    "withoutStatusCode": "服务器上发生错误"
   },
   "404": {
-    "msg": "404 - Page Not Found"
+    "msg": "404 - 找不到页面"
   },
   "503": {
-    "msg": "503 - Service Unavailable"
+    "msg": "503 – 服务不可用"
   },
   "no-projects": {
-    "msg": "Error: No Projects Installed - please contact a site admin"
+    "msg": "错误：未安装项目 - 请联系站点管理员"
   },
   "dev": {
-    "pageTitle": "Home"
+    "pageTitle": "家"
   },
   "login": {
-    "pageTitle": "Login"
+    "pageTitle": "登录"
   },
   "workerTest": {
-    "pageTitle": "Worker Test"
+    "pageTitle": "工人测试"
   },
   "index": {
-    "by": "BY",
+    "by": "被",
     "xr": "XR",
-    "foundation": "Foundation",
-    "description": "FREE, OPEN, & INTEROPERABLE IMMERSIVE WEB TECHNOLOGY"
+    "foundation": "基金会",
+    "description": "免费、开放和互操作的沉浸式WEB技术"
   },
   "xrengineContact": {
-    "header": "Get In Touch!",
-    "description": "We’d love to help you with your virtual events, digital retail, entertainment and other needs.",
-    "lbl-name": "Name",
-    "lbl-email": "Email",
-    "lbl-company": "Company",
-    "lbl-project": "Describe your Project",
-    "lbl-send": "Send",
-    "lbl-ok": "Ok",
-    "lbl-success": "Message Sent, We'll get back to you shortly.",
-    "lbl-failure": "An error occured, Plese try again",
-    "err-username": "Please enter you name.",
-    "err-email": "Email is require.",
-    "err-msg": "Provide some brief description of your project."
+    "header": "取得联系!",
+    "description": "我们很乐意帮助您解决虚拟活动、数字零售、娱乐和其他需求。",
+    "lbl-name": "名字",
+    "lbl-email": "电子邮件",
+    "lbl-company": "公司",
+    "lbl-project": "描述你的项目",
+    "lbl-send": "发送",
+    "lbl-ok": "好的",
+    "lbl-success": "消息已发送，我们很快就会回复您。",
+    "lbl-failure": "发生错误，请重试",
+    "err-username": "请输入您的姓名.",
+    "err-email": "电子邮件是需要的。",
+    "err-msg": "简要描述您的项目。"
   }
 }

@@ -20,7 +20,7 @@ export const LocationIcons = () => {
     <>
       <UserMenu />
       {/** Container for fading most stuff in and out depending on if the location is loaded or not  */}
-      <div style={{ opacity: 1 - loadingSystemState.loadingScreenOpacity.value }}>
+      <div id='ctrlBox' style={{ opacity: 1 - loadingSystemState.loadingScreenOpacity.value }}>
         <div className={`${styles.rightSidebar}`}>
           <UserMediaWindows />
           <InstanceChatWrapper />

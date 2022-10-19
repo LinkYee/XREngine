@@ -1,0 +1,260 @@
+import './login.scss'
+import React, { useEffect, useState } from 'react'
+import Axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+  AxiosInstance,
+} from "axios";
+
+import CommonTip from '../component/commenTip'
+
+interface IntProps {
+  loginFn: Function
+}
+
+const LoginPage: React.FC<IntProps> = (props) => {
+  const [loginState, setLoginState] = useState<string>('');
+  const [phoneNumber, setPhoneNum] = useState<string>('');
+  const [code, setCode] = useState<string>('')
+  const [tipText, settipText] = useState<string>('')
+  const [showTip, setshowTip] = useState<boolean>(false)
+  const [radio, setRadio] = useState<string>('')
+  const [count, setcount] = useState<number>(0)
+  const [showBtn, setshowBtn] = useState<boolean>(true)
+  const [timeCount, settimeCount] = useState<number>(300)
+  let timer: any = null
+
+  useEffect(() => {
+    timer = setInterval(() => {
+      if (count > 0 && count <= timeCount) {
+        const newCount = count - 1
+        setcount(newCount);
+        console.log(count)
+      } else {
+        setshowBtn(true);
+        clearInterval(timer);
+        timer = null
+      }
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+    }
+  }, [count])
+
+  //手机号失去焦点
+  const phoneBlur = (val: string) => {
+    let reg_tel =
+      /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+    if (!val) {
+      setshowTip(true);
+      settipText('请输入手机号')
+    }
+    else if (!reg_tel.test(val)) {
+      setshowTip(true)
+      settipText('手机号格式错误')
+    } else {
+      setshowTip(false)
+      setPhoneNum(val)
+    }
+    setTimeout(() => {
+      setshowTip(false);
+    }, 1000)
+  }
+  const phoneChange = (val: string) => {
+    setPhoneNum(val)
+  }
+  //验证码
+  const codeBlur = (val) => {
+    if (!val) {
+      setshowTip(true);
+      settipText('请输入验证码')
+    }
+    else {
+      setshowTip(false)
+      setCode(val)
+    }
+    setTimeout(() => {
+      setshowTip(false);
+    }, 1000)
+  }
+  const codeChange = (val: string) => {
+    setCode(val)
+  }
+  //单选框
+  const radioChange = (val) => {
+    setRadio(val)
+  }
+  //获取验证码
+  const getCode = () => {
+    if (!phoneNumber) {
+      TipShow('请输入手机号')
+      return false
+    }
+    Axios({
+      url: 'https://xr.yee.link/bgy-api/sendSms',
+      method: 'get',
+      params: { phoneNumber: phoneNumber },
+      //   headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }
+    ).then((res: AxiosResponse) => {
+      if (res.data.code == 200) {
+        time();
+      } else {
+        TipShow(res.data.message)
+      }
+    }).catch(err => {
+      let { message } = err;
+      if (message == "Network Error") {
+        message = "后端接口连接异常";
+      } else if (message.includes("timeout")) {
+        message = "系统接口请求超时";
+      } else if (message.includes("Request failed with status code")) {
+        message = "系统接口" + message.substr(message.length - 3) + "异常";
+      }
+      TipShow(message)
+      initTimer();
+      clearInterval(timer);
+    })
+  }
+
+  //登录
+  const submit = () => {
+    props.loginFn(true)//测试用
+    // clearInterval(timer);
+    // initTimer()
+    // if (radio && phoneNumber && code) {
+    //   Axios({
+    //     url: 'https://xr.yee.link/bgy-api/checkSMSCode',
+    //     method: 'post',
+    //     data: `phoneNumber=${phoneNumber}&checkSMSCode=${code}`,
+    //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    //   }
+    //   ).then(res => {
+    //     debugger
+    //     if (res.data.code == 200) {
+    //       props.loginFn(true)
+    //       window.localStorage.setItem('API_LOGIN_ID', res.data.data.id)
+    //     } else {
+    //       TipShow(res.data.message)
+    //     }
+    //   }).catch(err => {
+    //     let { message } = err;
+    //     if (message == "Network Error") {
+    //       message = "后端接口连接异常";
+    //     } else if (message.includes("timeout")) {
+    //       message = "系统接口请求超时";
+    //     } else if (message.includes("Request failed with status code")) {
+    //       message = "系统接口" + message.substr(message.length - 3) + "异常";
+    //     }
+    //     TipShow(message)
+    //   })
+    // } else {
+    //   TipShow('请输入完整信息并同意《用户协议》和《隐私协议')
+    // }
+
+  }
+
+  //计时器
+  const time = () => {
+    if (!timer) {
+      setcount(timeCount);
+      setshowBtn(false);
+    }
+  };
+  //重置计时器
+  const initTimer = () => {
+    setcount(0)
+    setshowBtn(true);
+    timer = null
+    settimeCount(300);
+  };
+  //登陆方式
+  const PhoneLogin = (event) => {
+    setLoginState('mobileNum')
+  }
+  //tip
+  const TipShow = (text: string) => {
+    setshowTip(true);
+    settipText(text)
+    setTimeout(() => {
+      setshowTip(false);
+    }, 1500)
+  }
+  return <div className="loginPage-container" style={{ width: '100%', height: '100%' }}>
+    {/* 登录选择 */}
+    {
+      loginState == '' ?
+        (
+          <div className='loginPage-box'>
+            <div className='box-title' >选择登录</div>
+            <div className='btn-login' onClick={PhoneLogin}>手机号登录</div>
+            <div className='btn-wx'>
+
+              <img
+                className="wx"
+                src={
+                  "http://webxr-qing.oss-cn-hangzhou.aliyuncs.com/model/wx.png"
+                }
+              />
+              <span className='btn-textWX'>微信登录</span>
+            </div>
+          </div>
+        ) :
+        (
+          <div className='box-pho'>
+            <div className='box-title'>手机号登录</div>
+            <div className='pho-login'>
+              <input
+                className='login-inp'
+                placeholder='请输入手机号'
+                onChange={(e) => {
+                  phoneChange(e.target.value)
+                }}
+                onBlur={(e) => {
+                  phoneBlur(e.target.value)
+                }}
+              />
+            </div>
+            <div className='pho-login'>
+              <input
+                className='inp-val'
+                placeholder="请输入验证码"
+                onChange={(e) => {
+                  codeChange(e.target.value)
+                }}
+                onBlur={(e) => {
+                  codeBlur(e.target.value)
+                }}
+              />
+              <div className="val-number">{ }
+                {
+                  showBtn ? (
+                    <span onClick={getCode} >获取验证码</span>
+                  ) : (
+                    <span>已发送{count}s</span>
+                  )
+                }
+
+
+              </div>
+              {/* <span className='val-number' onClick={getCode} >获取验证码</span> */}
+            </div>
+            <div className='box-login' onClick={submit}>登录</div>
+            <div className='agreement'>
+              <label className='agreement-text'>
+                <input
+                  onBlur={(e) => {
+                    radioChange(e.target.value)
+                  }}
+                  type="radio" name='gender' value="我已阅读并同意《用户协议》和《隐私协议》"
+                />我已阅读并同意《用户协议》和《隐私协议》</label>
+            </div>
+          </div>
+        )
+    }
+    <CommonTip tipText={tipText} showTip={showTip} />
+  </div>
+}
+
+export default LoginPage

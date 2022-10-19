@@ -1,0 +1,214 @@
+/* body * {
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+body {
+    font-family: PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma, Arial, PingFang SC-Light, Microsoft YaHei;
+} */
+.loginPage-container{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../../assets/img/loginbg.png');
+    background-size: 100% 100%;
+}
+button {
+    margin: 0;
+    padding: 0;
+    border: 1px solid transparent;
+    outline: none;
+    background-color: transparent;
+}
+
+button:active {
+    opacity: 0.6;
+}
+
+.image_1 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.loginPage-box {
+    display: block;
+    position: absolute;
+    z-index: 99999;
+    width: 70%;
+    height: 80%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+    background-image: url("http://webxr-qing.oss-cn-hangzhou.aliyuncs.com/model/bg-box.png");
+    background-size: 100% 100%;
+}
+
+.box-title {
+    width: 120px;
+    height: 40px;
+    margin-left: 5%;
+    margin-top: 1%;
+    font-size: 20px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #49494A;
+    line-height: 40px;
+    letter-spacing: 2px;
+}
+
+.btn-login {
+    width: 45%;
+    height: 15%;
+    margin-top: 10%;
+    margin-left: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(101deg, #3FAAFF 0%, #9AA8FF 100%);
+    border-radius: 35px;
+    border: 1px solid #FFFFFF;
+    font-size: 15px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #FFFFFF;
+    line-height: 24px;
+    letter-spacing: 1px;
+}
+
+.btn-wx {
+    width: 45%;
+    height: 15%;
+    margin-top: 5%;
+    margin-left: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    border-radius: 35px;
+    border: 1px solid #FFFFFF;
+    font-size: 15px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #FFFFFF;
+    line-height: 24px;
+    letter-spacing: 1px;
+}
+
+.wx {
+    width: 25px;
+    height: 25px;
+}
+
+.btn-textWX {
+    color: #000;
+    font-size: 15px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #49494A;
+    line-height: 24px;
+    letter-spacing: 1px;
+}
+
+.box-pho {
+    /* display: none; */
+    position: absolute;
+    width: 70%;
+    height: 80%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+    background-image: url("http://webxr-qing.oss-cn-hangzhou.aliyuncs.com/model/bg-box.png");
+    background-size: 100% 100%;
+}
+
+.login-inp {
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    border-radius: 35px;
+    outline: none;
+    border: none;
+    padding-left: 7%;
+    box-sizing: border-box;
+}
+
+.pho-login {
+    width: 45%;
+    height: 13%;
+    margin-top: 5%;
+    margin-left: 5%;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    background-color: #fff;
+    /* background: linear-gradient(101deg, #3FAAFF 0%, #9AA8FF 100%); */
+    border-radius: 35px;
+    border: 1px solid #FFFFFF;
+    font-size: 15px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #FFFFFF;
+    line-height: 24px;
+    letter-spacing: 1px;
+}
+
+.inp-val {
+    position: relative;
+    width: 60%;
+    height: 100%;
+    font-size: 14px;
+    border-radius: 35px;
+    outline: none;
+    border: none;
+    padding-left: 7%;
+    box-sizing: border-box;
+}
+.val-number{
+    position: absolute;
+    color: #3388FF;
+    left: 33%;
+}
+
+.box-login {
+    width: 45%;
+    height: 15%;
+    margin-top: 6%;
+    margin-left: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(101deg, #3FAAFF 0%, #9AA8FF 100%);
+    border-radius: 35px;
+    border: 1px solid #FFFFFF;
+    font-size: 15px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #FFFFFF;
+    line-height: 24px;
+    letter-spacing: 1px;
+}
+.box-login:hover{
+    background: linear-gradient(126deg, #4CAFFF 0%, #A2AFFF 100%);
+}
+.agreement{
+    display: block;
+    width: 45%;
+    height: 5%;
+    margin-top: 2%;
+    margin-left: 5%;
+}
+.agreement-text{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    font-size: 12px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #49494A;
+}

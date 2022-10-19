@@ -1,0 +1,206 @@
+.role-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-image: url('../../assets/img/loginbg.png');
+    background-size: 100% 100%;
+}
+
+.role-box {
+    width: 70%;
+    height: 80%;
+    position: relative;
+    z-index: 1;
+}
+
+
+.bg2style {
+    height: 100%;
+}
+
+.role-content {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 44% 55%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.avatarStyle {
+    width: 60px;
+    height: 60px;
+    margin: 20px 0 0 20px;
+}
+
+.left-box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.people-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.peopleStyle {
+    height: 70vh;
+    z-index: 9;
+}
+
+.people-bot-circle {
+    width: 124px;
+    height: 34px;
+    background: #7C899F;
+    box-shadow: inset 0px 0px 15px 0px rgba(255, 255, 255, 0.3);
+    border: 1px solid #FFFFFF;
+    border-radius: 100%;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+}
+
+.people-input-box {
+    position: absolute;
+    left: 56%;
+    top: 16px;
+    width: 108px;
+    height: 40px;
+    background: #FFFFFF;
+    box-shadow: 0px 1px 2px 0px rgba(147, 147, 161, 0.7);
+    border-radius: 50px 50px 50px 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9;
+}
+
+input:focus {
+    outline: none;
+}
+
+.right-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.list {
+    height: 77%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-box {
+    display: grid;
+    grid-template-columns: repeat(3, 33.3%);
+
+    grid-row-gap: 24px;
+    grid-column-gap: 24px;
+
+}
+
+.item {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    border: 1px solid #cfcfcf;
+    overflow: hidden;
+
+    &:hover {
+        border: 1px solid #419eef;
+    }
+}
+
+.imgItem {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rolebtn {
+    position: absolute;
+    bottom: 0;
+}
+
+/* 提示 */
+.role-tip-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 9;
+    background-color: rgba(0, 0, 0, .2);
+}
+
+.role-tip-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.role-tip-content {
+    position: relative;
+    width: 68%;
+    height: 58%;
+    text-align: center;
+}
+
+.role-tip-title {
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #49494A;
+    line-height: 20px;
+    letter-spacing: 2px;
+    margin: 18px 0 48px 0;
+}
+
+.role-tip-text {
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #49494A;
+    line-height: 28px;
+    letter-spacing: 1px;
+    width: 43%;
+    margin-bottom: 30px;
+}
+
+.role-submit-btn {
+    width: 150px;
+    height: 34px;
+    background: linear-gradient(101deg, #3FAAFF 0%, #9AA8FF 100%);
+    border-radius: 18px;
+    line-height: 34px;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+}
+
+.videoStyle {
+    position: absolute;
+    z-index: 19;
+    width: 100%;
+}
