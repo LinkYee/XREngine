@@ -15,7 +15,8 @@ COPY packages/matchmaking/package.json ./packages/matchmaking/
 COPY packages/projects/package.json ./packages/projects/
 COPY packages/server/package.json ./packages/server/
 COPY packages/server-core/package.json ./packages/server-core/
-
+RUN npm config set proxy "http://52.81.203.102:9087"
+RUN npm config set https-proxy "http://52.81.203.102:9087"
 RUN npm install --loglevel notice --legacy-peer-deps
 
 COPY . .
