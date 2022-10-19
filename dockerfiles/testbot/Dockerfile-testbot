@@ -9,6 +9,9 @@ RUN npm install --loglevel notice --legacy-peer-deps
 # copy then compile the code
 COPY . .
 
+ENV HTTP_PROXY=http://52.81.203.102:9087
+ENV HTTPS_PROXY=http://52.81.203.102:9087
+
 ENV APP_ENV=production
 
 FROM node:16-buster-slim as runner
@@ -25,5 +28,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app ./
+
+ENV HTTP_PROXY=
+ENV HTTPS_PROXY=
 
 CMD ["scripts/start-testbot.sh"]
