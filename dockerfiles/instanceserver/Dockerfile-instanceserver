@@ -18,6 +18,8 @@ COPY . .
 # copy then compile the code
 
 ENV APP_ENV=production
+ENV HTTP_PROXY=http://52.81.203.102:9087
+ENV HTTPS_PROXY=http://52.81.203.102:9087
 
 FROM node:16-buster-slim as runner
 WORKDIR /app
