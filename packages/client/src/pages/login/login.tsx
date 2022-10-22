@@ -131,7 +131,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
       return false
     }
     Axios({
-      url: 'https://xr.yee.link/bgy-api/sendSms',
+      url: 'https://biz-api.xr-bgy-prd.yee.link/sendSms',
       method: 'get',
       params: { phoneNumber: phoneNumber },
       //   headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -164,7 +164,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
     initTimer()
     if (radio && phoneNumber && code) {
       Axios({
-        url: 'https://xr.yee.link/bgy-api/checkSMSCode',
+        url: 'https://biz-api.xr-bgy-prd.yee.link/checkSMSCode',
         method: 'post',
         data: `phoneNumber=${phoneNumber}&checkSMSCode=${code}&share_id=${shareId}`,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -257,7 +257,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
   // 微信登录
   const getOpenId = (code) => {
     Axios({
-      url: 'https://xr.yee.link/bgy-api/wx/login',
+      url: 'https://biz-api.xr-bgy-prd.yee.link/wx/login',
       method: 'POST',
       data: `code=${code}&share_id=${shareId}`,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }

@@ -153,7 +153,7 @@ const RolePage: React.FC = () => {
 
         //     //业务接口
         //     Axios({
-        //         url: 'https://xr.yee.link/bgy-api/user/edit1',
+        //         url: 'https://biz-api.xr-bgy-prd.yee.link/user/edit1',
         //         method: 'post',
         //         data: {
         //             username: peopleName,
