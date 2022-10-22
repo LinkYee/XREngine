@@ -9,6 +9,8 @@ import { Entity } from '../../ecs/classes/Entity'
 import { getComponent } from '../../ecs/functions/ComponentFunctions'
 import { Object3DComponent } from '../../scene/components/Object3DComponent'
 import { DistanceFromCameraComponent } from '../../transform/components/DistanceComponents'
+import { DistanceFromLocalClientComponent } from '../../transform/components/DistanceComponents'
+
 import { TransformComponent } from '../../transform/components/TransformComponent'
 import { InteractableComponent } from '../components/InteractableComponent'
 import { InteractState } from '../systems/InteractiveSystem'
@@ -25,8 +27,8 @@ const mat4 = new Matrix4()
 const frustum = new Frustum()
 
 const distanceSort = (a: Entity, b: Entity) => {
-  const aDist = DistanceFromCameraComponent.squaredDistance[a]
-  const bDist = DistanceFromCameraComponent.squaredDistance[b]
+  const aDist = DistanceFromLocalClientComponent.squaredDistance[a]
+  const bDist = DistanceFromLocalClientComponent.squaredDistance[b]
   return aDist - bDist
 }
 
