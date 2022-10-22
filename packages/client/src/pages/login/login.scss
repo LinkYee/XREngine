@@ -35,7 +35,7 @@ button:active {
 .loginPage-box {
     display: block;
     position: absolute;
-    z-index: 99999;
+    z-index: 9999;
     width: 70%;
     height: 80%;
     left: 0;
@@ -50,9 +50,9 @@ button:active {
 .box-title {
     width: 120px;
     height: 40px;
-    margin-left: 5%;
-    margin-top: 1%;
-    font-size: 20px;
+    margin-left: 24px;
+    margin-top: 8px;
+    font-size: 16px;
     font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 500;
     color: #49494A;
@@ -62,7 +62,7 @@ button:active {
 
 .btn-login {
     width: 45%;
-    height: 15%;
+    height: 40px;
     margin-top: 10%;
     margin-left: 5%;
     display: flex;
@@ -71,7 +71,7 @@ button:active {
     background: linear-gradient(101deg, #3FAAFF 0%, #9AA8FF 100%);
     border-radius: 35px;
     border: 1px solid #FFFFFF;
-    font-size: 15px;
+    font-size: 14px;
     font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 500;
     color: #FFFFFF;
@@ -81,7 +81,7 @@ button:active {
 
 .btn-wx {
     width: 45%;
-    height: 15%;
+    height: 40px;
     margin-top: 5%;
     margin-left: 5%;
     display: flex;
@@ -90,7 +90,7 @@ button:active {
     background: #fff;
     border-radius: 35px;
     border: 1px solid #FFFFFF;
-    font-size: 15px;
+    font-size: 14px;
     font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 500;
     color: #FFFFFF;
@@ -117,12 +117,12 @@ button:active {
     /* display: none; */
     position: absolute;
     width: 70%;
-    height: 80%;
+    // height: 80%;
     left: 0;
     right: 0;
     bottom: 0;
     top: 0;
-    margin: auto;
+    margin: 32px auto;
     background-image: url("http://webxr-qing.oss-cn-hangzhou.aliyuncs.com/model/bg-box.png");
     background-size: 100% 100%;
 }
@@ -134,15 +134,15 @@ button:active {
     border-radius: 35px;
     outline: none;
     border: none;
-    padding-left: 7%;
+    padding-left: 8px;
     box-sizing: border-box;
 }
 
 .pho-login {
     width: 45%;
-    height: 13%;
-    margin-top: 5%;
-    margin-left: 5%;
+    height: 36px;
+    margin-top: 2%;
+    margin-left: 24px;
     display: flex;
     justify-content: left;
     align-items: center;
@@ -150,7 +150,7 @@ button:active {
     /* background: linear-gradient(101deg, #3FAAFF 0%, #9AA8FF 100%); */
     border-radius: 35px;
     border: 1px solid #FFFFFF;
-    font-size: 15px;
+    font-size: 14px;
     font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 500;
     color: #FFFFFF;
@@ -161,12 +161,12 @@ button:active {
 .inp-val {
     position: relative;
     width: 60%;
-    height: 100%;
+    height: 36px;
     font-size: 14px;
     border-radius: 35px;
     outline: none;
     border: none;
-    padding-left: 7%;
+    padding-left: 8px;
     box-sizing: border-box;
 }
 .val-number{
@@ -177,9 +177,9 @@ button:active {
 
 .box-login {
     width: 45%;
-    height: 15%;
-    margin-top: 6%;
-    margin-left: 5%;
+    height: 36px;
+    margin-top:3%;
+    margin-left: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -198,10 +198,10 @@ button:active {
 }
 .agreement{
     display: block;
-    width: 45%;
-    height: 5%;
-    margin-top: 2%;
-    margin-left: 5%;
+    width: 50%;
+    // height: 5%;
+    margin: 2% 0 0 24px;
+    // margin-left: 5%;
 }
 .agreement-text{
     display: flex;

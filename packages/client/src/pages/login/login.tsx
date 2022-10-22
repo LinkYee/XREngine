@@ -8,7 +8,7 @@ import Axios, {
 } from "axios";
 
 import CommonTip from '../component/commenTip'
-
+import Screen from '../component/screen'
 interface IntProps {
   loginFn: Function
 }
@@ -22,9 +22,28 @@ const LoginPage: React.FC<IntProps> = (props) => {
   const [radio, setRadio] = useState<string>('')
   const [count, setcount] = useState<number>(0)
   const [showBtn, setshowBtn] = useState<boolean>(true)
-  const [timeCount, settimeCount] = useState<number>(300)
+  const [timeCount, settimeCount] = useState<number>(60)
   let timer: any = null
+  // let weixincode;
+  let shareId = ''
+  const [isWxWeb, setIsWeiXinWeb] = useState<boolean>(false)
+  const [screenOrt, setscreenOrt] = useState<boolean>(false)
+  const [lastcode, setLastcode] = useState('')
 
+  useEffect(() => {
+    setScreenOrientation()
+    console.log('屏幕是否为横屏模式' + screenOrt)
+  }, [])
+  useEffect(() => {
+  }, [])
+  useEffect(() => {
+    let isWeixin = isWx() //先判断是否是微信环境
+    setIsWeiXinWeb(isWeixin)
+    getShareId() //获取链接中携带的推荐人id信息
+    if (!isWeixin) return
+    getLoginStatus() //一进页面首先判断是不是微信授权成功后携带code来的
+  }, [])
+  //计时器
   useEffect(() => {
     timer = setInterval(() => {
       if (count > 0 && count <= timeCount) {
@@ -42,6 +61,26 @@ const LoginPage: React.FC<IntProps> = (props) => {
     }
   }, [count])
 
+  window.addEventListener("resize", () => {
+    setScreenOrientation()
+  });
+
+  const isWx = () => {
+    const ua = window.navigator.userAgent.toLowerCase()
+    return !!(ua.match(/MicroMessenger/i)?.includes('micromessenger'))
+  }
+
+  //监听横屏竖屏
+  const setScreenOrientation = () => {
+    if (window.matchMedia("(orientation: portrait)").matches) {
+      console.log('orientation: portrait');
+      setscreenOrt(true)
+    }
+    if (window.matchMedia("(orientation: landscape)").matches) {
+      console.log('orientation: landscape');
+      setscreenOrt(false)
+    }
+  }
   //手机号失去焦点
   const phoneBlur = (val: string) => {
     let reg_tel =
@@ -118,40 +157,39 @@ const LoginPage: React.FC<IntProps> = (props) => {
     })
   }
 
-  //登录
+  //手机号登录
   const submit = () => {
-    props.loginFn(true)//测试用
-    // clearInterval(timer);
-    // initTimer()
-    // if (radio && phoneNumber && code) {
-    //   Axios({
-    //     url: 'https://xr.yee.link/bgy-api/checkSMSCode',
-    //     method: 'post',
-    //     data: `phoneNumber=${phoneNumber}&checkSMSCode=${code}`,
-    //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    //   }
-    //   ).then(res => {
-    //     debugger
-    //     if (res.data.code == 200) {
-    //       props.loginFn(true)
-    //       window.localStorage.setItem('API_LOGIN_ID', res.data.data.id)
-    //     } else {
-    //       TipShow(res.data.message)
-    //     }
-    //   }).catch(err => {
-    //     let { message } = err;
-    //     if (message == "Network Error") {
-    //       message = "后端接口连接异常";
-    //     } else if (message.includes("timeout")) {
-    //       message = "系统接口请求超时";
-    //     } else if (message.includes("Request failed with status code")) {
-    //       message = "系统接口" + message.substr(message.length - 3) + "异常";
-    //     }
-    //     TipShow(message)
-    //   })
-    // } else {
-    //   TipShow('请输入完整信息并同意《用户协议》和《隐私协议')
-    // }
+    // props.loginFn(true)//测试用
+    clearInterval(timer);
+    initTimer()
+    if (radio && phoneNumber && code) {
+      Axios({
+        url: 'https://xr.yee.link/bgy-api/checkSMSCode',
+        method: 'post',
+        data: `phoneNumber=${phoneNumber}&checkSMSCode=${code}&share_id=${shareId}`,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      }
+      ).then(res => {
+        if (res.data.code == 200) {
+          props.loginFn(true)
+          window.localStorage.setItem('API_LOGIN_ID', res.data.data.id)
+        } else {
+          TipShow(res.data.message)
+        }
+      }).catch(err => {
+        let { message } = err;
+        if (message == "Network Error") {
+          message = "后端接口连接异常";
+        } else if (message.includes("timeout")) {
+          message = "系统接口请求超时";
+        } else if (message.includes("Request failed with status code")) {
+          message = "系统接口" + message.substr(message.length - 3) + "异常";
+        }
+        TipShow(message)
+      })
+    } else {
+      TipShow('请输入完整信息并同意《用户协议》和《隐私协议')
+    }
 
   }
 
@@ -171,8 +209,85 @@ const LoginPage: React.FC<IntProps> = (props) => {
   };
   //登陆方式
   const PhoneLogin = (event) => {
+    setScreenOrientation()
     setLoginState('mobileNum')
   }
+  const WeixinLogin = () => {
+    getloginInfo()
+  }
+  // 获取页面路径的code参数
+  const getUrlParam = (name) => { // 获取URL指定参数
+    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)') // 构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg) // 匹配目标参数
+    if (r != null) return unescape(r[2])
+    //return null // 返回参数值
+  }
+
+  const getLoginStatus = async () => {
+    let weixincode: any = await getUrlParam('code') // 获取请求路径中带code字段参数的方法
+    let lastCode = localStorage.getItem('lastCode')
+    if (weixincode === lastCode) return window.location.replace(`${window.location.origin}${window.location.pathname}`)
+    if (weixincode) {
+      getOpenId(weixincode) // 通过获取到的code，调用后台的接口，取得openId
+      localStorage.setItem('lastCode', weixincode)
+    }
+  }
+
+  const getShareId = async () => {
+    let invite = await getUrlParam('invite')
+    shareId = invite || ''
+  }
+
+  const getloginInfo = async () => {
+    const AppId = 'wx0973c8802fd64a69' // 公众号的AppId
+    let weixincode: any = await getUrlParam('code') // 获取请求路径中带code字段参数的方法
+    const local = window.location.href // 获取当前的页面路径，这就是回调的地址
+
+    if (!weixincode) {
+      // setLastcode(weixincode)
+      window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + AppId + '&redirect_uri=' + encodeURIComponent(local) + '&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect'
+    } else {
+      // if (lastcode != weixincode) {
+      getOpenId(weixincode) // 通过获取到的code，调用后台的接口，取得openId
+      // }
+
+    }
+  }
+
+  // 微信登录
+  const getOpenId = (code) => {
+    Axios({
+      url: 'https://xr.yee.link/bgy-api/wx/login',
+      method: 'POST',
+      data: `code=${code}&share_id=${shareId}`,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }).then(res => {
+      if (res.data.code == 200) {
+        props.loginFn(true)
+        window.localStorage.setItem('API_LOGIN_ID', res.data.data.id)
+      } else {
+        if (res.data.error) {
+          TipShow(res.data.error)
+        }
+      }
+    }).catch(err => {
+      let { message } = err;
+      if (message == "Network Error") {
+        message = "后端接口连接异常";
+      } else if (message.includes("timeout")) {
+        message = "系统接口请求超时";
+      } else if (message.includes("Request failed with status code")) {
+        message = "系统接口" + message.substr(message.length - 3) + "异常";
+      }
+      if (message) {
+        TipShow(message)
+      }
+
+    })
+
+  }
+
+
   //tip
   const TipShow = (text: string) => {
     setshowTip(true);
@@ -189,16 +304,18 @@ const LoginPage: React.FC<IntProps> = (props) => {
           <div className='loginPage-box'>
             <div className='box-title' >选择登录</div>
             <div className='btn-login' onClick={PhoneLogin}>手机号登录</div>
-            <div className='btn-wx'>
+            {
+              isWxWeb && <div className='btn-wx'>
+                <img
+                  className="wx"
+                  src={
+                    "http://webxr-qing.oss-cn-hangzhou.aliyuncs.com/model/wx.png"
+                  }
+                />
+                <span className='btn-textWX' onClick={WeixinLogin}>微信登录</span>
+              </div>
+            }
 
-              <img
-                className="wx"
-                src={
-                  "http://webxr-qing.oss-cn-hangzhou.aliyuncs.com/model/wx.png"
-                }
-              />
-              <span className='btn-textWX'>微信登录</span>
-            </div>
           </div>
         ) :
         (
@@ -232,7 +349,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
                   showBtn ? (
                     <span onClick={getCode} >获取验证码</span>
                   ) : (
-                    <span>已发送{count}s</span>
+                    <span>剩余{count}s</span>
                   )
                 }
 
@@ -254,6 +371,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
         )
     }
     <CommonTip tipText={tipText} showTip={showTip} />
+    <Screen screenOrt={screenOrt} />
   </div>
 }
 

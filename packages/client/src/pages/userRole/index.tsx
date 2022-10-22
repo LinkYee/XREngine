@@ -25,6 +25,7 @@ import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
 import CommonTip from '../component/commenTip'
 import RoleTipPage from './tip'
 import VideoPage from '../component/video'
+import Screen from '../component/screen'
 
 import bg2 from '../../assets/img/bg2.png'
 import avatar from '../../assets/img/avatar.png'
@@ -43,7 +44,7 @@ const RolePage: React.FC = () => {
     const avatarState = useHookstate(getState(AvatarState))
     const list = avatarState.avatarList.value
     const avatarList = list.slice(0, 6)
-
+    // const defaultPeople = list[0].name
     const selfUser = useAuthState().user
     const userId = selfUser.id.value
 
@@ -51,29 +52,67 @@ const RolePage: React.FC = () => {
         AvatarService.fetchAvatarList()
     }, [])
 
+    // console.log('defaultPeople-----------------' + defaultPeople)
+
+
+    const [aPeople, setaPeople] = useState('')
+    const [selectTrue, setselectTrue] = useState(true)
     const [selectedAvatar, setSelectedAvatar] = useState<any>('')
     const [peopleName, setpeopleName] = useState<string>('')
     const [tipText, settipText] = useState<string>('')
     const [showTip, setshowTip] = useState<boolean>(false)
     const [showSubTip, setshowSubTip] = useState<boolean>(true)
     const [showvideo, setshowvideo] = useState<boolean>(false)
-    let defaultPeople = {
-        name: ''
-    };
+    const [screenOrt, setscreenOrt] = useState<boolean>(false)
     useEffect(() => {
-        if (avatarList.length > 0) {
-            defaultPeople = avatarList[0];
-            setSelectedAvatar(defaultPeople)
-            console.log('defaultPeople-----------------' + defaultPeople.name)
+        if (!showvideo) return
+        let myAnima: any | null = document.getElementById('myAnima');
+        let i = 1
+        const timer = setInterval(()=>{
+            if(myAnima) {
+                myAnima['src'] = `https://xr-resources.yee.link/BGYAnimateTrans/image-${`${i++}`.padStart(3,'0')}.jpeg`
+            }
+            if(i>=150) {
+                clearInterval(timer)
+                console.log('过渡动画执行完成')
+                gotoHome()
+                // myAnima.parent.removeChild(myAnima)
+            }
+        }, 1000/24)
+    }, [showvideo])
+    useEffect(() => {
+        if (avatarList.length > 0 && selectTrue) {
+            console.log('defaultPeople-----------------' + avatarList[0].name)
+            selectAvatar(avatarList[0])
         }
+    }, [avatarList])
 
-    }, [avatarList[0]])
-
-    // console.log('avatarList------------' + JSON.stringify(avatarList))
+    useEffect(() => {
+        setScreenOrientation()
+        console.log('屏幕是否为横屏模式' + screenOrt)
+    }, [screenOrt])
 
     const selectAvatar = (avatarResources: AvatarInterface) => {
+        setaPeople(avatarResources.name)
         setSelectedAvatar(avatarResources)
+        setselectTrue(false)
         // setSelectedAvatar(avatarResources.thumbnailResource.url)
+    }
+
+    window.addEventListener("resize", () => {
+        setScreenOrientation()
+    });
+
+    //监听横屏竖屏
+    const setScreenOrientation = () => {
+        if (window.matchMedia("(orientation: portrait)").matches) {
+            console.log('orientation: portrait');
+            setscreenOrt(true)
+        }
+        if (window.matchMedia("(orientation: landscape)").matches) {
+            console.log('orientation: landscape');
+            setscreenOrt(false)
+        }
     }
     //用户名验证
     const peopleBlur = (val: string) => {
@@ -90,68 +129,58 @@ const RolePage: React.FC = () => {
     }
     //保存形象
     const rolesubmit = () => {
-        // setshowvideo(true)//接口通后删除
         if (!peopleName) {
-            setshowTip(true);
-            settipText('请输入名字')
-            setTimeout(() => {
-                setshowTip(false);
-            }, 1000)
+            TipShow('请输入名字')
             return false
         }
         if (!selectedAvatar.id) {
-            setshowTip(true);
-            settipText('请选择角色')
-            setTimeout(() => {
-                setshowTip(false);
-            }, 1000)
+            TipShow('请选择角色')
             return false
         }
+        setshowvideo(true)//接口通后删除
 
-        if (selectedAvatar.id && peopleName) {
-            //保存用户名
-            const name = peopleName.trim()
-            AuthService.updateUsername(userId, name)
-            //保存角色
-            setAvatar(
-                selectedAvatar?.id || '',
-                selectedAvatar?.modelResource?.url || '',
-                selectedAvatar?.thumbnailResource?.url || ''
-            )
-            setSelectedAvatar('')
+        // if (selectedAvatar.id && peopleName) {
+        //     //保存用户名
+        //     const name = peopleName.trim()
+        //     AuthService.updateUsername(userId, name)
+        //     //保存角色
+        //     setAvatar(
+        //         selectedAvatar?.id || '',
+        //         selectedAvatar?.modelResource?.url || '',
+        //         selectedAvatar?.thumbnailResource?.url || ''
+        //     )
+        //     setSelectedAvatar('')
 
-            //业务接口
-            Axios({
-                url: 'https://xr.yee.link/bgy-api/user/edit',
-                method: 'post',
-                data: {
-                    username: peopleName,
-                    facade: selectedAvatar.id,
-                    profile_picture: selectedAvatar.thumbnailResource.url
-                },
-                headers: { 'Content-Type': 'application/json' }
-            }).then(res => {
-                if (res.data.code == 200) {
-                    //播放视频之后再跳转
-                    setshowvideo(true)
-                }
-            }).catch(err => {
-                let { message } = err;
-                if (message == "Network Error") {
-                    message = "后端接口连接异常";
-                } else if (message.includes("timeout")) {
-                    message = "系统接口请求超时";
-                } else if (message.includes("Request failed with status code")) {
-                    message = "系统接口" + message.substr(message.length - 3) + "异常";
-                }
-                setshowTip(true);
-                settipText(message)
-                setTimeout(() => {
-                    setshowTip(false);
-                }, 1000)
+        //     //业务接口
+        //     Axios({
+        //         url: 'https://xr.yee.link/bgy-api/user/edit1',
+        //         method: 'post',
+        //         data: {
+        //             username: peopleName,
+        //             facade: selectedAvatar.id,
+        //             profile_picture: selectedAvatar.thumbnailResource.url
+        //         },
+        //         headers: { 'Content-Type': 'application/json' }
+        //     }).then(res => {
+        //         if (res.data.code == 200) {
+        //             //播放视频之后再跳转
+        //             setshowvideo(true)
+        //         } else {
+        //             TipShow(res.data.code)
+        //         }
+        //     }).catch(err => {
+        //         let { message } = err;
+        //         if (message == "Network Error") {
+        //             message = "后端接口连接异常";
+        //         } else if (message.includes("timeout")) {
+        //             message = "系统接口请求超时";
+        //         } else if (message.includes("Request failed with status code")) {
+        //             message = "系统接口" + message.substr(message.length - 3) + "异常";
+        //         }
+        //         TipShow(message)
 
-            })
-        }
+        //     })
+        // }
 
     }
     const changeSub = () => {
@@ -159,9 +188,17 @@ const RolePage: React.FC = () => {
     }
     //页面跳转
     const gotoHome = () => {
-        setshowvideo(false)
         history.push('location/default')
+        setshowvideo(false)
         // history.push('/location/bgy1')//测试用
+    }
+    //tip
+    const TipShow = (text: string) => {
+        setshowTip(true);
+        settipText(text)
+        setTimeout(() => {
+            setshowTip(false);
+        }, 1500)
     }
     return <div className="role-container" >
         {
@@ -170,12 +207,12 @@ const RolePage: React.FC = () => {
             ) : (<div></div>)
         }
         <div className='role-box'>
-            <img className="bg2Style" src={bg2} alt="" style={{ height: '100%' }} />
+            {/* <img className="bg2Style" src={bg2} alt="" style={{ height: '100%' }} /> */}
             <div className='role-content'>
                 <div className='left-box'>
                     <div className='people-box'>
                         <div className='people-bot-circle'></div>
-                        <img className="peopleStyle" src={selectedAvatar.name} alt="" />
+                        <img className="peopleStyle" src={aPeople} alt="" />
                     </div>
                     <div className='people-input-box'>
                         <input
@@ -203,16 +240,19 @@ const RolePage: React.FC = () => {
                                 })
                             }
 
-                        </div></div>
-                    <img className="rolebtn" src={rolebtn} alt="" onClick={rolesubmit} />
+                        </div>
+                    </div>
+                    <img className="rolebtn" style={{ width: '80%' }} src={rolebtn} alt="" onClick={rolesubmit} />
                 </div>
             </div>
         </div>
         {
-            showvideo ? (<VideoPage videoclassName={'videoStyle'} gotoHome={gotoHome} />) : null
+            // showvideo ? (<VideoPage videoclassName={'videoStyle'} gotoHome={gotoHome} />) : null
+            showvideo ? (<img id="myAnima" className="animaImg" src="https://xr-resources.yee.link/BGYAnimateTrans/image-001.jpeg" />) : null
         }
 
         <CommonTip tipText={tipText} showTip={showTip} />
+        <Screen screenOrt={screenOrt} />
     </div>
 }
 

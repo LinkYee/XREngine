@@ -637,8 +637,8 @@ const UserMediaWindow = ({ peerId }: Props): JSX.Element => {
     const userMenuBox = document.getElementById('userMenuBox')
     ctlBox.style.display = 'none'
     userMenuBox.style.display = 'none'
-    document.getElementById('prizeContainer').style.display = 'flex'
-    document.getElementById('prizeContainer').style.zIndex = '9999'
+    // document.getElementById('prizeContainer').style.display = 'flex'
+    // document.getElementById('prizeContainer').style.zIndex = '9999'
   }
 
   return (

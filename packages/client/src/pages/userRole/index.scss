@@ -25,10 +25,15 @@
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: 44% 55%;
-    position: absolute;
-    top: 0;
-    left: 0;
+    grid-template-columns: 42% 58%;
+    // display: flex;
+    // justify-content: space-between;
+    // position: absolute;
+    // top: 0;
+    // left: 0;
+    background-image: url('../../assets/img/bg2.png');
+    background-size: 100% 100%;
+    
 }
 
 .avatarStyle {
@@ -92,6 +97,7 @@ input:focus {
 
 .right-box {
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -100,6 +106,7 @@ input:focus {
 
 .list {
     height: 77%;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -107,7 +114,7 @@ input:focus {
 
 .list-box {
     display: grid;
-    grid-template-columns: repeat(3, 33.3%);
+    grid-template-columns: repeat(3, 30.3%);
 
     grid-row-gap: 24px;
     grid-column-gap: 24px;
@@ -135,6 +142,7 @@ input:focus {
 .rolebtn {
     position: absolute;
     bottom: 0;
+    width: 80%;
 }
 
 /* 提示 */
@@ -174,7 +182,7 @@ input:focus {
     color: #49494A;
     line-height: 20px;
     letter-spacing: 2px;
-    margin: 18px 0 48px 0;
+    margin: 18px 0 6% 0;
 }
 
 .role-tip-text {
@@ -185,7 +193,7 @@ input:focus {
     line-height: 28px;
     letter-spacing: 1px;
     width: 43%;
-    margin-bottom: 30px;
+    margin-bottom: 2%;
 }
 
 .role-submit-btn {
@@ -203,4 +211,10 @@ input:focus {
     position: absolute;
     z-index: 19;
     width: 100%;
+}
+
+.animaImg {
+    position: absolute !important; 
+    width: 100% !important;
+    z-index: 99999 !important;
 }
