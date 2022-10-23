@@ -2,6 +2,11 @@
 set -e
 set -x
 
+export HTTP_PROXY=http://52.81.203.102:9087
+export HTTPS_PROXY=http://52.81.203.102:9087
+npm config set proxy "http://52.81.203.102:9087" 
+npm config set https-proxy "http://52.81.203.102:9087"
+
 until [ -f /var/lib/docker/certs/client/ca.pem ]
 do
   echo "Waiting for /var/lib/docker/certs/client/ca.pem to be available from dind volume"
