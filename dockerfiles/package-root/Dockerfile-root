@@ -5,7 +5,7 @@ FROM node:16-buster-slim as root-builder
 
 ENV HTTP_PROXY=http://52.81.203.102:9087
 ENV HTTPS_PROXY=http://52.81.203.102:9087
-ENV NO_PROXY=npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn
+ENV NO_PROXY=npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,bgy-static-resources.s3.cn-north-1.amazonaws.com.cn,*.s3.cn-north-1.amazonaws.com.cn,s3.cn-north-1.amazonaws.com.cn,*.cn-north-1.amazonaws.com.cn
 
 RUN npm config set proxy "http://52.81.203.102:9087" 
 RUN npm config set https-proxy "http://52.81.203.102:9087"
@@ -13,7 +13,7 @@ RUN npm config set https-proxy "http://52.81.203.102:9087"
 RUN npm config set registry https://registry.npm.taobao.org
 RUN npm install --registry=https://registry.npm.taobao.org
 RUN npm config set sass_binary_site https://npm.taobao.org/mirrors/node-sass/
-RUN npm config set noproxy "registry.npm.taobao.org,*.npm.taobao.org, *.amazonaws.cn, *.amazonaws.com.cn“
+RUN npm config set noproxy "registry.npm.taobao.org,*.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,bgy-static-resources.s3.cn-north-1.amazonaws.com.cn,*.s3.cn-north-1.amazonaws.com.cn,*.cn-north-1.amazonaws.com.cn,s3.cn-north-1.amazonaws.com.cn"
 
 RUN apt update
 # Create app directory
