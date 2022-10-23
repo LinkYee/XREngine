@@ -75,7 +75,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
     const token = localStorage.getItem('token')
     if (!token) return
     Axios({
-      url: 'https://xr.yee.link/352/checkToken',
+      url: 'https://biz-api.xr-bgy-prd.yee.link/checkToken',
       method: 'get',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded', token }
     }
@@ -87,7 +87,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
         props.loginFn(true)
         window.localStorage.setItem('API_LOGIN_ID', res.data.data.id)
       }
-    }).catch(err => {})
+    }).catch(err => { })
   }
 
   //监听横屏竖屏
@@ -148,6 +148,16 @@ const LoginPage: React.FC<IntProps> = (props) => {
   const getCode = () => {
     if (!phoneNumber) {
       TipShow('请输入手机号')
+      return false
+    }
+    let reg_tel =
+      /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+    if (!reg_tel.test(phoneNumber)) {
+      setshowTip(true)
+      settipText('手机号格式错误')
+      setTimeout(() => {
+        setshowTip(false);
+      }, 1000)
       return false
     }
     Axios({
