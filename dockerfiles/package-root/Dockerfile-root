@@ -2,11 +2,6 @@
 # not slim because we need github depedencies
 FROM node:16-buster-slim as root-builder
 
-RUN npm config set proxy "http://52.81.203.102:9087" 
-RUN npm config set https-proxy "http://52.81.203.102:9087"
-ENV HTTP_PROXY=http://52.81.203.102:9087
-ENV HTTPS_PROXY=http://52.81.203.102:9087
-
 RUN apt update
 # Create app directory
 WORKDIR /app
@@ -27,7 +22,3 @@ RUN wget -O /root/.npm/_libvips/libvips-8.12.2-linux-x64.tar.br https://xr-resou
 
 ARG NODE_ENV
 RUN npm install --loglevel notice --legacy-peer-deps
-ENV HTTP_PROXY=
-ENV HTTPS_PROXY=
-RUN npm config rm proxy
-RUN npm config rm https-proxy
