@@ -88,7 +88,7 @@ export const UserMenu = (props: Props): any => {
   return (
     <ActiveMenuContext.Provider value={[currentActiveMenu, setCurrentActiveMenu]}>
       <ClickAwayListener onClickAway={() => setCurrentActiveMenu(null!)} mouseEvent="onMouseDown">
-        <div id='userMenuBox'>
+        <div id='userMenuBox' style={{display: 'none' }}>
           <section
             className={`${styles.settingContainer} ${bottomShelfStyle} ${
               currentActiveMenu?.view ? styles.fadeOutBottom : ''

@@ -31,6 +31,7 @@ import bg2 from '../../assets/img/bg2.png'
 import avatar from '../../assets/img/avatar.png'
 import people from '../../assets/img/people.png'
 import rolebtn from '../../assets/img/rolebtn.png'
+import { NotificationService } from "@xrengine/client-core/src/common/services/NotificationService";
 
 interface IntList {
     url: string
@@ -137,50 +138,49 @@ const RolePage: React.FC = () => {
             TipShow('请选择角色')
             return false
         }
-        setshowvideo(true)//接口通后删除
 
-        // if (selectedAvatar.id && peopleName) {
-        //     //保存用户名
-        //     const name = peopleName.trim()
-        //     AuthService.updateUsername(userId, name)
-        //     //保存角色
-        //     setAvatar(
-        //         selectedAvatar?.id || '',
-        //         selectedAvatar?.modelResource?.url || '',
-        //         selectedAvatar?.thumbnailResource?.url || ''
-        //     )
-        //     setSelectedAvatar('')
+        if (selectedAvatar.id && peopleName) {
+            //保存用户名
+            const name = peopleName.trim()
+            AuthService.updateUsername(userId, name)
+            //保存角色
+            setAvatar(
+                selectedAvatar?.id || '',
+                selectedAvatar?.modelResource?.url || '',
+                selectedAvatar?.thumbnailResource?.url || ''
+            )
+            setSelectedAvatar('')
 
-        //     //业务接口
-        //     Axios({
-        //         url: 'https://biz-api.xr-bgy-prd.yee.link/user/edit1',
-        //         method: 'post',
-        //         data: {
-        //             username: peopleName,
-        //             facade: selectedAvatar.id,
-        //             profile_picture: selectedAvatar.thumbnailResource.url
-        //         },
-        //         headers: { 'Content-Type': 'application/json' }
-        //     }).then(res => {
-        //         if (res.data.code == 200) {
-        //             //播放视频之后再跳转
-        //             setshowvideo(true)
-        //         } else {
-        //             TipShow(res.data.code)
-        //         }
-        //     }).catch(err => {
-        //         let { message } = err;
-        //         if (message == "Network Error") {
-        //             message = "后端接口连接异常";
-        //         } else if (message.includes("timeout")) {
-        //             message = "系统接口请求超时";
-        //         } else if (message.includes("Request failed with status code")) {
-        //             message = "系统接口" + message.substr(message.length - 3) + "异常";
-        //         }
-        //         TipShow(message)
+            //业务接口
+            Axios({
+                url: 'https://biz-api.xr-bgy-prd.yee.link/user/edit',
+                method: 'post',
+                data: {
+                    username: peopleName,
+                    facade: selectedAvatar.id,
+                    profile_picture: selectedAvatar.thumbnailResource.url
+                },
+                headers: { 'Content-Type': 'application/json' }
+            }).then(res => {
+                if (res.data.code == 200) {
+                    //播放视频之后再跳转
+                    setshowvideo(true)
+                } else {
+                    NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
+                }
+            }).catch(err => {
+                let { message } = err;
+                if (message == "Network Error") {
+                    message = "后端接口连接异常";
+                } else if (message.includes("timeout")) {
+                    message = "系统接口请求超时";
+                } else if (message.includes("Request failed with status code")) {
+                    message = "系统接口" + message.substr(message.length - 3) + "异常";
+                }
+                NotificationService.dispatchNotify(message, { variant: 'error' })
 
-        //     })
-        // }
+            })
+        }
 
     }
     const changeSub = () => {

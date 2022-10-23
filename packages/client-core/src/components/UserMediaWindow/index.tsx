@@ -632,70 +632,112 @@ const UserMediaWindow = ({ peerId }: Props): JSX.Element => {
   } = useUserMediaWindowHook({ peerId })
 
   const prizeOpen = ()=>{
-    console.log('我点击了')
-    const ctlBox = document.getElementById('ctrlBox')
-    const userMenuBox = document.getElementById('userMenuBox')
-    ctlBox.style.display = 'none'
-    userMenuBox.style.display = 'none'
-    // document.getElementById('prizeContainer').style.display = 'flex'
-    // document.getElementById('prizeContainer').style.zIndex = '9999'
+    const prizeEle = document.getElementById('prizeContainer')
+    prizeEle.style.display = 'flex'
+    prizeEle.style.zIndex = '9999'
+    prizeEle.style.pointerEvents = 'auto'
   }
 
   return (
-    <Draggable isPiP={isPiP}>
+    <div
+      tabIndex={0}
+      id={peerId + '_container'}
+      className={classNames({
+        [styles['resizeable-screen']]: isScreen && !isPiP,
+        [styles['resizeable-screen-fullscreen']]: isScreen && isPiP,
+        [styles['party-chat-user']]: true,
+        [styles['self-user']]: peerId === 'cam_me',
+        [styles['no-video']]: videoStream == null,
+        [styles['video-paused']]: (videoStream && (videoProducerPaused || videoStreamPaused)) || !videoDisplayReady,
+        [styles.pip]: isPiP && !isScreen,
+        [styles.screenpip]: isPiP && isScreen
+      })}
+      style={{
+        pointerEvents: 'auto',
+        display: isSelfUser || rendered ? 'auto' : 'none'
+      }}
+      onClick={() => {
+        // if (isScreen && isPiP) togglePiP()
+        prizeOpen()
+      }}
+    >
       <div
-        tabIndex={0}
-        id={peerId + '_container'}
         className={classNames({
-          [styles['resizeable-screen']]: isScreen && !isPiP,
-          [styles['resizeable-screen-fullscreen']]: isScreen && isPiP,
-          [styles['party-chat-user']]: true,
-          [styles['self-user']]: peerId === 'cam_me',
-          [styles['no-video']]: videoStream == null,
-          [styles['video-paused']]: (videoStream && (videoProducerPaused || videoStreamPaused)) || !videoDisplayReady,
-          [styles.pip]: isPiP && !isScreen,
-          [styles.screenpip]: isPiP && isScreen
+          [styles['video-wrapper']]: !isScreen,
+          [styles['screen-video-wrapper']]: isScreen,
+          [styles['border-lit']]: soundIndicatorOn
         })}
-        style={{
-          pointerEvents: 'auto',
-          display: isSelfUser || rendered ? 'auto' : 'none'
-        }}
-        onClick={() => {
-          if (isScreen && isPiP) togglePiP()
-        }}
       >
-        <div
-          className={classNames({
-            [styles['video-wrapper']]: !isScreen,
-            [styles['screen-video-wrapper']]: isScreen,
-            [styles['border-lit']]: soundIndicatorOn
-          })}
-        >
-          {(videoStream == null ||
-            videoStreamPaused ||
-            videoProducerPaused ||
-            videoProducerGlobalMute ||
-            !videoDisplayReady) && (
-            <img
-              src={getAvatarURLForUser(userAvatarDetails, isSelfUser ? selfUser?.id : user?.id)}
-              alt=""
-              crossOrigin="anonymous"
-              draggable={false}
-            />
-          )}
-          <video key={peerId + '_cam'} ref={videoRef} draggable={false} />
-        </div>
-        <audio key={peerId + '_audio'} ref={audioRef} />
-        <div className={styles['user-controls']}>
-          {/* 用户名 */}
-          <div className={styles['username']}>{username}</div>
-          {/* 按钮 */}
-          <div className={styles['controls']}>
-            {/* <div className={styles['box']} onClick={()=>{prizeOpen()}}>我的奖品</div> */}
-          </div>
-        </div>
+        {(videoStream == null ||
+          videoStreamPaused ||
+          videoProducerPaused ||
+          videoProducerGlobalMute ||
+          !videoDisplayReady) && (
+          <img
+            src={getAvatarURLForUser(userAvatarDetails, isSelfUser ? selfUser?.id : user?.id)}
+            alt=""
+            crossOrigin="anonymous"
+            draggable={false}
+          />
+        )}
       </div>
-    </Draggable>
+    </div>
+    // <Draggable isPiP={isPiP}>
+    //   <div
+    //     tabIndex={0}
+    //     id={peerId + '_container'}
+    //     className={classNames({
+    //       [styles['resizeable-screen']]: isScreen && !isPiP,
+    //       [styles['resizeable-screen-fullscreen']]: isScreen && isPiP,
+    //       [styles['party-chat-user']]: true,
+    //       [styles['self-user']]: peerId === 'cam_me',
+    //       [styles['no-video']]: videoStream == null,
+    //       [styles['video-paused']]: (videoStream && (videoProducerPaused || videoStreamPaused)) || !videoDisplayReady,
+    //       [styles.pip]: isPiP && !isScreen,
+    //       [styles.screenpip]: isPiP && isScreen
+    //     })}
+    //     style={{
+    //       pointerEvents: 'auto',
+    //       display: isSelfUser || rendered ? 'auto' : 'none'
+    //     }}
+    //     onClick={() => {
+    //       // if (isScreen && isPiP) togglePiP()
+    //       prizeOpen()
+    //     }}
+    //   >
+    //     <div
+    //       className={classNames({
+    //         [styles['video-wrapper']]: !isScreen,
+    //         [styles['screen-video-wrapper']]: isScreen,
+    //         [styles['border-lit']]: soundIndicatorOn
+    //       })}
+    //     >
+    //       {(videoStream == null ||
+    //         videoStreamPaused ||
+    //         videoProducerPaused ||
+    //         videoProducerGlobalMute ||
+    //         !videoDisplayReady) && (
+    //         <img
+    //           src={getAvatarURLForUser(userAvatarDetails, isSelfUser ? selfUser?.id : user?.id)}
+    //           alt=""
+    //           crossOrigin="anonymous"
+    //           draggable={false}
+    //         />
+    //       )}
+    //       <video key={peerId + '_cam'} ref={videoRef} draggable={false} />
+    //     </div>
+    //     <audio key={peerId + '_audio'} ref={audioRef} />
+    //     <div className={styles['user-controls']}>
+    //       {/* 用户名 */}
+    //       {/*<div className={styles['username']}>{username}</div>*/}
+    //       {/* 按钮 */}
+    //       <div className={styles['controls']}>
+    //          <button className={styles['prizeBut']} onClick={()=>{prizeOpen()}}>我的奖品</button>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </Draggable>
+
   )
 }
 

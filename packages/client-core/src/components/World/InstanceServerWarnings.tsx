@@ -147,6 +147,7 @@ const InstanceServerWarnings = () => {
       }
 
       case WarningModalTypes.NO_WORLD_SERVER_PROVISIONED: {
+        return 
         const currentLocation = locationState.currentLocation.location.value
         setModalValues({
           open: true,
@@ -193,6 +194,7 @@ const InstanceServerWarnings = () => {
         const transport = Engine.instance.currentWorld.networks.get(
           Engine.instance.currentWorld.worldNetwork?.hostId
         ) as SocketWebRTCClientNetwork
+        return 
         if (engineState.isTeleporting.value || transport.reconnecting) return
 
         setModalValues({

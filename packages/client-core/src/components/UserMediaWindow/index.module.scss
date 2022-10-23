@@ -1,5 +1,5 @@
 .party-chat-user {
-  margin: 10px auto;
+  margin: 20px auto;
   position: relative;
   display: flex;
 
@@ -162,9 +162,12 @@
 
     button {
       z-index: 200;
-      width: 40px;
+      width: 100%;
       margin: 0 5px;
 
+      &.prizeBut {
+        color: #3FAAFF !important;
+      }
       &.mediaOn {
         color: lightseagreen !important;
       }
@@ -228,7 +231,7 @@
       display: flex;
       padding: 10px 10px 10px 25px;
       z-index: 10;
-      min-width: 150px;
+      min-width: 100px;
       width: auto;
     }
   }
