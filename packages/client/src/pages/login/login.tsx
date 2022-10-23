@@ -9,6 +9,8 @@ import Axios, {
 
 import CommonTip from '../component/commenTip'
 import Screen from '../component/screen'
+import { NotificationService } from "@xrengine/client-core/src/common/services/NotificationService";
+
 interface IntProps {
   loginFn: Function
 }
@@ -131,16 +133,15 @@ const LoginPage: React.FC<IntProps> = (props) => {
       return false
     }
     Axios({
-      url: 'https://biz-api.xr-bgy-prd.yee.link/sendSms',
+      url: 'https://xr.yee.link/bgy-api/sendSms',
       method: 'get',
       params: { phoneNumber: phoneNumber },
-      //   headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }
     ).then((res: AxiosResponse) => {
       if (res.data.code == 200) {
         time();
       } else {
-        TipShow(res.data.message)
+        NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
       }
     }).catch(err => {
       let { message } = err;
@@ -151,7 +152,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
       } else if (message.includes("Request failed with status code")) {
         message = "系统接口" + message.substr(message.length - 3) + "异常";
       }
-      TipShow(message)
+      NotificationService.dispatchNotify(message, { variant: 'error' })
       initTimer();
       clearInterval(timer);
     })
@@ -164,17 +165,20 @@ const LoginPage: React.FC<IntProps> = (props) => {
     initTimer()
     if (radio && phoneNumber && code) {
       Axios({
-        url: 'https://biz-api.xr-bgy-prd.yee.link/checkSMSCode',
+        url: 'https://xr.yee.link/bgy-api/checkSMSCode',
         method: 'post',
         data: `phoneNumber=${phoneNumber}&checkSMSCode=${code}&share_id=${shareId}`,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }
       ).then(res => {
         if (res.data.code == 200) {
+          if(res.headers.token) { //将登录token记录下来，用作登录校验及后续接口鉴权
+            localStorage.setItem('token', res.headers.token)
+          }
           props.loginFn(true)
           window.localStorage.setItem('API_LOGIN_ID', res.data.data.id)
         } else {
-          TipShow(res.data.message)
+          NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
         }
       }).catch(err => {
         let { message } = err;
@@ -185,7 +189,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
         } else if (message.includes("Request failed with status code")) {
           message = "系统接口" + message.substr(message.length - 3) + "异常";
         }
-        TipShow(message)
+        NotificationService.dispatchNotify(message, { variant: 'error' })
       })
     } else {
       TipShow('请输入完整信息并同意《用户协议》和《隐私协议')
@@ -257,18 +261,19 @@ const LoginPage: React.FC<IntProps> = (props) => {
   // 微信登录
   const getOpenId = (code) => {
     Axios({
-      url: 'https://biz-api.xr-bgy-prd.yee.link/wx/login',
+      url: 'https://xr.yee.link/bgy-api/wx/login',
       method: 'POST',
       data: `code=${code}&share_id=${shareId}`,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then(res => {
       if (res.data.code == 200) {
+        if(res.headers.token) {
+          localStorage.setItem('token', res.headers.token)
+        }
         props.loginFn(true)
         window.localStorage.setItem('API_LOGIN_ID', res.data.data.id)
       } else {
-        if (res.data.error) {
-          TipShow(res.data.error)
-        }
+        NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
       }
     }).catch(err => {
       let { message } = err;
@@ -280,7 +285,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
         message = "系统接口" + message.substr(message.length - 3) + "异常";
       }
       if (message) {
-        TipShow(message)
+        NotificationService.dispatchNotify(message, { variant: 'error' })
       }
 
     })
@@ -361,7 +366,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
             <div className='agreement'>
               <label className='agreement-text'>
                 <input
-                  onBlur={(e) => {
+                  onChange={(e) => {
                     radioChange(e.target.value)
                   }}
                   type="radio" name='gender' value="我已阅读并同意《用户协议》和《隐私协议》"
