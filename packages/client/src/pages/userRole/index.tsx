@@ -188,7 +188,7 @@ const RolePage: React.FC = () => {
     }
     //页面跳转
     const gotoHome = () => {
-        history.push('location/default')
+        history.push('location/BGYFW')
         setshowvideo(false)
         // history.push('/location/bgy1')//测试用
     }
