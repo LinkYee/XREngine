@@ -45,11 +45,13 @@ import Axios, {
         'updateTimelineShareData'] // 必填，需要使用的 JS 接口列表
     })
     wx.ready(() => {
+      const href = window.location.href
+      const userid = localStorage.getItem('API_LOGIN_ID')
       const shareConfig = {
         title: '碧桂园服务元宇宙', // 分享标题
         desc: '分享有礼！快来Pick最佳萌萌哒社区，免费抽千元大礼哦！', // 分享描述
         // link: 'https://act.qingmeta.cn/bgyfw/', // 分享链接，该链接域名或路径必须与当前页面对应的公众号 JS 安全域名一致
-        link: window.location.href, // 分享链接，该链接域名或路径必须与当前页面对应的公众号 JS 安全域名一致
+        link: `${href}${href.includes('?') ? '&' : '?'}invite=${userid}`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号 JS 安全域名一致
         imgUrl: 'https://xr-resources.yee.link/Share/share.png', // 分享图标
         success: function () {
           // 设置成功
