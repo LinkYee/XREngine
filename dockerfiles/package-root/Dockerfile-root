@@ -11,7 +11,7 @@ RUN apt update
 # Create app directory
 WORKDIR /app
 
-RUN apt-get -y install build-essential meson python3-testresources python3-venv python3-pip git
+RUN apt-get -y install build-essential meson python3-testresources python3-venv python3-pip git wget
 
 COPY package.json .
 COPY packages/common/package.json ./packages/common/
@@ -21,6 +21,9 @@ COPY packages/matchmaking/package.json ./packages/matchmaking/
 COPY packages/projects/package.json ./packages/projects/
 COPY packages/server-core/package.json ./packages/server-core/
 COPY project-package-jsons ./
+
+RUN mkdir /root/.npm/_libvips
+RUN wget -O /root/.npm/_libvips/libvips-8.12.2-linux-x64.tar.br https://xr-resources.oss-cn-beijing.aliyuncs.com/Asset/libvips-8.12.2-linux-x64.tar.br
 
 ARG NODE_ENV
 RUN npm install --loglevel notice --legacy-peer-deps
