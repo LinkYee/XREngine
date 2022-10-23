@@ -10,6 +10,8 @@ import Axios, {
 import CommonTip from '../component/commenTip'
 import Screen from '../component/screen'
 import { NotificationService } from "@xrengine/client-core/src/common/services/NotificationService";
+import { LoadingCircle } from '@xrengine/client-core/src/components/LoadingCircle'
+import { isWx } from '../../wxapi';
 
 interface IntProps {
   loginFn: Function
@@ -31,6 +33,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
   const [isWxWeb, setIsWeiXinWeb] = useState<boolean>(false)
   const [screenOrt, setscreenOrt] = useState<boolean>(false)
   const [lastcode, setLastcode] = useState('')
+  const [showLoading, setShowLoading] = useState<boolean>(false)
 
   useEffect(() => {
     setScreenOrientation()
@@ -39,6 +42,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
   useEffect(() => {
   }, [])
   useEffect(() => {
+    // loginToken() //先走token缓存登录
     let isWeixin = isWx() //先判断是否是微信环境
     setIsWeiXinWeb(isWeixin)
     getShareId() //获取链接中携带的推荐人id信息
@@ -67,9 +71,23 @@ const LoginPage: React.FC<IntProps> = (props) => {
     setScreenOrientation()
   });
 
-  const isWx = () => {
-    const ua = window.navigator.userAgent.toLowerCase()
-    return !!(ua.match(/MicroMessenger/i)?.includes('micromessenger'))
+  const loginToken = () => { //根据缓存里的token校验登陆状态
+    const token = localStorage.getItem('token')
+    if (!token) return
+    Axios({
+      url: 'https://xr.yee.link/352/checkToken',
+      method: 'get',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', token }
+    }
+    ).then(res => {
+      if (res.data.code == 200) {
+        if (res.headers.token) { //将登录token记录下来，用作登录校验及后续接口鉴权
+          localStorage.setItem('token', res.headers.token)
+        }
+        props.loginFn(true)
+        window.localStorage.setItem('API_LOGIN_ID', res.data.data.id)
+      }
+    }).catch(err => {})
   }
 
   //监听横屏竖屏
@@ -161,6 +179,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
   //手机号登录
   const submit = () => {
     // props.loginFn(true)//测试用
+    setShowLoading(true)
     clearInterval(timer);
     initTimer()
     if (radio && phoneNumber && code) {
@@ -171,8 +190,9 @@ const LoginPage: React.FC<IntProps> = (props) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }
       ).then(res => {
+        setShowLoading(false)
         if (res.data.code == 200) {
-          if(res.headers.token) { //将登录token记录下来，用作登录校验及后续接口鉴权
+          if (res.headers.token) { //将登录token记录下来，用作登录校验及后续接口鉴权
             localStorage.setItem('token', res.headers.token)
           }
           props.loginFn(true)
@@ -181,6 +201,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
           NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
         }
       }).catch(err => {
+        setShowLoading(false)
         let { message } = err;
         if (message == "Network Error") {
           message = "后端接口连接异常";
@@ -192,6 +213,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
         NotificationService.dispatchNotify(message, { variant: 'error' })
       })
     } else {
+      setShowLoading(false)
       TipShow('请输入完整信息并同意《用户协议》和《隐私协议')
     }
 
@@ -260,22 +282,25 @@ const LoginPage: React.FC<IntProps> = (props) => {
 
   // 微信登录
   const getOpenId = (code) => {
+    setShowLoading(true)
     Axios({
       url: 'https://xr.yee.link/bgy-api/wx/login',
       method: 'POST',
       data: `code=${code}&share_id=${shareId}`,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then(res => {
+      setShowLoading(false)
       if (res.data.code == 200) {
-        if(res.headers.token) {
+        if (res.headers.token) {
           localStorage.setItem('token', res.headers.token)
         }
         props.loginFn(true)
-        window.localStorage.setItem('API_LOGIN_ID', res.data.data.id)
+        window.localStorage.setItem('API_LOGIN_ID', res.data.user.id)
       } else {
         NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
       }
     }).catch(err => {
+      setShowLoading(false)
       let { message } = err;
       if (message == "Network Error") {
         message = "后端接口连接异常";
@@ -302,6 +327,9 @@ const LoginPage: React.FC<IntProps> = (props) => {
     }, 1500)
   }
   return <div className="loginPage-container" style={{ width: '100%', height: '100%' }}>
+    {showLoading ? <div style={{ position: 'absoulte', zIndex: '99999' }}>
+      <LoadingCircle />
+    </div> : ""}
     {/* 登录选择 */}
     {
       loginState == '' ?
