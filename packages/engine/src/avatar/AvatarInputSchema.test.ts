@@ -97,7 +97,7 @@ describe('avatarInputSchema', () => {
     const world = Engine.instance.currentWorld
     const entity = createEntity(world)
 
-    const velocitySimulator = new VectorSpringSimulator(60, 50, 0.8)
+    const velocitySimulator = new VectorSpringSimulator(24, 50, 0.8)
     const c = addComponent(entity, AvatarControllerComponent, {
       cameraEntity: null!,
       bodyCollider: null!,

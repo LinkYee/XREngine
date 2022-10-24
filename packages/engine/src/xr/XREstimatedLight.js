@@ -7,7 +7,6 @@
 	Group,
 	LightProbe,
 	WebGLCubeRenderTarget,
-	// Clock
 } from 'three';
 
 class SessionLightProbe {
@@ -22,10 +21,6 @@ class SessionLightProbe {
 		this.frameCallback = this.onXRFrame.bind(this);
 
 		const session = renderer.xr.getSession();
-		// this.clock = Clock()
-		// const fps = 24 //帧率调整至24
-		// this.singleFrameTime = 1 / fps
-		// this.timeStamp = 0
 
 		// If the XRWebGLBinding class is available then we can also query an
 		// estimated reflection cube map.
@@ -96,44 +91,35 @@ class SessionLightProbe {
 
 		}
 
-		// console.log('执行序列帧')
-		// const delta = this.clock.getDelta()
-		// this.timeStamp += delta
+		const session = xrFrame.session;
+		session.requestAnimationFrame(this.frameCallback);
+		const lightEstimate = xrFrame.getLightEstimate(this.lightProbe);
+		if (lightEstimate) {
 
-		// if (this.timeStamp > this.singleFrameTime) {
-		// 	alert(`执行帧率：${1000 / timeStamp}fps  `)
-		// 	this.timeStamp = this.timeStamp % this.singleFrameTime
-			const session = xrFrame.session;
-			session.requestAnimationFrame(this.frameCallback);
-			const lightEstimate = xrFrame.getLightEstimate(this.lightProbe);
-			if (lightEstimate) {
+			// We can copy the estimate's spherical harmonics array directly into the light probe.
+			this.xrLight.lightProbe.sh.fromArray(lightEstimate.sphericalHarmonicsCoefficients);
+			this.xrLight.lightProbe.intensity = 1.0;
 
-				// We can copy the estimate's spherical harmonics array directly into the light probe.
-				this.xrLight.lightProbe.sh.fromArray(lightEstimate.sphericalHarmonicsCoefficients);
-				this.xrLight.lightProbe.intensity = 1.0;
+			// For the directional light we have to normalize the color and set the scalar as the
+			// intensity, since WebXR can return color values that exceed 1.0.
+			const intensityScalar = Math.max(1.0,
+				Math.max(lightEstimate.primaryLightIntensity.x,
+					Math.max(lightEstimate.primaryLightIntensity.y,
+						lightEstimate.primaryLightIntensity.z)));
 
-				// For the directional light we have to normalize the color and set the scalar as the
-				// intensity, since WebXR can return color values that exceed 1.0.
-				const intensityScalar = Math.max(1.0,
-					Math.max(lightEstimate.primaryLightIntensity.x,
-						Math.max(lightEstimate.primaryLightIntensity.y,
-							lightEstimate.primaryLightIntensity.z)));
+			this.xrLight.directionalLight.color.setRGB(
+				lightEstimate.primaryLightIntensity.x / intensityScalar,
+				lightEstimate.primaryLightIntensity.y / intensityScalar,
+				lightEstimate.primaryLightIntensity.z / intensityScalar);
+			this.xrLight.directionalLight.intensity = intensityScalar;
+			this.xrLight.directionalLight.position.copy(lightEstimate.primaryLightDirection);
 
-				this.xrLight.directionalLight.color.setRGB(
-					lightEstimate.primaryLightIntensity.x / intensityScalar,
-					lightEstimate.primaryLightIntensity.y / intensityScalar,
-					lightEstimate.primaryLightIntensity.z / intensityScalar);
-				this.xrLight.directionalLight.intensity = intensityScalar;
-				this.xrLight.directionalLight.position.copy(lightEstimate.primaryLightDirection);
+			if (this.estimationStartCallback) {
 
-				if (this.estimationStartCallback) {
+				this.estimationStartCallback();
+				this.estimationStartCallback = null;
 
-					this.estimationStartCallback();
-					this.estimationStartCallback = null;
-
-				}
-
-			// }
+			}
 		}
 
 

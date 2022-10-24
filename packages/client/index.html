@@ -32,27 +32,33 @@
     </script>
     <script src="https://cdn.bootcss.com/PreloadJS/1.0.1/preloadjs.js"></script>
     <script>
-      let manifest = [
-        { src: "https://xr-resources.yee.link/bgyModel/BGYNew.glb" },
-        { src: "https://xr-resources.yee.link/BGYvideo/bgyBgm.mp3" },
-        { src: "https://xr-resources.yee.link/bgyModel/TimeLine.glb" },
-        { src: "https://xr-resources.yee.link/bgyModel/BiGuiYuan_Card.glb" },
-        { src: "https://xr-resources.yee.link/bgyModel/BiGuiYuan_CongBao.glb" },
-        { src: "https://xr-resources.yee.link/bgyModel/sky.glb" },
-      ]
-      for (let i = 1; i <= 150; i++) {
-        manifest.push({src: `https://xr-resources.yee.link/BGYAnimateTrans/image-${`${i}`.padStart(3,'0')}.jpeg`})
+      const startPreLoad = () => {
+        let manifest = [
+          { src: "https://xr-resources.yee.link/bgyModel/BGYNew.glb" },
+          { src: "https://xr-resources.yee.link/BGYvideo/bgyBgm.mp3" },
+          { src: "https://xr-resources.yee.link/bgyModel/TimeLine.glb" },
+          { src: "https://xr-resources.yee.link/bgyModel/BiGuiYuan_Card.glb" },
+          { src: "https://xr-resources.yee.link/bgyModel/BiGuiYuan_CongBao.glb" },
+          { src: "https://xr-resources.yee.link/bgyModel/sky.glb" },
+        ]
+        for (let i = 1; i <= 150; i++) {
+          manifest.push({ src: `https://xr-resources.yee.link/BGYAnimateTrans/image-${`${i}`.padStart(3, '0')}.jpeg` })
+        }
+        if (createjs && createjs.LoadQueue) {
+          let preload = new createjs.LoadQueue(true)
+          preload.addEventListener("fileload", () => {
+            console.log('所需资源正在逐一预加载')
+          })
+          preload.addEventListener('complete', () => {
+            console.log('预加载任务已完成')
+          })
+          console.log('资源文件开始预加载===================>')
+          preload.loadManifest(manifest)
+        }
       }
-      if( createjs && createjs.LoadQueue) {
-        let preload = new createjs.LoadQueue(true)
-        preload.addEventListener("fileload", () => {
-          console.log('所需资源正在逐一预加载')
-        })
-        preload.addEventListener('complete', () => {
-          console.log('预加载任务已完成')
-        })
-        console.log('资源文件开始预加载===================>')
-        preload.loadManifest(manifest)
+      const href = window.location.href
+      if(href.includes('/bgyLogin')) {
+        startPreLoad()
       }
     </script>
   </head>

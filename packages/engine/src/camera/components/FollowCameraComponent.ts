@@ -43,8 +43,8 @@ export const FollowCameraDefaultValues: FollowCameraComponentType = {
   maxDistance: 7,
   theta: Math.PI,
   phi: 0,
-  minPhi: -70,
-  maxPhi: 85,
+  minPhi: -20,
+  maxPhi: 30,
   shoulderSide: true,
   locked: true,
   raycastProps: {
