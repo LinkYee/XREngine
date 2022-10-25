@@ -8,6 +8,9 @@
         height: 100%;
         pointer-events: none;
       }
+      #__vconsole{
+        pointer-events : auto;
+      }
     </style>
     <meta charset="UTF-8" />
     <meta
@@ -24,7 +27,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="<%- favicon16px %>" data-react-helmet="true" />
     <link rel="manifest" href="<%- webmanifestLink %>" data-react-helmet="true" />
     <!-- <link href="http//://fonts.cdnfonts.com/css/arial-rounded-mt-bold" rel="stylesheet"> -->
-
+    <script type="text/javascript" src="https://cdn.bootcss.com/vConsole/3.3.0/vconsole.min.js"></script>
     <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script>
       var global = globalThis
@@ -58,7 +61,7 @@
       }
       const href = window.location.href
       if(href.includes('/bgyLogin')) {
-        startPreLoad()
+        setTimeout(function(){startPreLoad();}, 15000)
       }
       function docReady(fn) {
         // see if DOM is already available
@@ -69,6 +72,13 @@
             document.addEventListener("DOMContentLoaded", fn);
         }
       }
+      if(href.includes('debug')){
+        docReady(function(){
+          // 初始化
+          var vConsole = new VConsole();
+          console.log('Hello world');
+        })
+      } 
       docReady(function(){
         document.body.addEventListener('touchstart', function() {
           if(audiosWeWantToUnlock) {
