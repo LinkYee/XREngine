@@ -13,7 +13,7 @@ then
 fi
 if [[ -z $(which aws) ]]
 then
-  curl "https://xr-resources.yee.link/Asset/aws.zip" -o "awscliv2.zip"
+  curl "http://xr-resources.yee.link/Asset/aws.zip" -o "awscliv2.zip"
   unzip -q awscliv2.zip
   ./aws/install
 fi
