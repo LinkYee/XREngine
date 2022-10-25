@@ -217,7 +217,6 @@ export class XREstimatedLight extends Group {
 
 			this.remove(this.directionalLight);
 			this.directionalLight = null;
-
 			this.environment = null;
 
 		};
