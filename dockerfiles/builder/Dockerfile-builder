@@ -3,6 +3,7 @@
 FROM node:16-buster-slim as builder
 
 RUN apt update
+RUN apt-get -y install build-essential meson python3-testresources python3-venv python3-pip git wget
 # Create app directory
 WORKDIR /app
 
