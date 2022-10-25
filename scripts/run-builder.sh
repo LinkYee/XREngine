@@ -15,6 +15,7 @@ done
 START_TIME=`date +"%d-%m-%yT%H-%M-%S"`
 mkdir -pv ~/.docker
 cp -v /var/lib/docker/certs/client/* ~/.docker
+
 touch ./builder-started.txt
 bash ./scripts/setup_helm.sh
 bash ./scripts/setup_aws.sh $AWS_ACCESS_KEY $AWS_SECRET $AWS_REGION $CLUSTER_NAME
@@ -44,6 +45,9 @@ find packages/projects/projects/ -name package.json -exec bash -c 'mkdir -p ./pr
 DOCKER_BUILDKIT=1 docker build -t root-builder -f dockerfiles/package-root/Dockerfile-root .
 
 npm install -g cli aws-sdk
+
+echo "Try to install package to local builder"
+npm install --loglevel notice --legacy-peer-deps
 
 [ -e builder_failed.txt ] && rm builder_failed.txt
 bash ./scripts/build_and_publish_package.sh $RELEASE_NAME $DOCKER_LABEL client $START_TIME $PRIVATE_ECR $AWS_REGION $NODE_ENV || touch builder_failed.txt &

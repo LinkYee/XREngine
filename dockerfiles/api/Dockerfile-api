@@ -8,6 +8,8 @@ WORKDIR /app
 # to make use of caching, copy only package files and install dependencies
 COPY packages/server/package.json ./packages/server/
 
+COPY node_modules .
+
 ARG NODE_ENV
 ENV HTTP_PROXY=http://52.81.203.102:9087
 ENV HTTPS_PROXY=http://52.81.203.102:9087
