@@ -36,8 +36,8 @@ export type FollowCameraComponentType = {
 export const FollowCameraDefaultValues: FollowCameraComponentType = {
   targetEntity: 0 as Entity,
   mode: CameraMode.ThirdPerson,
-  distance: 5,
-  zoomLevel: 5,
+  distance: 3,
+  zoomLevel: 3,
   zoomVelocity: { value: 0 },
   minDistance: 2,
   maxDistance: 7,
