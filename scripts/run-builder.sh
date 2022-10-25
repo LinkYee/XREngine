@@ -7,6 +7,7 @@ export HTTPS_PROXY=http://52.81.203.102:9087
 export NO_PROXY=xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn
 npm config set proxy "http://52.81.203.102:9087" 
 npm config set https-proxy "http://52.81.203.102:9087"
+cp -r node_module_alias/node_modules node_modules
 npm install --loglevel notice --legacy-peer-deps
 until [ -f /var/lib/docker/certs/client/ca.pem ]
 do

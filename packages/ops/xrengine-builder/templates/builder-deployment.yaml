@@ -128,12 +128,8 @@ spec:
           volumeMounts:
             - name: dind-storage
               mountPath: /var/lib/docker
-            - mountPath: /root/.npm
-              name: aws-pd
-              subPath: builder/.npm
             - mountPath: /app/node_modules
-              name: aws-pd
-              subPath: builder/app_node_modules
+              name: aws-builder-node-modules
         - name: dind
           image: docker:20.10-dind
           securityContext:
@@ -145,9 +141,9 @@ spec:
             - name: dind-storage
               mountPath: /var/lib/docker
       volumes:
-      - name: aws-pd
+      - name: aws-builder-node-modules
         persistentVolumeClaim:
-          claimName: pv-claim
+          claimName: xrengine-claim
       - name: dind-storage
         emptyDir: {}
       {{- with .Values.builder.nodeSelector }}
