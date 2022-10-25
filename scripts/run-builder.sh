@@ -10,8 +10,6 @@ export NO_PROXY=xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.a
 npm config set proxy "http://52.81.203.102:9087" 
 npm config set https-proxy "http://52.81.203.102:9087"
 
-npm install --loglevel notice --legacy-peer-deps
-
 until [ -f /var/lib/docker/certs/client/ca.pem ]
 do
   echo "Waiting for /var/lib/docker/certs/client/ca.pem to be available from dind volume"
@@ -50,9 +48,6 @@ find packages/projects/projects/ -name package.json -exec bash -c 'mkdir -p ./pr
 DOCKER_BUILDKIT=1 docker build -t root-builder -f dockerfiles/package-root/Dockerfile-root .
 
 npm install -g cli aws-sdk
-
-echo "Try to install package to local builder"
-npm install --loglevel notice --legacy-peer-deps
 
 [ -e builder_failed.txt ] && rm builder_failed.txt
 bash ./scripts/build_and_publish_package.sh $RELEASE_NAME $DOCKER_LABEL client $START_TIME $PRIVATE_ECR $AWS_REGION $NODE_ENV || touch builder_failed.txt &
