@@ -1,6 +1,7 @@
 # syntax = docker/dockerfile:1.2
 # not slim because we need github depedencies
 FROM root-builder as builder
+# FROM 118833645905.dkr.ecr.cn-north-1.amazonaws.com.cn/xrengine-bgy-client:latest_prod as builder
 
 # Create app directory
 WORKDIR /app
@@ -17,6 +18,7 @@ ENV HTTP_PROXY=http://52.81.203.102:9087
 ENV HTTPS_PROXY=http://52.81.203.102:9087
 RUN npm config set proxy "http://52.81.203.102:9087" 
 RUN npm config set https-proxy "http://52.81.203.102:9087"
+RUN npm config set noproxy "xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn"
 RUN npm install --loglevel notice --legacy-peer-deps
 
 # copy then compile the code

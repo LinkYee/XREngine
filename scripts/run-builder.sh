@@ -4,8 +4,12 @@ set -x
 
 export HTTP_PROXY=http://52.81.203.102:9087
 export HTTPS_PROXY=http://52.81.203.102:9087
+export NO_PROXY=xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn
+npm config set registry https://registry.npm.taobao.org
+npm config set sass_binary_site https://npm.taobao.org/mirrors/node-sass/
 npm config set proxy "http://52.81.203.102:9087" 
 npm config set https-proxy "http://52.81.203.102:9087"
+npm config set noproxy "xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn"
 
 until [ -f /var/lib/docker/certs/client/ca.pem ]
 do
@@ -42,6 +46,8 @@ cp packages/projects/default-project/package.json ./project-package-jsons/projec
 find packages/projects/projects/ -name package.json -exec bash -c 'mkdir -p ./project-package-jsons/$(dirname $1) && cp $1 ./project-package-jsons/$(dirname $1)' - '{}' \;
 
 DOCKER_BUILDKIT=1 docker build -t root-builder -f dockerfiles/package-root/Dockerfile-root .
+DOCKER_BUILDKIT=1 docker tag root-builder lagunalabs/xrengine-root-builder:latest
+bash ./scripts/publish_ecr.sh $RELEASE_NAME ${TAG}__${START_TIME} $DOCKER_LABEL root-builder $PRIVATE_ECR $AWS_REGION
 
 npm install -g cli aws-sdk
 

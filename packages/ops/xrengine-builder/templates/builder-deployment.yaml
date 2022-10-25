@@ -128,6 +128,8 @@ spec:
           volumeMounts:
             - name: dind-storage
               mountPath: /var/lib/docker
+            - mountPath: /mnt
+              name: aws-pd
         - name: dind
           image: docker:20.10-dind
           securityContext:
@@ -139,6 +141,9 @@ spec:
             - name: dind-storage
               mountPath: /var/lib/docker
       volumes:
+      - name: aws-pd
+        persistentVolumeClaim:
+          claimName: pv-claim
       - name: dind-storage
         emptyDir: {}
       {{- with .Values.builder.nodeSelector }}
