@@ -1,6 +1,7 @@
 # syntax = docker/dockerfile:1.2
 # not slim because we need github depedencies
-FROM root-builder as builder
+# FROM root-builder as builder
+FROM 118833645905.dkr.ecr.cn-north-1.amazonaws.com.cn/xrengine-bgy-instanceserver:latest_prod as builder
 
 # Create app directory
 WORKDIR /app
