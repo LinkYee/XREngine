@@ -22,7 +22,6 @@ cp -v /var/lib/docker/certs/client/* ~/.docker
 touch ./builder-started.txt
 bash ./scripts/setup_helm.sh
 bash ./scripts/setup_aws.sh $AWS_ACCESS_KEY $AWS_SECRET $AWS_REGION $CLUSTER_NAME
-npm install --save-dev cross-env
 npm run check-db-exists
 npm run install-projects
 npm run prepare-database
