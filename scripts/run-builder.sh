@@ -4,9 +4,10 @@ set -x
 
 export HTTP_PROXY=http://52.81.203.102:9087
 export HTTPS_PROXY=http://52.81.203.102:9087
+export NO_PROXY=xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn
 npm config set proxy "http://52.81.203.102:9087" 
 npm config set https-proxy "http://52.81.203.102:9087"
-
+npm install --loglevel notice --legacy-peer-deps
 until [ -f /var/lib/docker/certs/client/ca.pem ]
 do
   echo "Waiting for /var/lib/docker/certs/client/ca.pem to be available from dind volume"
