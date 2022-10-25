@@ -2,6 +2,8 @@
 set -e
 set -x
 
+touch ./builder-started.txt
+
 export HTTP_PROXY=http://52.81.203.102:9087
 export HTTPS_PROXY=http://52.81.203.102:9087
 export NO_PROXY=xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn
@@ -19,7 +21,7 @@ START_TIME=`date +"%d-%m-%yT%H-%M-%S"`
 mkdir -pv ~/.docker
 cp -v /var/lib/docker/certs/client/* ~/.docker
 
-touch ./builder-started.txt
+
 bash ./scripts/setup_helm.sh
 bash ./scripts/setup_aws.sh $AWS_ACCESS_KEY $AWS_SECRET $AWS_REGION $CLUSTER_NAME
 npm run check-db-exists
