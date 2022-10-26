@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1.2
 # not slim because we need github depedencies
-FROM node:16-buster-slim as root-builder
-# FROM 118833645905.dkr.ecr.cn-north-1.amazonaws.com.cn/xrengine-bgy-root-builder:latest_prod as root-builder
+# FROM node:16-buster-slim as root-builder
+FROM 118833645905.dkr.ecr.cn-north-1.amazonaws.com.cn/xrengine-bgy-root-builder:latest_prod as root-builder
 
 ENV HTTP_PROXY=http://52.81.203.102:9087
 ENV HTTPS_PROXY=http://52.81.203.102:9087
