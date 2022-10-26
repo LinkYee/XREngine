@@ -148,17 +148,6 @@ const InstanceServerWarnings = () => {
 
       case WarningModalTypes.NO_WORLD_SERVER_PROVISIONED: {
         return 
-        const currentLocation = locationState.currentLocation.location.value
-        setModalValues({
-          open: true,
-          title: t('common:instanceServer.noAvailableServers'),
-          body: t('common:instanceServer.noAvailableServersMessage'),
-          action: async () => LocationInstanceConnectionService.provisionServer(currentLocation.id),
-          parameters: [currentLocation.id, erroredInstanceId, currentLocation.sceneId],
-          noCountdown: false,
-          onClose: () => {}
-        })
-        break
       }
 
       case WarningModalTypes.NO_MEDIA_SERVER_PROVISIONED: {
@@ -195,18 +184,6 @@ const InstanceServerWarnings = () => {
           Engine.instance.currentWorld.worldNetwork?.hostId
         ) as SocketWebRTCClientNetwork
         return 
-        if (engineState.isTeleporting.value || transport.reconnecting) return
-
-        setModalValues({
-          open: true,
-          title: t('common:instanceServer.worldDisconnected'),
-          body: t('common:instanceServer.worldDisconnectedMessage'),
-          action: async () => window.location.reload(),
-          timeout: 30000,
-          noCountdown: false,
-          onClose: () => {}
-        })
-        break
       }
 
       case WarningModalTypes.CHANNEL_DISCONNECTED: {
@@ -269,14 +246,14 @@ const InstanceServerWarnings = () => {
       }
 
       case WarningModalTypes.DETECTED_LOW_FRAME: {
-        setModalValues({
-          open: true,
-          title: t('common:instanceServer.low-frame-title'),
-          body: t('common:instanceServer.low-frame-error'),
-          timeout: 10000,
-          onClose: () => {}
-        })
-        break
+        // setModalValues({
+        //   open: true,
+        //   title: t('common:instanceServer.low-frame-title'),
+        //   body: t('common:instanceServer.low-frame-error'),
+        //   timeout: 10000,
+        //   onClose: () => {}
+        // })
+        // break
       }
 
       case WarningModalTypes.NOT_AUTHORIZED: {
