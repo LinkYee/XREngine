@@ -46,8 +46,8 @@ cp packages/projects/default-project/package.json ./project-package-jsons/projec
 find packages/projects/projects/ -name package.json -exec bash -c 'mkdir -p ./project-package-jsons/$(dirname $1) && cp $1 ./project-package-jsons/$(dirname $1)' - '{}' \;
 
 DOCKER_BUILDKIT=1 docker build -t root-builder -f dockerfiles/package-root/Dockerfile-root .
-DOCKER_BUILDKIT=1 docker tag root-builder lagunalabs/xrengine-root-builder:latest
-bash ./scripts/publish_ecr.sh $RELEASE_NAME ${TAG}__${START_TIME} $DOCKER_LABEL root-builder $PRIVATE_ECR $AWS_REGION
+# DOCKER_BUILDKIT=1 docker tag root-builder lagunalabs/xrengine-root-builder:latest
+# bash ./scripts/publish_ecr.sh $RELEASE_NAME ${TAG}__${START_TIME} $DOCKER_LABEL root-builder $PRIVATE_ECR $AWS_REGION
 
 npm install -g cli aws-sdk
 
