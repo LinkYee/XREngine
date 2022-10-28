@@ -7,6 +7,8 @@ import Axios, {
   AxiosInstance,
 } from "axios";
 
+import  logs  from '../component/logAdd';
+
 import CommonTip from '../component/commenTip'
 import Screen from '../component/screen'
 import { NotificationService } from "@xrengine/client-core/src/common/services/NotificationService";
@@ -37,7 +39,6 @@ const LoginPage: React.FC<IntProps> = (props) => {
 
   useEffect(() => {
     setScreenOrientation()
-    console.log('屏幕是否为横屏模式' + screenOrt)
   }, [])
   useEffect(() => {
   }, [])
@@ -71,11 +72,11 @@ const LoginPage: React.FC<IntProps> = (props) => {
     setScreenOrientation()
   });
 
-  const loginToken = () => { //根据缓存里的token校验登陆状态
+  const loginToken = () => { //根据缓存里的token校验登陆状态、暂未使用
     const token = localStorage.getItem('token')
     if (!token) return
     Axios({
-      url: 'https://biz-api.xr-bgy-prd.yee.link/checkToken',
+      url: 'https://biz-api.xr-bgy-prd.yee.link/checkToken',  //检查token是否过期接口
       method: 'get',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded', token }
     }
@@ -93,11 +94,9 @@ const LoginPage: React.FC<IntProps> = (props) => {
   //监听横屏竖屏
   const setScreenOrientation = () => {
     if (window.matchMedia("(orientation: portrait)").matches) {
-      console.log('orientation: portrait');
       setscreenOrt(true)
     }
     if (window.matchMedia("(orientation: landscape)").matches) {
-      console.log('orientation: landscape');
       setscreenOrt(false)
     }
   }
@@ -188,6 +187,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
 
   //手机号登录
   const submit = () => {
+    logs({name:'oranges'})
     // props.loginFn(true)//测试用
     setShowLoading(true)
     clearInterval(timer);

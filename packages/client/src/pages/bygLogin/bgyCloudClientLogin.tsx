@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import LoginPage from '../login/login';
 import RolePage from '../userRole';
 
-export const HomePage = (): any => {
+export const BgyCloudClientLoginPage = (): any => {
   const [islogin, setIsLogin] = useState<boolean>(false);
 
   const loginFn = (e) => {
@@ -19,7 +19,7 @@ export const HomePage = (): any => {
             <LoginPage loginFn={loginFn}></LoginPage>
           )
           : (
-            <RolePage isCloud={false}></RolePage>
+            <RolePage isCloud={true}></RolePage>
           )
       }
 
@@ -28,4 +28,4 @@ export const HomePage = (): any => {
   )
 }
 
-export default HomePage
+export default BgyCloudClientLoginPage

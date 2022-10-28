@@ -33,11 +33,11 @@ import people from '../../assets/img/people.png'
 import rolebtn from '../../assets/img/rolebtn.png'
 import { NotificationService } from "@xrengine/client-core/src/common/services/NotificationService";
 
-interface IntList {
-    url: string
+interface RoleState {
+    isCloud: boolean
 }
-const RolePage: React.FC = () => {
-
+const RolePage: React.FC<RoleState> = (props) => {
+    const { isCloud } = props
     const { t } = useTranslation()
     const history = useHistory()
     const authState = useAuthState()
@@ -66,7 +66,10 @@ const RolePage: React.FC = () => {
     const [showvideo, setshowvideo] = useState<boolean>(false)
     const [screenOrt, setscreenOrt] = useState<boolean>(false)
     useEffect(() => {
-        if (!showvideo) return
+        if (!showvideo) {
+            // gotoHome()
+            return
+        }
         let myAnima: any | null = document.getElementById('myAnima');
         let i = 1
         const timer = setInterval(()=>{
@@ -84,7 +87,7 @@ const RolePage: React.FC = () => {
     useEffect(() => {
         if (avatarList.length > 0 && selectTrue) {
             console.log('defaultPeople-----------------' + avatarList[0].name)
-            selectAvatar(avatarList[0])
+            selectAvatar(avatarList[0],0)
         }
     }, [avatarList])
 
@@ -93,7 +96,8 @@ const RolePage: React.FC = () => {
         console.log('屏幕是否为横屏模式' + screenOrt)
     }, [screenOrt])
 
-    const selectAvatar = (avatarResources: AvatarInterface) => {
+    const selectAvatar = (avatarResources: AvatarInterface,index:Number) => {
+        localStorage.setItem('AVATAR_INDEX',index + '')
         setaPeople(avatarResources.name)
         setSelectedAvatar(avatarResources)
         setselectTrue(false)
@@ -107,11 +111,9 @@ const RolePage: React.FC = () => {
     //监听横屏竖屏
     const setScreenOrientation = () => {
         if (window.matchMedia("(orientation: portrait)").matches) {
-            console.log('orientation: portrait');
             setscreenOrt(true)
         }
         if (window.matchMedia("(orientation: landscape)").matches) {
-            console.log('orientation: landscape');
             setscreenOrt(false)
         }
     }
@@ -142,6 +144,7 @@ const RolePage: React.FC = () => {
         if (selectedAvatar.id && peopleName) {
             //保存用户名
             const name = peopleName.trim()
+            localStorage.setItem('AVATAR_NICKNAME',name)
             AuthService.updateUsername(userId, name)
             //保存角色
             setAvatar(
@@ -149,8 +152,10 @@ const RolePage: React.FC = () => {
                 selectedAvatar?.modelResource?.url || '',
                 selectedAvatar?.thumbnailResource?.url || ''
             )
+            localStorage.setItem('AVATAR_ID',selectedAvatar?.id || '')
+            localStorage.setItem('AVATAR_MODELRESOURCE',selectedAvatar?.modelResource?.url || '')
+            localStorage.setItem('AVATAR_THUMBNAIL',selectedAvatar?.thumbnailResource?.url || '')
             setSelectedAvatar('')
-
             //业务接口
             Axios({
                 url: 'https://biz-api.xr-bgy-prd.yee.link/user/edit',
@@ -164,7 +169,9 @@ const RolePage: React.FC = () => {
             }).then(res => {
                 if (res.data.code == 200) {
                     //播放视频之后再跳转
-                    setshowvideo(true)
+                    // setshowvideo(true)
+                    // @TODO 隐藏视频
+                    gotoHome()
                 } else {
                     NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
                 }
@@ -188,8 +195,12 @@ const RolePage: React.FC = () => {
     }
     //页面跳转
     const gotoHome = () => {
-        history.push('location/BGYFW')
         setshowvideo(false)
+        if(isCloud){
+            history.push('bgyCloudRender')
+        }else{
+            history.push('location/default')
+        }
         // history.push('/location/bgy1')//测试用
     }
     //tip
@@ -234,7 +245,7 @@ const RolePage: React.FC = () => {
                         <div className='list-box'>
                             {
                                 avatarList.map((i, index) => {
-                                    return <div key={index} className="item" onClick={() => selectAvatar(i)}>
+                                    return <div key={index} className="item" onClick={() => selectAvatar(i,index)}>
                                         <img className="imgItem" src={i.thumbnailResource.url} alt="" />
                                     </div>
                                 })

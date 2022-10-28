@@ -33,6 +33,9 @@ import { addActionReceptor, dispatchAction, getState, removeActionReceptor, useH
 
 import { CustomRoute, getCustomRoutes } from './getCustomRoutes'
 import bgyLogin from "../pages/bygLogin/bgyLogin";
+import bgyCloudRender from "../pages/bygLogin/bgyCloudRender";
+import bgyCloudClientLogin from "../pages/bygLogin/bgyCloudClientLogin";
+import bgyCloudLogin from "../pages/bygLogin/bgyCloudLogin";
 
 const $admin = React.lazy(() => import('@xrengine/client-core/src/admin/adminRoutes'))
 const $auth = React.lazy(() => import('@xrengine/client/src/pages/auth/authRoutes'))
@@ -132,6 +135,9 @@ function RouterComp() {
             <Route key={`custom-route-${i}`} path={route.route} component={route.component} {...route.props} />
           ))}
           <Route path="/bgyLogin" component={bgyLogin} />
+          <Route path="/bgyCL" component={bgyCloudClientLogin} />
+          <Route path="/bgyCloudRender" component={bgyCloudRender} />
+          <Route path="/bgyCloudLogin" component={bgyCloudLogin} />
           <Route key={'offline'} path={'/offline'} component={$offline} />
           {/* default to allowing admin access regardless */}
           <Route key={'default-admin'} path={'/admin'} component={$admin} />
