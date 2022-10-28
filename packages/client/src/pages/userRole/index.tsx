@@ -199,7 +199,7 @@ const RolePage: React.FC<RoleState> = (props) => {
         if(isCloud){
             history.push('bgyCloudLogin')
         }else{
-            history.push('location/default')
+            history.push('location/BGYFW')
         }
         // history.push('/location/bgy1')//测试用
     }
