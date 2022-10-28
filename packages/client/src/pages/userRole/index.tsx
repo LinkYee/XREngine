@@ -197,7 +197,7 @@ const RolePage: React.FC<RoleState> = (props) => {
     const gotoHome = () => {
         setshowvideo(false)
         if(isCloud){
-            history.push('bgyCloudRender')
+            history.push('bgyCloudLogin')
         }else{
             history.push('location/default')
         }
