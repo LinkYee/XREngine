@@ -631,11 +631,23 @@ const UserMediaWindow = ({ peerId }: Props): JSX.Element => {
     rendered
   } = useUserMediaWindowHook({ peerId })
 
+  useEffect(() => {
+    localStorage.setItem('webmq', "[]");
+  }, [])
+
   const prizeOpen = ()=>{
     const prizeEle = document.getElementById('prizeContainer')
     prizeEle.style.display = 'flex'
     prizeEle.style.zIndex = '9999'
     prizeEle.style.pointerEvents = 'auto'
+    let loginID =  window.localStorage.getItem('API_LOGIN_ID');
+    let mqstr = localStorage.getItem('webmq');
+    let mq: string[] = [];
+    if (mqstr&&mqstr.length!=0){
+      mq = JSON.parse(mqstr);
+    }
+    mq.push(loginID||"");
+    localStorage.setItem('webmq', JSON.stringify(mq));
   }
 
   return (
