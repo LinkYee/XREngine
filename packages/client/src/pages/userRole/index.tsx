@@ -195,7 +195,7 @@ const RolePage: React.FC<RoleState> = (props) => {
     }
     //页面跳转
     const gotoHome = () => {
-        NotificationService.dispatchNotify('即将带您进入碧桂园服务元宇宙', { variant: 'info' }
+        NotificationService.dispatchNotify('即将带您进入碧桂园服务元宇宙', { variant: 'info' })
         setshowvideo(false)
         if(isCloud){
             history.push('/bgyCloudRender')
