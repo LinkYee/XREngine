@@ -48,7 +48,7 @@ export const BGYCloudLoginPage = (): any => {
     var AVATAR_INDEX = getUrlParam('AVATAR_INDEX')
     AuthService.updateUsername(userId, AVATAR_NICKNAME)
     setAvatar(AVATAR_ID,AVATAR_MODELRESOURCE,AVATAR_THUMBNAIL)
-    history.push('bgyCloudRender')
+    history.push('location/BGYFW')
   }, [])
  //头像保存
  const setAvatar = (avatarId: string, avatarURL: string, thumbnailURL: string) => {
