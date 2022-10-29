@@ -6,7 +6,8 @@
 body {
     font-family: PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma, Arial, PingFang SC-Light, Microsoft YaHei;
 } */
-.loginPage-container{
+
+.loginPage-container {
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -15,6 +16,7 @@ body {
     background-image: url('https://xr-resources.yee.link/Asset/loginbg.jpg');
     background-size: 100% 100%;
 }
+
 button {
     margin: 0;
     padding: 0;
@@ -32,6 +34,7 @@ button:active {
     width: 100%;
     height: 100%;
 }
+
 .loginPage-box {
     display: block;
     position: absolute;
@@ -125,6 +128,7 @@ button:active {
     margin: 32px auto;
     background-image: url("http://webxr-qing.oss-cn-hangzhou.aliyuncs.com/model/bg-box.png");
     background-size: 100% 100%;
+    min-height: 300px;
 }
 
 .login-inp {
@@ -169,7 +173,8 @@ button:active {
     padding-left: 8px;
     box-sizing: border-box;
 }
-.val-number{
+
+.val-number {
     position: absolute;
     color: #3388FF;
     left: 33%;
@@ -178,7 +183,7 @@ button:active {
 .box-login {
     width: 45%;
     height: 36px;
-    margin-top:3%;
+    margin-top: 3%;
     margin-left: 24px;
     display: flex;
     justify-content: center;
@@ -193,17 +198,20 @@ button:active {
     line-height: 24px;
     letter-spacing: 1px;
 }
-.box-login:hover{
+
+.box-login:hover {
     background: linear-gradient(126deg, #4CAFFF 0%, #A2AFFF 100%);
 }
-.agreement{
+
+.agreement {
     display: block;
     width: 50%;
     // height: 5%;
     margin: 2% 0 0 24px;
     // margin-left: 5%;
 }
-.agreement-text{
+
+.agreement-text {
     display: flex;
     justify-content: left;
     align-items: center;

@@ -43,16 +43,16 @@ export const BGYCloudRenderPage = (): any => {
   useEffect(() => {
 		const larksr = new LarkSR({
 			rootElement: myRef.current,
-		
+			serverAddress: "https://cloudrender.xr-bgy-prd.yee.link"
 		});
 
 		// 初始化您的授权ID
-		larksr.initSDKAuthCode("4528ee6248e04393bb4dba69f0731db1")
+		larksr.initSDKAuthCode("e2123c48d7784cc596dc127ced5b98f1")
 			.then(() => {
 				// start connect;
-				larksr.connectWithPxyHost({
+				larksr.connect({
 						// people beijig 879414254636105728
-						appliId: "1026085181720625152",
+						appliId: "1035958312622882816",
             "extraParam.app":  `https://xr-bgy-prd.yee.link/bgyCloudLogin?API_LOGIN_ID=${inviteId}&AVATAR_ID=${avatarId}&AVATAR_THUMBNAIL=${avatarThumbnail}&AVATAR_NICKNAME=${avatarNickName}&AVATAR_MODELRESOURCE=${avatarSource}$AVATAR_INDEX=${avatarIndex}`
 					})
 					.then(() => {
@@ -107,31 +107,40 @@ export const BGYCloudRenderPage = (): any => {
     const cHeight = document.documentElement.clientHeight;
     const { width, height } = myRef.current.getBoundingClientRect()
     let bl;
+	
     if (cWidth < cHeight){
       bl = width
-      // const contentDOM = document.getElementById("default");
-      // contentDOM.style.width = height + 'px';
-      // contentDOM.style.height = width + 'px';
-      // contentDOM.style.top = (height - width) / 2 + 'px';
-      // contentDOM.style.left = 0 - (height - width) / 2 + 'px';
-      // contentDOM.style.transform = 'rotate(90deg)';
+	  
+
+	  // 设置default样式
+	//   setTimeout(() => {
+	// 	console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+	// 	console.log(document.getElementById("default"))
+	// 	const contentDOM = document.getElementById("default");
+	// 	contentDOM.style.width = height + 'px';
+	// 	contentDOM.style.height = width + 'px';
+	// 	contentDOM.style.top = (height - width) / 2 + 'px';
+	// 	contentDOM.style.left = 0 - (height - width) / 2 + 'px';
+	// 	contentDOM.style.transform = 'rotate(90deg)';
+		
+	//   },1000)
     }else{
       bl = height
+	//   setTimeout(() => {
+		
+	// 	document.getElementById("default").style.top = 0
+		
+	//   },1000)
     }
 		// 获取平行云自动设置的宽高
 		setPosterHeight(bl * 0.8)
 		setQrCodeWidth(bl/13)
 		// alert(width)
-
-    // 设置default样式
-    setTimeout(() => {
-      console.log('------------------------------------')
-      
-      document.getElementById("default").style.top = 0
-      // document.getElementById("default").style.width = height + 'px'
-      // document.getElementById("default").style.height = width + 'px'
-      // document.getElementById("default").style.transform = 'rotate(' + 90 + 'deg)'
-    },1000)
+		
+		setTimeout(() => {
+			console.log(document.getElementById("actionsContainer"))
+			document.getElementById("actionsContainer").style.display = 'none'
+		},2000)
     
 	},[])
 
@@ -192,38 +201,39 @@ export const BGYCloudRenderPage = (): any => {
 		}
 		
 		return (
-			<div className="poster-box">
-				{
-					imgLoad && <div className="close-box" onClick={() => close()}>
-					<img className="close-img" src="https://xr-resources.yee.link/BGYimg/poster-close.png" alt=""/>
-				</div>
-				}
-				<div className="poster-main" id="poster" style={{height: posterHeight + 'px'}} >
-					<img className="poster-img" id="poster-img" src={posterImg} onLoad={() => onImageLoad()}  alt=""/>
+			<div>
+				<div className="poster-box">
 					{
-						imgLoad && <div className="qr-code" style={{bottom: posterHeight/43 + 'px',right:posterHeight/33 + 'px'}}>
-							<QRCode value={qrCodeUrl} size={qrCodeWidth} fgColor="#000000" />
-						</div>
+						imgLoad && <div className="close-box" onClick={() => close()}>
+						<img className="close-img" src="https://xr-resources.yee.link/BGYimg/poster-close.png" alt=""/>
+					</div>
 					}
-				</div>
-				{
-					imgLoad && <div>
+					<div className="poster-main" id="poster" style={{height: posterHeight + 'px'}} >
+						<img className="poster-img" id="poster-img" src={posterImg} onLoad={() => onImageLoad()}  alt=""/>
 						{
-							isWx?(
-								<div className="down tip" style={{height: posterHeight/15 + 'px',lineHeight: posterHeight/15 + 'px'}}>
-									长按上面图片保存或分享
-								</div>
-							):(
-								<div className="down" onClick={() => downImg()} style={{height: posterHeight/15 + 'px',lineHeight: posterHeight/15 + 'px'}}>
-								 	下载到本地{imgLoad}
-								</div>
-							)
+							imgLoad && <div className="qr-code" style={{bottom: posterHeight/43 + 'px',right:posterHeight/33 + 'px'}}>
+								<QRCode value={qrCodeUrl} size={qrCodeWidth} fgColor="#000000" />
+							</div>
 						}
 					</div>
-				}
-				
-				
-				
+					{
+						imgLoad && <div>
+							
+							<div className="down tip" style={{height: posterHeight/15 + 'px',lineHeight: posterHeight/15 + 'px'}}>
+								{isWx?'长按上方图片保存或分享':'点击右方按钮下载分享'}
+							</div>
+							<div className="down-img" onClick={() => downImg()}>
+								<img src="https://xr-resources.yee.link/BGYimg/poster-download.png" alt=""/>
+							</div>
+						</div>
+					}
+					
+					
+					
+				</div>
+				<div className="small-tip">
+					邀请1名新用户则多一次抽奖机会哦！
+				</div>
 			</div>
 		)
 	}
@@ -247,7 +257,7 @@ export const BGYCloudRenderPage = (): any => {
     // commentsEle.style.zIndex = '99999'
     commentsEle.style.pointerEvents = 'auto'
     document.getElementById("routeGuide").style.display = 'none'
-    document.getElementById("default").style.top = 0
+    // document.getElementById("default").style.top = 0
   }
 
   const triggerButton = (button: GamepadButtons, pressed: boolean): void => {
@@ -267,23 +277,26 @@ export const BGYCloudRenderPage = (): any => {
   }
 
   return ( 
-		<div ref = {myRef} style = {
+		<div ref = {myRef} id="bgyCloudRender" style = {
 			{
 				position: 'relative',
-        pointerEvents: 'auto'
+        		pointerEvents: 'auto'
 			}
 		} >
-			<div className="profile" style={{display: 'none'}}>
+			{/* <div className="profile">
 				<img style={{width:posterHeight/6 + 'px',height:posterHeight/6 + 'px'}} onClick={() => openMyAward()} 
         src={getAvatarURLForUser(userAvatarDetails, userId)}  alt=""/>
-			</div>
-			<div className="dot-box" style={{display: 'none'}}>
-				<img className="dot-item" style={{width:posterHeight/8 + 'px'}} src="https://xr-resources.yee.link/BGYimg/information.png" onClick={() => handleComent()} alt=""/>
-				<img className="dot-item" style={{width:posterHeight/8 + 'px'}} src="https://xr-resources.yee.link/BGYimg/share.png" onClick={() => openPoster()}  alt=""/>
-				<img className='dot-item' style={{width:posterHeight/8 + 'px'}} src="https://xr-resources.yee.link/BGYimg/focusing.png" onClick={() => openNav()}  alt=""/>
+			</div> */}
+			<div className="dot-box">
+				<div className="dot-item" onClick={() => handleComent()}>评论</div>
+				<div className="dot-item" onClick={() => openPoster()}>分享</div>
+				{/* <div className="dot-item">聚焦</div> */}
+				{/* <img className="dot-item" style={{width:40 + 'px'}} src="https://xr-resources.yee.link/BGYimg/information.png" onClick={() => handleComent()} alt=""/> */}
+				{/* <img className="dot-item" style={{width:40 + 'px'}} src="https://xr-resources.yee.link/BGYimg/share.png" onClick={() => openPoster()}  alt=""/> */}
+				{/* <img className='dot-item' style={{width:posterHeight/8 + 'px'}} src="https://xr-resources.yee.link/BGYimg/focusing.png" onClick={() => openNav()}  alt=""/> */}
 			</div>
 			{
-				/*showPoster && <Poster />*/
+				showPoster && <Poster />
 			}
 		</div>
 	);
