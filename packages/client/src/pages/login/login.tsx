@@ -7,7 +7,7 @@ import Axios, {
   AxiosInstance,
 } from "axios";
 
-import  logs  from '../component/logAdd';
+//import  logs  from '../component/logAdd';
 
 import CommonTip from '../component/commenTip'
 import Screen from '../component/screen'
@@ -187,7 +187,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
 
   //手机号登录
   const submit = () => {
-    logs({name:'oranges'})
+//    logs({name:'oranges'})
     // props.loginFn(true)//测试用
     setShowLoading(true)
     clearInterval(timer);
