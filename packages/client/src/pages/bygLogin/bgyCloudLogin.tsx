@@ -43,12 +43,12 @@ export const BGYCloudLoginPage = (): any => {
     localStorage.setItem('API_LOGIN_ID',API_LOGIN_ID)
     var AVATAR_ID = getUrlParam('AVATAR_ID')
     var AVATAR_THUMBNAIL = getUrlParam('AVATAR_THUMBNAIL')
-    var AVATAR_NICKNAME = getUrlParam('AVATAR_NICKNAME')
+    var AVATAR_NICKNAME = decodeURIComponent(getUrlParam('AVATAR_NICKNAME'))
     var AVATAR_MODELRESOURCE = getUrlParam('AVATAR_MODELRESOURCE')
     var AVATAR_INDEX = getUrlParam('AVATAR_INDEX')
     AuthService.updateUsername(userId, AVATAR_NICKNAME)
     setAvatar(AVATAR_ID,AVATAR_MODELRESOURCE,AVATAR_THUMBNAIL)
-    history.push('location/BGYFW')
+    history.replace('/location/BGYFW')
   }, [])
  //头像保存
  const setAvatar = (avatarId: string, avatarURL: string, thumbnailURL: string) => {

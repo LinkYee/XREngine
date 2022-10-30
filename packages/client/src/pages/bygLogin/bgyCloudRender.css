@@ -1,5 +1,10 @@
+#cloud-in-box {
+    position: relative;
+    margin: 0 auto;
+}
+
 .dot-box {
-    position: fixed;
+    position: absolute;
     right: 25px;
     top: 50%;
     transform: translateY(-50%);
@@ -27,7 +32,7 @@
 }
 
 .profile {
-    position: fixed;
+    position: absolute;
     right: 30px;
     top: 5%;
     z-index: 9999;
@@ -47,7 +52,7 @@
 }
 
 .poster-box {
-    position: fixed;
+    position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -84,6 +89,10 @@
     position: absolute;
 }
 
+.poster-main .qr-code canvas {
+    border: 1px solid #07B1E0;
+}
+
 .poster-box .down {
     width: 100%;
     /* padding: 5px 0; */
@@ -111,7 +120,7 @@
 }
 
 .small-tip {
-    position: fixed;
+    position: absolute;
     left: 50%;
     bottom: 5px;
     transform: translateX(-50%);
@@ -119,4 +128,6 @@
     color: #fff;
     z-index: 99;
     background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 100px;
+    padding: 0 10px;
 }

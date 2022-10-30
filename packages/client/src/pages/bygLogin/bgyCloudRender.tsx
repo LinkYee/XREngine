@@ -25,7 +25,7 @@ export const BGYCloudRenderPage = (): any => {
 	const [showPoster, setShowPoster] = useState<boolean>(false);
 	const [posterHeight, setPosterHeight] = useState<any>(0);
 	const [qrCodeWidth, setQrCodeWidth] = useState<any>(0);
-	const [posterImg,setPosterImg] = useState<any>('https://xr-resources.yee.link/BGYimg/prohb3.jpg')
+	const [posterImg,setPosterImg] = useState<any>('https://xr-resources.yee.link/BGYimg/sharePoster.jpg')
 	const myRef = useRef()
   let qrCodeUrl;
 	// localStorage.setItem("invite", 8);
@@ -33,11 +33,11 @@ export const BGYCloudRenderPage = (): any => {
   const inviteId = localStorage.getItem('API_LOGIN_ID')
   const avatarId = localStorage.getItem('AVATAR_ID')
   const avatarThumbnail = localStorage.getItem('AVATAR_THUMBNAIL')
-  const avatarNickName = localStorage.getItem('AVATAR_NICKNAME')
+  const avatarNickName = encodeURIComponent(localStorage.getItem('AVATAR_NICKNAME'))
   const avatarSource = localStorage.getItem('AVATAR_MODELRESOURCE')
   const avatarIndex = localStorage.getItem('AVATAR_INDEX')
 	if(inviteId){
-		qrCodeUrl = `${window.location.origin}/guide/#/guide?invite=${inviteId}`
+		qrCodeUrl = `http://act.qingmeta.cn/bgyfw/#/guide?invite=${inviteId}`
 	}
 
   useEffect(() => {
@@ -105,27 +105,49 @@ export const BGYCloudRenderPage = (): any => {
 	useEffect(() => {
     const cWidth = document.documentElement.clientWidth;
     const cHeight = document.documentElement.clientHeight;
-    const { width, height } = myRef.current.getBoundingClientRect()
-    let bl;
+    // const { width, height } = myRef.current.getBoundingClientRect() 
+	// 获取平行云内层的实际宽高 
+    const { width, height } = document.querySelector(".pxy-container").getBoundingClientRect() 
 	
+	
+	// default样式修改
+	setTimeout(() => {
+		const contentDOM = document.getElementById("default");
+			console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+			console.log(contentDOM)
+		contentDOM.style.width = width + 'px';
+		contentDOM.style.height = height + 'px';
+		if(cWidth < cHeight){
+			contentDOM.style.top = '50%'
+			contentDOM.style.transform = 'translateY(-50%)'
+		}else{
+			contentDOM.style.left = '50%'
+			contentDOM.style.transform = 'translateX(-50%)'
+		}
+		
+	},2000)
+    let bl;
     if (cWidth < cHeight){
-      bl = width
-	  
+     	bl = width
+	  	document.getElementById("cloud-in-box").style.width = height + 'px'
+		document.getElementById("cloud-in-box").style.height = width + 'px'
 
 	  // 设置default样式
-	//   setTimeout(() => {
-	// 	console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-	// 	console.log(document.getElementById("default"))
-	// 	const contentDOM = document.getElementById("default");
-	// 	contentDOM.style.width = height + 'px';
-	// 	contentDOM.style.height = width + 'px';
-	// 	contentDOM.style.top = (height - width) / 2 + 'px';
-	// 	contentDOM.style.left = 0 - (height - width) / 2 + 'px';
-	// 	contentDOM.style.transform = 'rotate(90deg)';
-		
-	//   },1000)
+		//   setTimeout(() => {
+		// 	console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+		// 	console.log(document.getElementById("default"))
+		// 	const contentDOM = document.getElementById("default");
+		// contentDOM.style.width = height + 'px';
+		// contentDOM.style.height = width + 'px';
+		// 	contentDOM.style.top = (height - width) / 2 + 'px';
+		// 	contentDOM.style.left = 0 - (height - width) / 2 + 'px';
+		// 	contentDOM.style.transform = 'rotate(90deg)';
+			
+		//   },1000)
     }else{
-      bl = height
+      	bl = height
+	  	document.getElementById("cloud-in-box").style.width = width + 'px'
+		document.getElementById("cloud-in-box").style.height = height + 'px'
 	//   setTimeout(() => {
 		
 	// 	document.getElementById("default").style.top = 0
@@ -134,7 +156,7 @@ export const BGYCloudRenderPage = (): any => {
     }
 		// 获取平行云自动设置的宽高
 		setPosterHeight(bl * 0.8)
-		setQrCodeWidth(bl/13)
+		setQrCodeWidth(bl/11)
 		// alert(width)
 		
 		setTimeout(() => {
@@ -283,21 +305,23 @@ export const BGYCloudRenderPage = (): any => {
         		pointerEvents: 'auto'
 			}
 		} >
-			{/* <div className="profile">
-				<img style={{width:posterHeight/6 + 'px',height:posterHeight/6 + 'px'}} onClick={() => openMyAward()} 
-        src={getAvatarURLForUser(userAvatarDetails, userId)}  alt=""/>
-			</div> */}
-			<div className="dot-box">
-				<div className="dot-item" onClick={() => handleComent()}>评论</div>
-				<div className="dot-item" onClick={() => openPoster()}>分享</div>
-				{/* <div className="dot-item">聚焦</div> */}
-				{/* <img className="dot-item" style={{width:40 + 'px'}} src="https://xr-resources.yee.link/BGYimg/information.png" onClick={() => handleComent()} alt=""/> */}
-				{/* <img className="dot-item" style={{width:40 + 'px'}} src="https://xr-resources.yee.link/BGYimg/share.png" onClick={() => openPoster()}  alt=""/> */}
-				{/* <img className='dot-item' style={{width:posterHeight/8 + 'px'}} src="https://xr-resources.yee.link/BGYimg/focusing.png" onClick={() => openNav()}  alt=""/> */}
+			<div id="cloud-in-box">
+				<div className="profile">
+					<img style={{width:posterHeight/6 + 'px',height:posterHeight/6 + 'px'}} onClick={() => openMyAward()} 
+					src={getAvatarURLForUser(userAvatarDetails, userId)}  alt=""/>
+				</div>
+				<div className="dot-box">
+					<div className="dot-item" style={{width:posterHeight/8 + 'px',height:posterHeight/8 + 'px'}} onClick={() => handleComent()}>评论</div>
+					<div className="dot-item" style={{width:posterHeight/8 + 'px',height:posterHeight/8 + 'px'}} onClick={() => openPoster()}>分享</div>
+					{/* <div className="dot-item">聚焦</div> */}
+					{/* <img className="dot-item" style={{width:40 + 'px'}} src="https://xr-resources.yee.link/BGYimg/information.png" onClick={() => handleComent()} alt=""/> */}
+					{/* <img className="dot-item" style={{width:40 + 'px'}} src="https://xr-resources.yee.link/BGYimg/share.png" onClick={() => openPoster()}  alt=""/> */}
+					{/* <img className='dot-item' style={{width:posterHeight/8 + 'px'}} src="https://xr-resources.yee.link/BGYimg/focusing.png" onClick={() => openNav()}  alt=""/> */}
+				</div>
+				{
+					showPoster && <Poster />
+				}
 			</div>
-			{
-				showPoster && <Poster />
-			}
 		</div>
 	);
   // return (

@@ -198,9 +198,9 @@ const RolePage: React.FC<RoleState> = (props) => {
         NotificationService.dispatchNotify('即将带您进入碧桂园服务元宇宙', { variant: 'info' })
         setshowvideo(false)
         if(isCloud){
-            history.push('/bgyCloudRender')
+            history.replace('/bgyCloudRender')
         }else{
-            history.push('/location/BGYFW')
+            history.replace('/location/BGYFW')
         }
         // history.push('/location/bgy1')//测试用
     }
