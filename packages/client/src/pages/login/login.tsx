@@ -187,6 +187,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
 
   //手机号登录
   const submit = () => {
+//    logs({name:'oranges'})
     // props.loginFn(true)//测试用
     setShowLoading(true)
     clearInterval(timer);
