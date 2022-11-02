@@ -1,0 +1,135 @@
+#cloud-in-box {
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+}
+
+.dot-box {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dot-box img:last-of-type {
+    margin-bottom: 55px;
+}
+
+.dot-box .dot-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.profile {
+    position: absolute;
+    right: 30px;
+    top: 5%;
+    z-index: 9999;
+    cursor: pointer;
+}
+
+.profile img {
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #ccc;
+    border: 1px solid #fff;
+}
+
+.dot-box img {
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.poster-box {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99999;
+}
+
+.poster-main {
+    position: relative;
+}
+
+.poster-box .poster-main .poster-img {
+    height: 100%;
+    /* width: 30vw; */
+}
+
+.poster-box .close-box {
+    position: absolute;
+    right: -15px;
+    top: -15px;
+    z-index: 10;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+.poster-box .close-box .close-img {
+    width: 100%;
+    height: 100%;
+}
+
+.poster-main .qr-code {
+    position: absolute;
+}
+
+.poster-main .qr-code canvas {
+    border: 1px solid #07B1E0;
+}
+
+.poster-box .down {
+    width: 100%;
+    /* padding: 5px 0; */
+    box-sizing: border-box;
+    background-color: rgba(249, 149, 57, 0.8);
+    border-radius: 100px;
+    color: #fff;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.poster-box .tip {
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: initial;
+}
+
+.poster-box .down-img {
+    position: absolute;
+    right: -100px;
+    bottom: 20px;
+    width: 50px;
+    height: 50px;
+}
+
+.small-tip {
+    position: absolute;
+    left: 50%;
+    bottom: 5px;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: #fff;
+    z-index: 99;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 100px;
+    padding: 0 10px;
+}

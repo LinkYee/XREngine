@@ -17,7 +17,7 @@ export const wxShare = () => { //初始化微信分享卡片
 }
 
 const getConfig = async (url) => {
-  const { data: { data: wxConfig } } = await Axios.post('https://biz-api.xr-bgy-prd.yee.link/wx/share', {
+  const { data: { data: wxConfig } } = await Axios.post('https://xr.yee.link/bgy-api/wx/share', {
     url
   }).catch(err => {
     console.log(err)

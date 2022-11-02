@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom'
 import { useClientSettingState } from '@xrengine/client-core/src/admin/services/Setting/ClientSettingService'
 import styles from '@xrengine/client-core/src/admin/styles/admin.module.scss'
 import { NotificationService } from '@xrengine/client-core/src/common/services/NotificationService'
-import ProfileMenu from '@xrengine/client-core/src/user/components/UserMenu/menus/ProfileMenu'
+// import ProfileMenu from '@xrengine/client-core/src/user/components/UserMenu/menus/ProfileMenu'
 import SettingMenu from '@xrengine/client-core/src/user/components/UserMenu/menus/SettingMenu'
 import { Views } from '@xrengine/client-core/src/user/components/UserMenu/util'
 
@@ -88,9 +88,9 @@ export const HomePage = (): any => {
                 }
               `}
             </style>
-            {selectedMenu === Views.Profile && (
+            {/*selectedMenu === Views.Profile && (
               <ProfileMenu changeActiveMenu={(type) => setSelectedMenu(type ? type : Views.Profile)} />
-            )}
+            )*/}
             {selectedMenu === Views.Settings && (
               <SettingMenu changeActiveMenu={(type) => setSelectedMenu(type ? type : Views.Profile)} />
             )}
