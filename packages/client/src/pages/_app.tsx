@@ -103,10 +103,10 @@ const App = (): any => {
   useEffect(initApp, [])
 
   useEffect(() => {
-    chapiWalletPolyfill
-      .loadOnce()
-      .then(() => console.log('CHAPI wallet polyfill loaded.'))
-      .catch((e) => console.error('Error loading polyfill:', e))
+    // chapiWalletPolyfill
+    //   .loadOnce()
+    //   .then(() => console.log('CHAPI wallet polyfill loaded.'))
+    //   .catch((e) => console.error('Error loading polyfill:', e))
   }, [])
 
   useEffect(() => {
