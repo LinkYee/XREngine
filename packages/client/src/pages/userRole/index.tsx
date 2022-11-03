@@ -90,7 +90,9 @@ const RolePage: React.FC<RoleState> = (props) => {
             selectAvatar(avatarList[0],0)
         }
     }, [avatarList])
-
+ console.log('我是获取角色列表',avatarList)
+ console.log('我是获取角色列表',avatarList)
+ console.log('我是获取角色列表',avatarList)
     useEffect(() => {
         setScreenOrientation()
         console.log('屏幕是否为横屏模式' + screenOrt)
