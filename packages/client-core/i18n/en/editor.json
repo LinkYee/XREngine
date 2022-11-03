@@ -725,6 +725,17 @@
       "info-name": "名称必须在4到64个字符之间，不能包含下划线",
       "lbl-confirm": "保存项目"
     },
+    "saveScene": {
+      "title": "Save",
+      "lbl-thumbnail": "Generate thumbnail & envmap",
+      "lbl-confirm": "Save Scene"
+    },
+    "saveNewScene": {
+      "title": "Save As",
+      "lbl-name": "Scene Name",
+      "info-name": "Name must be between 4 and 64 characters and cannot contain underscores",
+      "lbl-confirm": "Save Scene"
+    },
     "support": {
       "title": "支持",
       "header": "需要报告问题吗？",

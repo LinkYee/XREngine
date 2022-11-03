@@ -4,12 +4,12 @@ set -x
 
 export HTTP_PROXY=http://52.81.203.102:9087
 export HTTPS_PROXY=http://52.81.203.102:9087
-export NO_PROXY=xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn
-npm config set registry https://registry.npm.taobao.org
+export NO_PROXY=xr-resources.yee.link,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn
+npm config set registry https://registry.npmmirror.com
 npm config set sass_binary_site https://npm.taobao.org/mirrors/node-sass/
 npm config set proxy "http://52.81.203.102:9087" 
 npm config set https-proxy "http://52.81.203.102:9087"
-npm config set noproxy "xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn"
+npm config set noproxy "xr-resources.yee.link,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn"
 
 until [ -f /var/lib/docker/certs/client/ca.pem ]
 do
@@ -51,6 +51,8 @@ DOCKER_BUILDKIT=1 docker build -t root-builder -f dockerfiles/package-root/Docke
 
 npm install -g cli aws-sdk
 
+if [ "$SERVE_CLIENT_FROM_STORAGE_PROVIDER" = "true" ] && [ "$STORAGE_PROVIDER" = "aws" ] ; then npm run list-client-s3-files-to-delete ; fi
+
 [ -e builder_failed.txt ] && rm builder_failed.txt
 bash ./scripts/build_and_publish_package.sh $RELEASE_NAME $DOCKER_LABEL client $START_TIME $PRIVATE_ECR $AWS_REGION $NODE_ENV || touch builder_failed.txt &
 bash ./scripts/build_and_publish_package.sh $RELEASE_NAME $DOCKER_LABEL api $START_TIME $PRIVATE_ECR $AWS_REGION $NODE_ENV || touch builder_failed.txt &
@@ -83,4 +85,10 @@ bash ./scripts/cleanup_builder.sh $DOCKER_LABEL
 
 END_TIME=`date +"%d-%m-%yT%H-%M-%S"`
 echo "Started build at $START_TIME, deployed image to K8s at $DEPLOY_TIME, ended at $END_TIME"
+sleep 5m
+if [ "$SERVE_CLIENT_FROM_STORAGE_PROVIDER" = "true" ] && [ "$STORAGE_PROVIDER" = "aws" ] ; then
+  npm run delete-old-s3-files;
+  echo "Deleted old client files from S3"
+fi
+
 sleep infinity
