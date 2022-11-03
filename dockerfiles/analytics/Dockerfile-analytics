@@ -14,7 +14,7 @@ ENV HTTP_PROXY=http://52.81.203.102:9087
 ENV HTTPS_PROXY=http://52.81.203.102:9087
 RUN npm config set proxy "http://52.81.203.102:9087" 
 RUN npm config set https-proxy "http://52.81.203.102:9087"
-RUN npm config set noproxy "xr-resources.yee.link,npm.taobao.org,registry.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn"
+RUN npm config set noproxy "xr-resources.yee.link,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn"
 RUN npm install --loglevel notice --legacy-peer-deps
 
 COPY . .
