@@ -1,5 +1,5 @@
 import { useHookstate } from '@hookstate/core'
-import * as polyfill from 'credential-handler-polyfill'
+//import * as polyfill from 'credential-handler-polyfill'
 import React, { useEffect, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { useTranslation } from 'react-i18next'
@@ -116,7 +116,7 @@ const ProfileMenu = ({
     try {
       const mediator = config.client.mediatorServer + `/mediator?origin=${encodeURIComponent(window.location.origin)}`
 
-      await polyfill.loadOnce(mediator)
+      // await polyfill.loadOnce(mediator)
       console.log('Ready to work with credentials!')
     } catch (e) {
       logger.error(e, 'Error loading polyfill')

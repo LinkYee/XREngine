@@ -1,5 +1,5 @@
 import { createState, useHookstate } from '@hookstate/core'
-import * as polyfill from 'credential-handler-polyfill'
+//import * as polyfill from 'credential-handler-polyfill'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -132,7 +132,7 @@ const ProfileDetailView = () => {
     try {
       const mediator = `${config.client.mediatorServer}/mediator?origin=${encodeURIComponent(window.location.origin)}`
 
-      await polyfill.loadOnce(mediator)
+      // await polyfill.loadOnce(mediator)
     } catch (e) {
       logger.error(e, 'Error loading polyfill')
     }
