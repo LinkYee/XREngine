@@ -688,7 +688,7 @@ const UserMediaWindow = ({ peerId }: Props): JSX.Element => {
           <img
             src={getAvatarURLForUser(userAvatarDetails, isSelfUser ? selfUser?.id : user?.id)}
             alt=""
-            style={{display:'none'}}
+            // style={{display:'none'}}
             crossOrigin="anonymous"
             draggable={false}
           />
