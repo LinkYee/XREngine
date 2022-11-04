@@ -96,7 +96,7 @@ export default defineConfig(async () => {
       }),
       viteCompression({
         filter: /\.(js|mjs|json|css)$/i,
-        algorithm: 'brotliCompress',
+//        algorithm: 'brotliCompress',
         deleteOriginFile: true
       })
     ],
@@ -109,7 +109,7 @@ export default defineConfig(async () => {
       alias: {
         'react-json-tree': 'react-json-tree/umd/react-json-tree',
         'socket.io-client': 'socket.io-client/dist/socket.io.js',
-        '@mui/styled-engine': '@mui/styled-engine-sc/'
+        '@mui/styled-engine': '@mui/styled-engine-sc'
       }
     },
     build: {
