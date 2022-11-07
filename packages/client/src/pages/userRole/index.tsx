@@ -44,8 +44,20 @@ const RolePage: React.FC<RoleState> = (props) => {
     const avatarId = authState.user?.avatarId?.value
     const avatarState = useHookstate(getState(AvatarState))
     const list = avatarState.avatarList.value
-    const avatarList = list.slice(0, 6)
-    // const defaultPeople = list[0].name
+
+
+    var query = window.location.href.substring(1)
+            var num = query.split("=")
+            var invite = num[1]
+
+    var avatarList = []
+    if(invite === 'admin'){
+        avatarList = list
+    }else{
+        avatarList = list.slice(0, 6)
+    }
+    //const avatarList = list
+        // const defaultPeople = list[0].name
     const selfUser = useAuthState().user
     const userId = selfUser.id.value
 
@@ -90,9 +102,7 @@ const RolePage: React.FC<RoleState> = (props) => {
             selectAvatar(avatarList[0],0)
         }
     }, [avatarList])
- console.log('我是获取角色列表',avatarList)
- console.log('我是获取角色列表',avatarList)
- console.log('我是获取角色列表',avatarList)
+console.log('我是list',avatarList)
     useEffect(() => {
         setScreenOrientation()
         console.log('屏幕是否为横屏模式' + screenOrt)
@@ -155,40 +165,42 @@ const RolePage: React.FC<RoleState> = (props) => {
                 selectedAvatar?.thumbnailResource?.url || ''
             )
             localStorage.setItem('AVATAR_ID',selectedAvatar?.id || '')
+            // console.log('')
             localStorage.setItem('AVATAR_MODELRESOURCE',selectedAvatar?.modelResource?.url || '')
             localStorage.setItem('AVATAR_THUMBNAIL',selectedAvatar?.thumbnailResource?.url || '')
             setSelectedAvatar('')
             //业务接口
-            Axios({
-                url: 'https://biz-api.xr-bgy-prd.yee.link/user/edit',
-                method: 'post',
-                data: {
-                    username: peopleName,
-                    facade: selectedAvatar.id,
-                    profile_picture: selectedAvatar.thumbnailResource.url
-                },
-                headers: { 'Content-Type': 'application/json' }
-            }).then(res => {
-                if (res.data.code == 200) {
-                    //播放视频之后再跳转
-                    // setshowvideo(true)
-                    // @TODO 隐藏视频
-                    gotoHome()
-                } else {
-                    NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
-                }
-            }).catch(err => {
-                let { message } = err;
-                if (message == "Network Error") {
-                    message = "后端接口连接异常";
-                } else if (message.includes("timeout")) {
-                    message = "系统接口请求超时";
-                } else if (message.includes("Request failed with status code")) {
-                    message = "系统接口" + message.substr(message.length - 3) + "异常";
-                }
-                NotificationService.dispatchNotify(message, { variant: 'error' })
+            // Axios({
+            //     url: 'https://biz-api.xr-bgy-prd.yee.link/user/edit',
+            //     method: 'post',
+            //     data: {
+            //         username: peopleName,
+            //         facade: selectedAvatar.id,
+            //         profile_picture: selectedAvatar.thumbnailResource.url
+            //     },
+            //     headers: { 'Content-Type': 'application/json' }
+            // }).then(res => {
+            //     if (res.data.code == 200) {
+            //         //播放视频之后再跳转
+            //         // setshowvideo(true)
+            //         // @TODO 隐藏视频
+            //         gotoHome()
+            //     } else {
+            //         NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
+            //     }
+            // }).catch(err => {
+            //     let { message } = err;
+            //     if (message == "Network Error") {
+            //         message = "后端接口连接异常";
+            //     } else if (message.includes("timeout")) {
+            //         message = "系统接口请求超时";
+            //     } else if (message.includes("Request failed with status code")) {
+            //         message = "系统接口" + message.substr(message.length - 3) + "异常";
+            //     }
+            //     NotificationService.dispatchNotify(message, { variant: 'error' })
 
-            })
+            // })
+            gotoHome()
         }
 
     }
@@ -197,14 +209,16 @@ const RolePage: React.FC<RoleState> = (props) => {
     }
     //页面跳转
     const gotoHome = () => {
-        NotificationService.dispatchNotify('即将带您进入碧桂园服务元宇宙', { variant: 'info' })
+        NotificationService.dispatchNotify('即将带您进入元宇宙', { variant: 'info' })
         setshowvideo(false)
         // if(isCloud){
         //     history.replace('/bgyCloudRender')
         // }else{
         //     history.replace('/location/BGYFW')
         // }
-        history.push('/location/BGYFW')//测试用
+
+        history.push('location/ZhongWenZaiXian')//测试用
+
     }
     //tip
     const TipShow = (text: string) => {
@@ -223,16 +237,17 @@ const RolePage: React.FC<RoleState> = (props) => {
         <div className='role-box'>
             {/* <img className="bg2Style" src={bg2} alt="" style={{ height: '100%' }} /> */}
             <div className='role-content'>
-                <div className='left-box'>
+                {/* <div className='left-box'>
                     <div className='people-box'>
                         <div className='people-bot-circle'></div>
                         <img className="peopleStyle" src={aPeople} alt="" />
                     </div>
+
                     <div className='people-input-box'>
                         <input
                             className='people-input'
                             style={{ border: 'none', height: '100%', width: '100%', borderRadius: 'inherit', padding: '0 8px' }}
-                            placeholder='请输入ta的名字'
+                            placeholder='请输入ta1231的名字'
                             onChange={(e) => {
                                 peopleChange(e.target.value)
                             }}
@@ -242,8 +257,21 @@ const RolePage: React.FC<RoleState> = (props) => {
                         />
                     </div>
 
-                </div>
+                </div> */}
                 <div className='right-box'>
+                <div className='people-input-box'>
+                        <input
+                            className='people-input'
+                            style={{ border: 'none', height: '100%', width: '100%', borderRadius: 'inherit', padding: '0 8px' }}
+                            placeholder='请输入名字'
+                            onChange={(e) => {
+                                peopleChange(e.target.value)
+                            }}
+                            onBlur={(e) => {
+                                peopleBlur(e.target.value)
+                            }}
+                        />
+                    </div>
                     <div className='list'>
                         <div className='list-box'>
                             {
