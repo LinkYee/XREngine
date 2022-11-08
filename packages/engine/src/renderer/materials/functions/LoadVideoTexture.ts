@@ -30,10 +30,6 @@ export default function loadVideoTexture(src, onLoad = (result) => {}) {
   el.src = src
 
   const texture = new VideoTexture(el)
-  el.addEventListener("resize", () => {
-    texture.update()
-    texture.fullScreenResize(false)
-  })
   el.currentTime = 1
   if (!texture){
     console.error('texture is missing')
@@ -41,7 +37,6 @@ export default function loadVideoTexture(src, onLoad = (result) => {}) {
     console.log('load video texture')
     texture.minFilter = LinearFilter;
     texture.magFilter = LinearFilter;
-    texture.needsUpdate = true;
     texture.crossOrigin = "anonymous";
   }
   el.addEventListener(
