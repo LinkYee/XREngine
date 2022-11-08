@@ -275,6 +275,10 @@ export function MediaReactor({ root }: EntityReactorProps) {
         element.preload = 'auto'
         element.muted = false
         element.setAttribute('playsinline', 'true')
+        element.setAttribute('crossOrigin', 'anonymous')
+        element.setAttribute('playsInline', 'true')
+        element.setAttribute('webkit-playsInline', 'true')
+        element.setAttribute('webkit-playsinline', 'true')
 
         const signal = mediaElementState.abortController.signal.value
 
