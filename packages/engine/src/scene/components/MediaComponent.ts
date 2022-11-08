@@ -152,14 +152,15 @@ export const MediaComponent = defineComponent({
           { signal }
         )
         mediaElement.element.addEventListener('waiting', () => state.playing.set(false), { signal })
-        mediaElement.element.addEventListener(
-          'error',
-          (err) => {
-            addError(entity, `mediaError`, err.message)
-            if (state.playing.value) state.track.set(getNextTrack(state))
-          },
-          { signal }
-        )
+        // @TODO 删除错误提示，防止
+        // mediaElement.element.addEventListener(
+        //   'error',
+        //   (err) => {
+        //     addError(entity, `mediaError`, err.message)
+        //     if (state.playing.value) state.track.set(getNextTrack(state))
+        //   },
+        //   { signal }
+        // )
 
         mediaElement.element.addEventListener(
           'ended',
