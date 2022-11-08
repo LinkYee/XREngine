@@ -1,4 +1,4 @@
-import { VideoTexture, LinearFilter, RGBFormat } from 'three'
+import { VideoTexture, LinearFilter } from 'three'
 
 import { isClient } from '../../../common/functions/isClient'
 import { EngineRenderer } from '../../WebGLRendererSystem'
@@ -37,7 +37,6 @@ export default function loadVideoTexture(src, onLoad = (result) => {}) {
     console.log('load video texture')
     texture.minFilter = LinearFilter;
     texture.magFilter = LinearFilter;
-    texture.format = RGBFormat;
     texture.crossOrigin = "anonymous";
   }
   el.addEventListener(
