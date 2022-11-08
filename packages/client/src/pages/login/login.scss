@@ -40,14 +40,15 @@ button:active {
     position: absolute;
     z-index: 9999;
     width: 70%;
-    height: 80%;
+    height: 30%;
     left: 0;
     right: 0;
     bottom: 0;
     top: 0;
     margin: auto;
-    background-image: url("https://xr-resources.yee.link/Asset/bg-box.gif");
+    background-image: url("https://xr-resources.yee.link/ZWZXUser/bg/bg.jpg");
     background-size: 100% 100%;
+    border-radius: 5%;
 }
 
 .box-title {
@@ -64,10 +65,11 @@ button:active {
 }
 
 .btn-login {
-    width: 45%;
+    // width: 45%;
     height: 40px;
-    margin-top: 10%;
-    margin-left: 5%;
+    margin: 10%;
+    // margin-top: 10%;
+    // margin-left: 5%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -120,15 +122,17 @@ button:active {
     /* display: none; */
     position: absolute;
     width: 70%;
+    height: 50%;
     // height: 80%;
     left: 0;
     right: 0;
     bottom: 0;
     top: 0;
-    margin: 32px auto;
-    background-image: url("http://webxr-qing.oss-cn-hangzhou.aliyuncs.com/model/bg-box.png");
+    margin: auto;
+    background-image: url("https://xr-resources.yee.link/ZWZXUser/bg/bg.jpg");
     background-size: 100% 100%;
     min-height: 300px;
+    border-radius: 5%;
 }
 
 .login-inp {
@@ -143,7 +147,7 @@ button:active {
 }
 
 .pho-login {
-    width: 45%;
+    width: 80%;
     height: 36px;
     margin-top: 2%;
     margin-left: 24px;
@@ -175,16 +179,17 @@ button:active {
 }
 
 .val-number {
-    position: absolute;
+    // position: absolute;
     color: #3388FF;
     left: 33%;
 }
 
 .box-login {
-    width: 45%;
+    // width: 45%;
+    margin: 10%;
     height: 36px;
-    margin-top: 3%;
-    margin-left: 24px;
+    // margin-top: 3%;
+    // margin-left: 24px;
     display: flex;
     justify-content: center;
     align-items: center;

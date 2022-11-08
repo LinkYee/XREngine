@@ -1,6 +1,7 @@
 .role-container {
     width: 100vw;
     height: 100vh;
+    // margin-top:30%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,8 +24,8 @@
 
 .role-content {
     width: 100%;
-    height: 100%;
-    display: grid;
+    height: 75%;
+    // display: grid;
     grid-template-columns: 42% 58%;
     // display: flex;
     // justify-content: space-between;

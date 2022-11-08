@@ -797,7 +797,7 @@ export const AuthService = {
 
   async updateUsername(userId: string, name: string) {
     const { name: updatedName } = await API.instance.client.service('user').patch(userId, { name: name })
-    NotificationService.dispatchNotify(i18n.t('user:usermenu.profile.update-msg'), { variant: 'success' })
+    // NotificationService.dispatchNotify(i18n.t('user:usermenu.profile.update-msg'), { variant: 'success' })
     dispatchAction(AuthAction.usernameUpdatedAction({ name: updatedName }))
   },
 

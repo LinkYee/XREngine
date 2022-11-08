@@ -26,7 +26,7 @@ const RoleTipPage: React.FC<IntProps> = (props) => {
                     提示
                 </div>
                 <div className='role-tip-text'>
-                    欢迎进入碧桂园服务第二届客户体验创新节活动，快来选择您的虚拟人形象吧！
+                    欢迎进入元宇宙空间，快来选择您的虚拟人形象吧！
                 </div>
                 <div className='role-submit-btn' onClick={submit}>确定</div>
             </div>
