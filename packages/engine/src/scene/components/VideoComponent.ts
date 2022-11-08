@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { DoubleSide, Group, Mesh, MeshBasicMaterial, Side, Vector2 } from 'three'
-import { VideoTexture, LinearFilter, RGBFormat} from 'three'
+import { VideoTexture, LinearFilter} from 'three'
 
 import {
   defineComponent,
@@ -115,7 +115,6 @@ function VideoReactor({ root }: EntityReactorProps) {
       let videoTextureMaterial = new VideoTexture(mediaElement.element.value as HTMLVideoElement)
       videoTextureMaterial.minFilter = LinearFilter
       videoTextureMaterial.magFilter = LinearFilter
-      videoTextureMaterial.format = RGBFormat
       videoTextureMaterial.crossOrigin = "anonymous"
       material.map = videoTextureMaterial
     }
