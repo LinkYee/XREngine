@@ -38,6 +38,7 @@ export default function loadVideoTexture(src, onLoad = (result) => {}) {
     texture.minFilter = LinearFilter;
     texture.magFilter = LinearFilter;
     texture.format = RGBFormat;
+    texture.needsUpdate = true;
     texture.crossOrigin = "anonymous";
   }
   el.addEventListener(
