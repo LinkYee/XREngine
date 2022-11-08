@@ -358,7 +358,8 @@ export const setupHLS = (entity: Entity, url: string): Hls => {
           break
         case Hls.ErrorTypes.MEDIA_ERROR:
           console.error('fatal media error encountered, try to recover', event, data)
-          hls.recoverMediaError()
+          // hls.recoverMediaError()
+          hls.startLoad()
           break
         default:
           // cannot recover
@@ -367,7 +368,7 @@ export const setupHLS = (entity: Entity, url: string): Hls => {
           break
       }
 
-      addError(entity, 'error', 'Error Loading video')
+      // addError(entity, 'error', 'Error Loading video')
     }
   })
 
