@@ -32,6 +32,7 @@ import avatar from '../../assets/img/avatar.png'
 import people from '../../assets/img/people.png'
 import rolebtn from '../../assets/img/rolebtn.png'
 import { NotificationService } from "@xrengine/client-core/src/common/services/NotificationService";
+import { getChannelTypeIdFromTransport } from '../../../../client-core/src/transports/SocketWebRTCClientFunctions';
 
 interface RoleState {
     isCloud: boolean
@@ -54,7 +55,9 @@ const RolePage: React.FC<RoleState> = (props) => {
     if(invite === 'admin'){
         avatarList = list
     }else{
-        avatarList = list.slice(0, 6)
+        //avatarList = list.slice(0, 6)
+        avatarList  = list.filter((item)=>(item.id!='f66c1ed0-5d93-11ed-9a42-4f37a9e7a10f' && item.id!= '525db7d0-5d94-11ed-9a42-4f37a9e7a10f' && item.id!= '8e97cf10-5d94-11ed-9a42-4f37a9e7a10f'&& item.id!= '66aa2e80-5e7f-11ed-9a42-4f37a9e7a10f'&& item.id!= '735521d0-5e7f-11ed-9a42-4f37a9e7a10f'&& item.id!= '81870340-5e7f-11ed-9a42-4f37a9e7a10f'))
+        //avatarList  = list.slice(3);
     }
     //const avatarList = list
         // const defaultPeople = list[0].name
@@ -217,7 +220,7 @@ console.log('我是list',avatarList)
         //     history.replace('/location/BGYFW')
         // }
 
-        history.push('location/zwzx202211')//测试用
+        history.push('/location/zwzx202211')//测试用
 
     }
     //tip

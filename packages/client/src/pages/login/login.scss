@@ -13,7 +13,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url('https://xr-resources.yee.link/Asset/loginbg.jpg');
+    background-image: url('https://xr-resources.yee.link/ZWZXUser/bg/loginbg.jpg');
     background-size: 100% 100%;
 }
 
@@ -122,12 +122,12 @@ button:active {
     /* display: none; */
     position: absolute;
     width: 70%;
-    height: 50%;
+    // height: 50%;
     // height: 80%;
     left: 0;
     right: 0;
-    bottom: 0;
-    top: 0;
+    // bottom: 0;
+    // top: 0;
     margin: auto;
     background-image: url("https://xr-resources.yee.link/ZWZXUser/bg/bg.jpg");
     background-size: 100% 100%;
@@ -210,7 +210,7 @@ button:active {
 
 .agreement {
     display: block;
-    width: 50%;
+    // width: 50%;
     // height: 5%;
     margin: 2% 0 0 24px;
     // margin-left: 5%;

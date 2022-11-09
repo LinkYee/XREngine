@@ -6,7 +6,7 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    background-image: url('../../assets/img/loginbg.png');
+    background-image: url('https://xr-resources.yee.link/ZWZXUser/bg/loginbg.jpg');
     background-size: 100% 100%;
 }
 
@@ -79,9 +79,9 @@
 
 .people-input-box {
     position: absolute;
-    left: 56%;
+    // left: 56%;
     top: 16px;
-    width: 108px;
+    // width: 108px;
     height: 40px;
     background: #FFFFFF;
     box-shadow: 0px 1px 2px 0px rgba(147, 147, 161, 0.7);
@@ -160,10 +160,11 @@ input:focus {
 
 .role-tip-box {
     position: absolute;
+    padding: 10%;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    // height: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -172,7 +173,7 @@ input:focus {
 .role-tip-content {
     position: relative;
     width: 68%;
-    height: 58%;
+    height: 40%;
     text-align: center;
 }
 
