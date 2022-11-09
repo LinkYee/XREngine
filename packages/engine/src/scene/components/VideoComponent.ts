@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { DoubleSide, Group, Mesh, MeshBasicMaterial, Side, Vector2 } from 'three'
-import { VideoTexture } from 'three'
+import { VideoTexture, LinearFilter} from 'three'
 
 import {
   defineComponent,
@@ -111,7 +111,12 @@ function VideoReactor({ root }: EntityReactorProps) {
     if (material.map) {
       material.map.image = mediaElement.element.value as HTMLVideoElement
     } else {
-      material.map = new VideoTexture(mediaElement.element.value as HTMLVideoElement)
+      //material.map = new VideoTexture(mediaElement.element.value as HTMLVideoElement)
+      let videoTextureMaterial = new VideoTexture(mediaElement.element.value as HTMLVideoElement)
+      videoTextureMaterial.minFilter = LinearFilter
+      videoTextureMaterial.magFilter = LinearFilter
+      videoTextureMaterial.crossOrigin = "anonymous"
+      material.map = videoTextureMaterial
     }
     material.needsUpdate = true
     clearErrors(entity, VideoComponent)

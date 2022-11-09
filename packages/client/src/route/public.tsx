@@ -31,7 +31,6 @@ import $404 from '../pages/404'
 import $503 from '../pages/503'
 import { CustomRoute, getCustomRoutes } from './getCustomRoutes'
 import bgyLogin from "../pages/bygLogin/bgyLogin";
-import bgyCloudRender from "../pages/bygLogin/bgyCloudRender";
 import bgyCloudClientLogin from "../pages/bygLogin/bgyCloudClientLogin";
 import bgyCloudLogin from "../pages/bygLogin/bgyCloudLogin";
 
@@ -128,7 +127,6 @@ function RouterComp() {
           ))}
           <Route path="/bgyLogin" component={bgyLogin} />
           <Route path="/bgyCL" component={bgyCloudClientLogin} />
-          <Route path="/bgyCloudRender" component={bgyCloudRender} />
           <Route path="/bgyCloudLogin" component={bgyCloudLogin} />
           <Route key={'offline'} path={'/offline'} component={$offline} />
           {/* default to allowing admin access regardless */}

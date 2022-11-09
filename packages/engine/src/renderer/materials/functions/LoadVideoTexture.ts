@@ -1,4 +1,4 @@
-import { VideoTexture } from 'three'
+import { VideoTexture, LinearFilter } from 'three'
 
 import { isClient } from '../../../common/functions/isClient'
 import { EngineRenderer } from '../../WebGLRendererSystem'
@@ -31,8 +31,14 @@ export default function loadVideoTexture(src, onLoad = (result) => {}) {
 
   const texture = new VideoTexture(el)
   el.currentTime = 1
-  if (!texture) console.error('texture is missing')
-
+  if (!texture){
+    console.error('texture is missing')
+  }else{
+    console.log('load video texture')
+    texture.minFilter = LinearFilter;
+    texture.magFilter = LinearFilter;
+    texture.crossOrigin = "anonymous";
+  }
   el.addEventListener(
     'loadeddata',
     () => {
