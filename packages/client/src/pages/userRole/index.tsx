@@ -217,7 +217,7 @@ console.log('我是list',avatarList)
         //     history.replace('/location/BGYFW')
         // }
 
-        history.push('location/ZhongWenZaiXian')//测试用
+        history.push('location/zwzx202211')//测试用
 
     }
     //tip
