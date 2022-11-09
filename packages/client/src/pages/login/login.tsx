@@ -194,7 +194,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
     initTimer()
     if (radio && phoneNumber && code) {
       Axios({
-        url: 'https://biz-api.xr-bgy-prd.yee.link/checkSMSCode',
+        url: 'https://biz-api.xr-bgy-prd.yee.link/user/login',
         method: 'post',
         data: `phoneNumber=${phoneNumber}&checkSMSCode=${code}&share_id=${shareId}`,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -349,7 +349,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
           <div className='loginPage-box'>
             <div className='box-title' >选择登录</div>
             <div className='btn-login' onClick={PhoneLogin}>手机号登录</div>
-            {
+            {/* {
               isWxWeb && <div className='btn-wx'>
                 <img
                   className="wx"
@@ -359,7 +359,7 @@ const LoginPage: React.FC<IntProps> = (props) => {
                 />
                 <span className='btn-textWX' onClick={WeixinLogin}>微信登录</span>
               </div>
-            }
+            } */}
 
           </div>
         ) :
