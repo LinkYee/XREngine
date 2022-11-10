@@ -232,14 +232,13 @@ if (isIOS) {
     }else{
         history.push('/location/zwzx202211-ios')//跳转到ios场景
     }
-}
-if(isAndroid){
+}else if(isAndroid){
     if(invite == 'admin'){
         history.push('/location/zwzx202211-admin')//跳转到管理员场景
     }else{
         history.push('/location/zwzx202211')//跳转到安卓场景
     }
-}
+}else history.push('/location/zwzx202211')//跳转到安卓场景
 
     }
     //tip
