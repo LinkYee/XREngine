@@ -227,18 +227,25 @@ var u = navigator.userAgent, app = navigator.appVersion
 var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 // 其它安卓
 var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios
 if (isIOS) {
+    console.log('我是苹果用户')
     if(invite == 'admin'){
+        console.log('苹果用户进入admin')
         history.push('/location/zwzx202211-admin')//跳转到管理员场景
     }else{
+        console.log('ios场景')
         history.push('/location/zwzx202211-ios')//跳转到ios场景
     }
 }else if(isAndroid){
+    console.log('我是安卓用户')
     if(invite == 'admin'){
+        console.log('我是安卓管理员')
         history.push('/location/zwzx202211-admin')//跳转到管理员场景
     }else{
+        console.log('我是安卓普通用户')
         history.push('/location/zwzx202211')//跳转到安卓场景
     }
 }else history.push('/location/zwzx202211')//跳转到安卓场景
+console.log('我是其他用户')
 
     }
     //tip
