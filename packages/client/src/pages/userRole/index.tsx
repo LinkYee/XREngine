@@ -219,8 +219,27 @@ console.log('我是list',avatarList)
         // }else{
         //     history.replace('/location/BGYFW')
         // }
+        var query = window.location.href.substring(1)
+        var num = query.split("=")
+        var invite = num[1]
 
-        history.push('/location/zwzx202211')//测试用
+var u = navigator.userAgent, app = navigator.appVersion
+var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 // 其它安卓
+var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios
+if (isIOS) {
+    if(invite == 'admin'){
+        history.push('/location/zwzx202211-admin')//跳转到管理员场景
+    }else{
+        history.push('/location/zwzx202211-ios')//跳转到ios场景
+    }
+}
+if(isAndroid){
+    if(invite == 'admin'){
+        history.push('/location/zwzx202211-admin')//跳转到管理员场景
+    }else{
+        history.push('/location/zwzx202211')//跳转到安卓场景
+    }
+}
 
     }
     //tip
