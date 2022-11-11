@@ -46,32 +46,27 @@ export const BGYCloudLoginPage = (): any => {
     //return null // 返回参数值
   }
   useEffect(() => {
-    // getCode()
-    
-  }, [])
-
-  useEffect(() => {
     if (avatarList.length > 0) {
         console.log('defaultPeople-----------------' + avatarList[0].name)
         selectAvatar(avatarList[0], 0)
+        var API_LOGIN_ID = getUrlParam('API_LOGIN_ID')
+        localStorage.setItem('API_LOGIN_ID',API_LOGIN_ID)
+        var API_AVATARS_ID = getUrlParam('API_AVATARS_ID')
+        localStorage.setItem('API_AVATARS_ID',API_AVATARS_ID)
+        var AVATAR_THUMBNAIL = decodeURIComponent(getUrlParam('AVATAR_THUMBNAIL'))
+        var AVATAR_NICKNAME = decodeURIComponent(getUrlParam('AVATAR_NICKNAME'))
+        var AVATAR_MODELRESOURCE = decodeURIComponent(getUrlParam('AVATAR_MODELRESOURCE'))
+        console.log('===============',AVATAR_MODELRESOURCE)
+        var AVATAR_INDEX = getUrlParam('AVATAR_INDEX')
+        localStorage.setItem('AVATAR_INDEX',AVATAR_INDEX)
+        AuthService.updateUsername(userId, AVATAR_NICKNAME)
+        setAvatar(API_AVATARS_ID,AVATAR_MODELRESOURCE,AVATAR_THUMBNAIL)
+        var TOKEN = getUrlParam('TOKEN')
+        localStorage.setItem('token',TOKEN)
+        var GUIDEID = getUrlParam('GUIDEID')
+        localStorage.setItem('guideId',GUIDEID)
+        history.replace('/location/BGYFW')
     }
-    var API_LOGIN_ID = getUrlParam('API_LOGIN_ID')
-    localStorage.setItem('API_LOGIN_ID',API_LOGIN_ID)
-    var API_AVATARS_ID = getUrlParam('API_AVATARS_ID')
-    localStorage.setItem('API_AVATARS_ID',API_AVATARS_ID)
-    var AVATAR_THUMBNAIL = decodeURIComponent(getUrlParam('AVATAR_THUMBNAIL'))
-    var AVATAR_NICKNAME = decodeURIComponent(getUrlParam('AVATAR_NICKNAME'))
-    var AVATAR_MODELRESOURCE = decodeURIComponent(getUrlParam('AVATAR_MODELRESOURCE'))
-    console.log('===============',AVATAR_MODELRESOURCE)
-    var AVATAR_INDEX = getUrlParam('AVATAR_INDEX')
-    localStorage.setItem('AVATAR_INDEX',AVATAR_INDEX)
-    AuthService.updateUsername(userId, AVATAR_NICKNAME)
-    setAvatar(API_AVATARS_ID,AVATAR_MODELRESOURCE,AVATAR_THUMBNAIL)
-    var TOKEN = getUrlParam('TOKEN')
-    localStorage.setItem('token',TOKEN)
-    var GUIDEID = getUrlParam('GUIDEID')
-    localStorage.setItem('guideId',GUIDEID)
-    history.replace('/location/BGYFW')
 
 }, [avatarList])
 
