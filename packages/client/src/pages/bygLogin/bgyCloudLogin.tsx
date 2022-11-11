@@ -47,6 +47,14 @@ export const BGYCloudLoginPage = (): any => {
   }
   useEffect(() => {
     // getCode()
+    
+  }, [])
+
+  useEffect(() => {
+    if (avatarList.length > 0) {
+        console.log('defaultPeople-----------------' + avatarList[0].name)
+        selectAvatar(avatarList[0], 0)
+    }
     var API_LOGIN_ID = getUrlParam('API_LOGIN_ID')
     localStorage.setItem('API_LOGIN_ID',API_LOGIN_ID)
     var API_AVATARS_ID = getUrlParam('API_AVATARS_ID')
@@ -63,16 +71,8 @@ export const BGYCloudLoginPage = (): any => {
     localStorage.setItem('token',TOKEN)
     var GUIDEID = getUrlParam('GUIDEID')
     localStorage.setItem('guideId',GUIDEID)
-    setTimeout(()=>{
-      history.replace('/location/BGYFW')
-    },1000)
-  }, [])
+    history.replace('/location/BGYFW')
 
-  useEffect(() => {
-    if (avatarList.length > 0) {
-        console.log('defaultPeople-----------------' + avatarList[0].name)
-        selectAvatar(avatarList[0], 0)
-    }
 }, [avatarList])
 
 const selectAvatar = (avatarResources: AvatarInterface, index: Number) => {
