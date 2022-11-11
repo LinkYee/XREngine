@@ -83,8 +83,8 @@ const selectAvatar = (avatarResources: AvatarInterface, index: Number) => {
  //头像保存
  const setAvatar = (avatarId: string, avatarURL: string, thumbnailURL: string) => {
   if (hasComponent(Engine.instance.currentWorld.localClientEntity, AvatarEffectComponent)) return
-  if (authState.user?.value)
-      AvatarService.updateUserAvatarId(authState.user.id.value!, avatarId, avatarURL, thumbnailURL)
+  if (userId)
+      AvatarService.updateUserAvatarId(userId, avatarId, avatarURL, thumbnailURL)
 }
   return (
     <div className='cloudRenderPage-container' style={{ pointerEvents: 'auto',width:'100vw',height:'100vh' }}>
