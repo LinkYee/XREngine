@@ -62,7 +62,9 @@ export const BGYCloudLoginPage = (): any => {
     localStorage.setItem('token',TOKEN)
     var GUIDEID = getUrlParam('GUIDEID')
     localStorage.setItem('guideId',GUIDEID)
-    history.replace('/location/BGYFW')
+    setTimeout(()=>{
+      history.replace('/location/BGYFW')
+    },1000)
   }, [])
 
   useEffect(() => {
