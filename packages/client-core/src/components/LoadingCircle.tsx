@@ -12,10 +12,6 @@ export function LoadingCircle(props: Props) {
       style={{
         height: '100vh',
         width: '100%',
-        backgroundImage: 'url("https://xr-resources.yee.link/Asset/loading-star-bg.jpg")',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
         textAlign: 'center',
         paddingTop: 'calc(50vh - 7px)',
         display: 'flex',
