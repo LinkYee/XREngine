@@ -16,7 +16,7 @@ RUN npm config set noproxy "mirrors.tuna.tsinghua.edu.cn,mirrors.aliyun.com,oss.
 
 RUN printf 'deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster main non-free contrib \n\
 #deb-src http://mirrors.tuna.tsinghua.edu.cn/debian/ buster main non-free contrib \n\
-deb http://mirrors.aliyun.com/debian-security buster/updates main \n\
+deb http://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main \n\
 #deb-src http://mirrors.aliyun.com/debian-security buster/updates main \n\
 deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main non-free contrib \n\
 #deb-src http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main non-free contrib \n\
