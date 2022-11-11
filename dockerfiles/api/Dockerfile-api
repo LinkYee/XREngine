@@ -28,6 +28,13 @@ ENV HTTPS_PROXY=
 ENV APP_ENV=production
 
 FROM node:16-buster-slim as runner
+RUN printf 'deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster main non-free contrib \n\
+#deb-src http://mirrors.tuna.tsinghua.edu.cn/debian/ buster main non-free contrib \n\
+deb http://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main \n\
+#deb-src http://mirrors.aliyun.com/debian-security buster/updates main \n\
+deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main non-free contrib \n\
+#deb-src http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main non-free contrib \n\
+deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main non-free contrib ' > /etc/apt/sources.list
 RUN apt update
 RUN apt-get -y install git
 WORKDIR /app
