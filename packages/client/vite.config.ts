@@ -8,7 +8,7 @@ import { defineConfig, loadEnv, UserConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import PkgConfig from 'vite-plugin-package-config'
-
+import legacyPlugin from '@vitejs/plugin-legacy';
 import { getClientSetting } from './scripts/getClientSettings'
 
 const merge = (src, dest) =>
@@ -98,7 +98,11 @@ export default defineConfig(async () => {
         filter: /\.(js|mjs|json|css)$/i,
 //        algorithm: 'brotliCompress',
         deleteOriginFile: true
-      })
+      }),
+      legacyPlugin({
+        targets: ['ios_saf 11', 'safari 11'],
+        additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+      }),
     ],
     server: {
       hmr: false,
