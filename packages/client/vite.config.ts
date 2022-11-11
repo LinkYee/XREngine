@@ -100,7 +100,7 @@ export default defineConfig(async () => {
         deleteOriginFile: true
       }),
       legacyPlugin({
-        targets: ['ios_saf 11', 'safari 11'],
+        targets: ['ios_saf 13', 'safari 14'],
         additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
       }),
     ],
