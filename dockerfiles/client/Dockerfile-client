@@ -71,10 +71,6 @@ ENV VITE_DISABLE_LOG=$VITE_DISABLE_LOG
 RUN npm i @vitejs/plugin-legacy
 RUN npm add -D terser
 RUN npm run build-client
-RUN npm config rm proxy
-RUN npm config rm https-proxy
-ENV HTTP_PROXY=
-ENV HTTPS_PROXY=
 
 RUN if [ "$SERVE_CLIENT_FROM_STORAGE_PROVIDER" = "true" ] && [ "$STORAGE_PROVIDER" = "aws" ] ; then npm run push-client-dist-to-s3 ; fi
 
@@ -87,7 +83,18 @@ WORKDIR /app
 
 COPY --from=builder /app/packages/client ./packages/client
 COPY --from=builder /app/scripts ./scripts
+ENV HTTP_PROXY=http://52.81.203.102:9087
+ENV HTTPS_PROXY=http://52.81.203.102:9087
+
+RUN npm config set proxy "http://52.81.203.102:9087" 
+RUN npm config set https-proxy "http://52.81.203.102:9087"
+RUN npm config set noproxy "xr-resources.yee.link,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn"
 
 RUN npm install express app-root-path express-static-gzip
+
+RUN npm config rm proxy
+RUN npm config rm https-proxy
+ENV HTTP_PROXY=
+ENV HTTPS_PROXY=
 
 CMD ["scripts/start-server.sh"]
