@@ -41,6 +41,7 @@ button:active {
     z-index: 9999;
     width: 70%;
     height: 30%;
+    height: 30vmax;
     left: 0;
     right: 0;
     bottom: 0;
@@ -187,6 +188,7 @@ button:active {
 .box-login {
     // width: 45%;
     margin: 10%;
+    margin: 10vmin;
     height: 36px;
     // margin-top: 3%;
     // margin-left: 24px;

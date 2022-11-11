@@ -11,7 +11,7 @@ const Engine = React.lazy(() => import('./engine'))
 
 const App = () => {
   return (
-    <Suspense fallback={<LoadingCircle message={'Starting up...'} />}>
+    <Suspense fallback={<LoadingCircle message={'元宇宙空间启动中...'} />}>
       <Engine />
     </Suspense>
   )

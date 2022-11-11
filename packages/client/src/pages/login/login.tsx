@@ -43,10 +43,11 @@ const LoginPage: React.FC<IntProps> = (props) => {
   useEffect(() => {
   }, [])
   useEffect(() => {
-    // loginToken() //先走token缓存登录
+    loginToken() //先走token缓存登录
     let isWeixin = isWx() //先判断是否是微信环境
     setIsWeiXinWeb(isWeixin)
     getShareId() //获取链接中携带的推荐人id信息
+    getLocation() // 获取链接要跳转到哪里
     if (!isWeixin) return
     getLoginStatus() //一进页面首先判断是不是微信授权成功后携带code来的
   }, [])
@@ -274,6 +275,12 @@ const LoginPage: React.FC<IntProps> = (props) => {
   const getShareId = async () => {
     let invite = await getUrlParam('invite')
     shareId = invite || ''
+  }
+
+  const getLocation = async () => {
+    let location = await getUrlParam('location')
+    location = location || ''
+    localStorage.setItem('location', location)
   }
 
   const getloginInfo = async () => {
