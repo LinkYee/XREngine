@@ -58,6 +58,7 @@ export const BGYCloudLoginPage = (): any => {
     var API_LOGIN_ID = getUrlParam('API_LOGIN_ID')
     localStorage.setItem('API_LOGIN_ID',API_LOGIN_ID)
     var API_AVATARS_ID = getUrlParam('API_AVATARS_ID')
+    localStorage.setItem('API_AVATARS_ID',API_AVATARS_ID)
     var AVATAR_THUMBNAIL = decodeURIComponent(getUrlParam('AVATAR_THUMBNAIL'))
     var AVATAR_NICKNAME = decodeURIComponent(getUrlParam('AVATAR_NICKNAME'))
     var AVATAR_MODELRESOURCE = decodeURIComponent(getUrlParam('AVATAR_MODELRESOURCE'))

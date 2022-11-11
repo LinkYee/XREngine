@@ -68,7 +68,8 @@ ENV VITE_INSTANCESERVER_PORT=$VITE_INSTANCESERVER_PORT
 ENV VITE_LOCAL_BUILD=$VITE_LOCAL_BUILD
 ENV VITE_READY_PLAYER_ME_URL=$VITE_READY_PLAYER_ME_URL
 ENV VITE_DISABLE_LOG=$VITE_DISABLE_LOG
-
+RUN npm i @vitejs/plugin-legacy
+RUN npm add -D terser
 RUN npm run build-client
 RUN npm config rm proxy
 RUN npm config rm https-proxy

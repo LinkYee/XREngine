@@ -5,16 +5,24 @@ FROM node:16-buster-slim as root-builder
 
 ENV HTTP_PROXY=http://52.81.203.102:9087
 ENV HTTPS_PROXY=http://52.81.203.102:9087
-ENV NO_PROXY=oss.npmmirror.com,registry.npmmirror.com,xr-resources.yee.link,mirrors.ustc.edu.cn,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,bgy-static-resources.s3.cn-north-1.amazonaws.com.cn,*.s3.cn-north-1.amazonaws.com.cn,s3.cn-north-1.amazonaws.com.cn,*.cn-north-1.amazonaws.com.cn
+ENV NO_PROXY=mirrors.tuna.tsinghua.edu.cn,mirrors.aliyun.com,oss.npmmirror.com,registry.npmmirror.com,xr-resources.yee.link,mirrors.ustc.edu.cn,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,bgy-static-resources.s3.cn-north-1.amazonaws.com.cn,*.s3.cn-north-1.amazonaws.com.cn,s3.cn-north-1.amazonaws.com.cn,*.cn-north-1.amazonaws.com.cn
 
 RUN npm config set proxy "http://52.81.203.102:9087" 
 RUN npm config set https-proxy "http://52.81.203.102:9087"
 
 RUN npm config set registry https://registry.npmmirror.com
 RUN npm config set sass_binary_site https://npm.taobao.org/mirrors/node-sass/
-RUN npm config set noproxy "oss.npmmirror.com,registry.npmmirror.com,xr-resources.yee.link,mirrors.ustc.edu.cn,registry.npmmirror.com,*.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,bgy-static-resources.s3.cn-north-1.amazonaws.com.cn,*.s3.cn-north-1.amazonaws.com.cn,*.cn-north-1.amazonaws.com.cn,s3.cn-north-1.amazonaws.com.cn"
+RUN npm config set noproxy "mirrors.tuna.tsinghua.edu.cn,mirrors.aliyun.com,oss.npmmirror.com,registry.npmmirror.com,xr-resources.yee.link,mirrors.ustc.edu.cn,registry.npmmirror.com,*.npm.taobao.org,*.amazonaws.cn,*.amazonaws.com.cn,bgy-static-resources.s3.cn-north-1.amazonaws.com.cn,*.s3.cn-north-1.amazonaws.com.cn,*.cn-north-1.amazonaws.com.cn,s3.cn-north-1.amazonaws.com.cn"
 
-RUN apt update
+RUN printf 'deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster main non-free contrib \n\
+#deb-src http://mirrors.tuna.tsinghua.edu.cn/debian/ buster main non-free contrib \n\
+deb http://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main \n\
+#deb-src http://mirrors.aliyun.com/debian-security buster/updates main \n\
+deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main non-free contrib \n\
+#deb-src http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main non-free contrib \n\
+deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main non-free contrib ' > /etc/apt/sources.list
+
+RUN apt-get -y update
 # Create app directory
 WORKDIR /app
 

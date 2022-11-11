@@ -4,12 +4,12 @@ set -x
 
 export HTTP_PROXY=http://52.81.203.102:9087
 export HTTPS_PROXY=http://52.81.203.102:9087
-export NO_PROXY=xr-resources.yee.link,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn
+export NO_PROXY=mirrors.tuna.tsinghua.edu.cn,xr-resources.yee.link,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn
 npm config set registry https://registry.npmmirror.com
 npm config set sass_binary_site https://npm.taobao.org/mirrors/node-sass/
 npm config set proxy "http://52.81.203.102:9087" 
 npm config set https-proxy "http://52.81.203.102:9087"
-npm config set noproxy "xr-resources.yee.link,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn"
+npm config set noproxy "mirrors.tuna.tsinghua.edu.cn,xr-resources.yee.link,npm.taobao.org,registry.npmmirror.com,*.amazonaws.cn,*.amazonaws.com.cn,mirrors.ustc.edu.cn"
 
 until [ -f /var/lib/docker/certs/client/ca.pem ]
 do

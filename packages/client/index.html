@@ -22,12 +22,19 @@
     <meta name="description" content="Connected Worlds for Everyone" />
     <meta name="monetization" content="<%- paymentPointer %>" data-react-helmet="true" />
     <title><%- title %></title>
+    <script type="text/javascript" src="https://cdn.bootcss.com/vConsole/3.3.0/vconsole.min.js"></script>
+    <script>
+      const href = window.location.href
+      if(href.includes('debug')){
+        var vConsole = new VConsole();
+        console.log('Hello world');
+      }
+    </script>
     <link rel="apple-touch-icon" sizes="180x180" href="<%- appleTouchIcon %>" data-react-helmet="true" />
     <link rel="icon" type="image/png" sizes="32x32" href="<%- favicon32px %>" data-react-helmet="true" />
     <link rel="icon" type="image/png" sizes="16x16" href="<%- favicon16px %>" data-react-helmet="true" />
     <link rel="manifest" href="<%- webmanifestLink %>" data-react-helmet="true" />
     <!-- <link href="http//://fonts.cdnfonts.com/css/arial-rounded-mt-bold" rel="stylesheet"> -->
-    <script type="text/javascript" src="https://cdn.bootcss.com/vConsole/3.3.0/vconsole.min.js"></script>
     <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script>
       var global = globalThis
@@ -59,7 +66,7 @@
           preload.loadManifest(manifest)
         }
       }
-      const href = window.location.href
+      
       if(href.includes('/bgyLogin')) {
         setTimeout(function(){startPreLoad();}, 15000)
       }
@@ -92,13 +99,7 @@
         document.body.removeEventListener('click', unlockAudio)
         document.body.removeEventListener('touchstart', unlockAudio)
       }
-      if(href.includes('debug')){
-        docReady(function(){
-          // 初始化
-          var vConsole = new VConsole();
-          console.log('Hello world');
-        })
-      }
+     
        //where earlier you did:
        docReady(function(){
           document.body.addEventListener('click', unlockAudio);
