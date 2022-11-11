@@ -20,7 +20,7 @@ export const BGYCloudLoginPage = (): any => {
 
   const avatarState = useHookstate(getState(AvatarState))
   const list = avatarState.avatarList.value
-  const avatarList = list.slice(0, 6)
+  const avatarList = list
   console.log('我是角色列表',avatarList)
   const authState = useAuthState()
   const selfUser = useAuthState().user
@@ -37,6 +37,10 @@ export const BGYCloudLoginPage = (): any => {
   const loginFn = (e) => {
     setIsLogin(e)
   }
+  useEffect(() => {
+    AvatarService.fetchAvatarList()
+  }, [])
+
   // 获取页面路径的code参数
   const getUrlParam = (name) => { // 获取URL指定参数
     var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)') // 构造一个含有目标参数的正则表达式对象
