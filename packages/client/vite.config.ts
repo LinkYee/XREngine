@@ -117,7 +117,7 @@ export default defineConfig(async () => {
       }
     },
     build: {
-      target: 'esnext',
+      target: 'es2015',
       sourcemap: 'inline',
       minify: 'esbuild',
       dynamicImportVarsOptions: {
