@@ -48,19 +48,19 @@ const RolePage: React.FC<RoleState> = (props) => {
 
 
     var query = window.location.href.substring(1)
-            var num = query.split("=")
-            var invite = num[1]
+    var num = query.split("=")
+    var invite = num[1]
 
     var avatarList = []
-    if(invite === 'admin'){
+    if (invite === 'admin') {
         avatarList = list
-    }else{
+    } else {
         //avatarList = list.slice(0, 6)
-        avatarList  = list.filter((item)=>(item.id!='f66c1ed0-5d93-11ed-9a42-4f37a9e7a10f' && item.id!= '525db7d0-5d94-11ed-9a42-4f37a9e7a10f' && item.id!= '8e97cf10-5d94-11ed-9a42-4f37a9e7a10f'&& item.id!= '66aa2e80-5e7f-11ed-9a42-4f37a9e7a10f'&& item.id!= '735521d0-5e7f-11ed-9a42-4f37a9e7a10f'&& item.id!= '81870340-5e7f-11ed-9a42-4f37a9e7a10f'))
+        avatarList = list.filter((item) => (item.id != 'f66c1ed0-5d93-11ed-9a42-4f37a9e7a10f' && item.id != '525db7d0-5d94-11ed-9a42-4f37a9e7a10f' && item.id != '8e97cf10-5d94-11ed-9a42-4f37a9e7a10f' && item.id != '66aa2e80-5e7f-11ed-9a42-4f37a9e7a10f' && item.id != '735521d0-5e7f-11ed-9a42-4f37a9e7a10f' && item.id != '81870340-5e7f-11ed-9a42-4f37a9e7a10f'))
         //avatarList  = list.slice(3);
     }
     //const avatarList = list
-        // const defaultPeople = list[0].name
+    // const defaultPeople = list[0].name
     const selfUser = useAuthState().user
     const userId = selfUser.id.value
 
@@ -87,32 +87,32 @@ const RolePage: React.FC<RoleState> = (props) => {
         }
         let myAnima: any | null = document.getElementById('myAnima');
         let i = 1
-        const timer = setInterval(()=>{
-            if(myAnima) {
-                myAnima['src'] = `https://xr-resources.yee.link/BGYAnimateTrans/image-${`${i++}`.padStart(3,'0')}.jpeg`
+        const timer = setInterval(() => {
+            if (myAnima) {
+                myAnima['src'] = `https://xr-resources.yee.link/BGYAnimateTrans/image-${`${i++}`.padStart(3, '0')}.jpeg`
             }
-            if(i>=150) {
+            if (i >= 150) {
                 clearInterval(timer)
                 console.log('过渡动画执行完成')
                 gotoHome()
                 // myAnima.parent.removeChild(myAnima)
             }
-        }, 1000/24)
+        }, 1000 / 24)
     }, [showvideo])
     useEffect(() => {
         if (avatarList.length > 0 && selectTrue) {
             console.log('defaultPeople-----------------' + avatarList[0].name)
-            selectAvatar(avatarList[0],0)
+            selectAvatar(avatarList[0], 0)
         }
     }, [avatarList])
-console.log('我是list',avatarList)
+    console.log('我是list', avatarList)
     useEffect(() => {
         setScreenOrientation()
         console.log('屏幕是否为横屏模式' + screenOrt)
     }, [screenOrt])
 
-    const selectAvatar = (avatarResources: AvatarInterface,index:Number) => {
-        localStorage.setItem('AVATAR_INDEX',index + '')
+    const selectAvatar = (avatarResources: AvatarInterface, index: Number) => {
+        localStorage.setItem('AVATAR_INDEX', index + '')
         setaPeople(avatarResources.name)
         setSelectedAvatar(avatarResources)
         setselectTrue(false)
@@ -129,7 +129,7 @@ console.log('我是list',avatarList)
         //     setscreenOrt(true)
         // }
         // if (window.matchMedia("(orientation: landscape)").matches) {
-            setscreenOrt(false)
+        setscreenOrt(false)
         // }
     }
     //用户名验证
@@ -159,7 +159,7 @@ console.log('我是list',avatarList)
         if (selectedAvatar.id && peopleName) {
             //保存用户名
             const name = peopleName.trim()
-            localStorage.setItem('AVATAR_NICKNAME',name)
+            localStorage.setItem('AVATAR_NICKNAME', name)
             AuthService.updateUsername(userId, name)
             //保存角色
             setAvatar(
@@ -167,10 +167,10 @@ console.log('我是list',avatarList)
                 selectedAvatar?.modelResource?.url || '',
                 selectedAvatar?.thumbnailResource?.url || ''
             )
-            localStorage.setItem('AVATAR_ID',selectedAvatar?.id || '')
+            localStorage.setItem('AVATAR_ID', selectedAvatar?.id || '')
             // console.log('')
-            localStorage.setItem('AVATAR_MODELRESOURCE',selectedAvatar?.modelResource?.url || '')
-            localStorage.setItem('AVATAR_THUMBNAIL',selectedAvatar?.thumbnailResource?.url || '')
+            localStorage.setItem('AVATAR_MODELRESOURCE', selectedAvatar?.modelResource?.url || '')
+            localStorage.setItem('AVATAR_THUMBNAIL', selectedAvatar?.thumbnailResource?.url || '')
             setSelectedAvatar('')
             //业务接口
             // Axios({
@@ -220,32 +220,33 @@ console.log('我是list',avatarList)
         //     history.replace('/location/BGYFW')
         // }
         var query = window.location.href.substring(1)
-        var num = query.split("=")
-        var invite = num[1]
+        var num = query.split("=")
+        var invite = num[1]
 
-var u = navigator.userAgent, app = navigator.appVersion
-var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 // 其它安卓
-var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios
-if (isIOS) {
-    console.log('我是苹果用户')
-    if(invite == 'admin'){
-        console.log('苹果用户进入admin')
-        history.push('/location/zwzx202211-admin')//跳转到管理员场景
-    }else{
-        console.log('ios场景')
-        history.push('/location/zwzx202211-ios')//跳转到ios场景
-    }
-}else if(isAndroid){
-    console.log('我是安卓用户')
-    if(invite == 'admin'){
-        console.log('我是安卓管理员')
-        history.push('/location/zwzx202211-admin')//跳转到管理员场景
-    }else{
-        console.log('我是安卓普通用户')
-        history.push('/location/zwzx202211')//跳转到安卓场景
-    }
-}else history.push('/location/zwzx202211')//跳转到安卓场景
-console.log('我是其他用户')
+        var u = navigator.userAgent, app = navigator.appVersion
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 // 其它安卓
+        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios
+        
+        if (isIOS) {
+            console.log('我是苹果用户')
+            if (invite == 'admin') {
+                console.log('苹果用户进入admin')
+                history.push('/location/zwzx202211-admin')//跳转到管理员场景
+            } else {
+                console.log('ios场景')
+                history.push('/location/zwzx202211-ios')//跳转到ios场景
+            }
+        } else if (isAndroid) {
+            console.log('我是安卓用户')
+            if (invite == 'admin') {
+                console.log('我是安卓管理员')
+                history.push('/location/zwzx202211-admin')//跳转到管理员场景
+            } else {
+                console.log('我是安卓普通用户')
+                history.push('/location/zwzx202211')//跳转到安卓场景
+            }
+        } else history.push('/location/zwzx202211')//跳转到安卓场景
+        console.log('我是其他用户')
 
     }
     //tip
@@ -287,7 +288,7 @@ console.log('我是其他用户')
 
                 </div> */}
                 <div className='right-box'>
-                <div className='people-input-box'>
+                    <div className='people-input-box'>
                         <input
                             className='people-input'
                             style={{ border: 'none', height: '100%', width: '100%', borderRadius: 'inherit', padding: '0 8px' }}
@@ -304,7 +305,7 @@ console.log('我是其他用户')
                         <div className='list-box'>
                             {
                                 avatarList.map((i, index) => {
-                                    return <div key={index} className="item" onClick={() => selectAvatar(i,index)}>
+                                    return <div key={index} className="item" onClick={() => selectAvatar(i, index)}>
                                         <img className="imgItem" src={i.thumbnailResource.url} alt="" />
                                     </div>
                                 })
