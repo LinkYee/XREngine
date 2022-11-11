@@ -124,7 +124,8 @@
     "stylelint-scss": "^4.2.0",
     "supertest": "6.2.2",
     "trace-unhandled": "2.0.1",
-    "ttab": "^0.7.3"
+    "ttab": "^0.7.3",
+    "terser": "^5.15.1"
   },
   "dependencies": {
     "@feathersjs/commons": "5.0.0-pre.29",
@@ -141,6 +142,7 @@
     "react-json-view": "^1.21.3",
     "three": "0.144.0",
     "ts-node": "10.8.2",
-    "typescript": "4.8.3"
+    "typescript": "4.8.3",
+    "@vitejs/plugin-legacy": "^2.3.1"
   }
 }
