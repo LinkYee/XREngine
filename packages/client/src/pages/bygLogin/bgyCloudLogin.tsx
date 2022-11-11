@@ -21,10 +21,18 @@ export const BGYCloudLoginPage = (): any => {
   const avatarState = useHookstate(getState(AvatarState))
   const list = avatarState.avatarList.value
   const avatarList = list.slice(0, 6)
+  console.log('我是角色列表',avatarList)
   const authState = useAuthState()
   const selfUser = useAuthState().user
   const userId = selfUser.id.value
   const history = useHistory()
+  const [selectTrue, setselectTrue] = useState(true)
+  const [selectedAvatar, setSelectedAvatar] = useState<any>('')
+  const [aPeople, setaPeople] = useState('')
+
+  interface Props {
+    changeActiveMenu: Function
+  }
 
   const loginFn = (e) => {
     setIsLogin(e)
@@ -54,15 +62,30 @@ export const BGYCloudLoginPage = (): any => {
     localStorage.setItem('token',TOKEN)
     var GUIDEID = getUrlParam('GUIDEID')
     localStorage.setItem('guideId',GUIDEID)
-    history.replace('/location/BGYFW')
+    setTimeout(()=>{
+      history.replace('/location/BGYFW')
+    },1000)
   }, [])
+
+  useEffect(() => {
+    if (avatarList.length > 0) {
+        console.log('defaultPeople-----------------' + avatarList[0].name)
+        selectAvatar(avatarList[0], 0)
+    }
+}, [avatarList])
+
+const selectAvatar = (avatarResources: AvatarInterface, index: Number) => {
+  setaPeople(avatarResources.name)
+  setSelectedAvatar(avatarResources)
+  setselectTrue(false)
+  // setSelectedAvatar(avatarResources.thumbnailResource.url)
+}
  //头像保存
  const setAvatar = (avatarId: string, avatarURL: string, thumbnailURL: string) => {
   if (hasComponent(Engine.instance.currentWorld.localClientEntity, AvatarEffectComponent)) return
   if (authState.user?.value)
       AvatarService.updateUserAvatarId(authState.user.id.value!, avatarId, avatarURL, thumbnailURL)
 }
-
   return (
     <div className='cloudRenderPage-container' style={{ pointerEvents: 'auto',width:'100vw',height:'100vh' }}>
      云渲染登录中...
