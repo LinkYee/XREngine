@@ -49,7 +49,7 @@ export const BGYCloudLoginPage = (): any => {
     console.log('我是获取的参数',r)
     //return null // 返回参数值
   }
-  useEffect(() => {
+  useEffect(async () => {
     if (avatarList.length > 0) {
         console.log('defaultPeople-----------------' + avatarList[0].name)
         selectAvatar(avatarList[0], 0)
@@ -61,15 +61,18 @@ export const BGYCloudLoginPage = (): any => {
         var AVATAR_NICKNAME = decodeURIComponent(getUrlParam('AVATAR_NICKNAME'))
         var AVATAR_MODELRESOURCE = decodeURIComponent(getUrlParam('AVATAR_MODELRESOURCE'))
         console.log('===============',AVATAR_MODELRESOURCE)
+
+        setAvatar(API_AVATARS_ID,AVATAR_MODELRESOURCE,AVATAR_THUMBNAIL)
         var AVATAR_INDEX = getUrlParam('AVATAR_INDEX')
         localStorage.setItem('AVATAR_INDEX',AVATAR_INDEX)
         AuthService.updateUsername(userId, AVATAR_NICKNAME)
-        setAvatar(API_AVATARS_ID,AVATAR_MODELRESOURCE,AVATAR_THUMBNAIL)
         var TOKEN = getUrlParam('TOKEN')
         localStorage.setItem('token',TOKEN)
         var GUIDEID = getUrlParam('GUIDEID')
         localStorage.setItem('guideId',GUIDEID)
-        history.replace('/location/BGYFW')
+        setTimeout(() => {
+          history.replace('/location/BGYFW')
+        }, 1000)
     }
 
 }, [avatarList])
@@ -81,10 +84,10 @@ const selectAvatar = (avatarResources: AvatarInterface, index: Number) => {
   // setSelectedAvatar(avatarResources.thumbnailResource.url)
 }
  //头像保存
- const setAvatar = (avatarId: string, avatarURL: string, thumbnailURL: string) => {
+ const  setAvatar = async (avatarId: string, avatarURL: string, thumbnailURL: string) => {
   if (hasComponent(Engine.instance.currentWorld.localClientEntity, AvatarEffectComponent)) return
   if (userId)
-      AvatarService.updateUserAvatarId(userId, avatarId, avatarURL, thumbnailURL)
+      return AvatarService.updateUserAvatarId(userId, avatarId, avatarURL, thumbnailURL)
 }
   return (
     <div className='cloudRenderPage-container' style={{ pointerEvents: 'auto',width:'100vw',height:'100vh' }}>
