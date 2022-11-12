@@ -99,10 +99,10 @@ export default defineConfig(async () => {
 //        algorithm: 'brotliCompress',
         deleteOriginFile: true
       }),
-      legacyPlugin({
-        targets: ['ios_saf 13', 'safari 14'],
-        additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
-      }),
+      // legacyPlugin({
+      //   targets: ['ios_saf 13', 'safari 14'],
+      //   additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+      // }),
     ],
     server: {
       hmr: false,
@@ -117,7 +117,7 @@ export default defineConfig(async () => {
       }
     },
     build: {
-      target: 'es2015',
+      target: 'esnext',
       sourcemap: 'inline',
       minify: 'esbuild',
       dynamicImportVarsOptions: {
