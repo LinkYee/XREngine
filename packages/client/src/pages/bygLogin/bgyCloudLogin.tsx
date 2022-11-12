@@ -49,7 +49,7 @@ export const BGYCloudLoginPage = (): any => {
     console.log('我是获取的参数',r)
     //return null // 返回参数值
   }
-  useEffect(async () => {
+  useEffect(() => {
     if (avatarList.length > 0) {
         console.log('defaultPeople-----------------' + avatarList[0].name)
         selectAvatar(avatarList[0], 0)
@@ -70,9 +70,8 @@ export const BGYCloudLoginPage = (): any => {
         localStorage.setItem('token',TOKEN)
         var GUIDEID = getUrlParam('GUIDEID')
         localStorage.setItem('guideId',GUIDEID)
-        setTimeout(() => {
-          history.replace('/location/BGYFW')
-        }, 1000)
+        history.replace('/location/BGYFW')
+        setTimeout(() => window.location.reload(), 2000)
     }
 
 }, [avatarList])
