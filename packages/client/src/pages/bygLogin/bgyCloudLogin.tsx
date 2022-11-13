@@ -69,9 +69,11 @@ export const BGYCloudLoginPage = (): any => {
         var TOKEN = getUrlParam('TOKEN')
         localStorage.setItem('token',TOKEN)
         var GUIDEID = getUrlParam('GUIDEID')
-        localStorage.setItem('guideId',GUIDEID)
+        if(GUIDEID){
+          localStorage.setItem('guideId',GUIDEID)
+        }
         history.replace('/location/BGYFW')
-        setTimeout(() => window.location.reload(), 2000)
+        setTimeout(() => window.location.reload(), 1500)
     }
 
 }, [avatarList])
