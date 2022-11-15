@@ -20,7 +20,7 @@ export const BGYCloudLoginPage = (): any => {
 
   const avatarState = useHookstate(getState(AvatarState))
   const list = avatarState.avatarList.value
-  const avatarList = list.slice(0, 6)
+  const avatarList = list
   console.log('我是角色列表',avatarList)
   const authState = useAuthState()
   const selfUser = useAuthState().user
@@ -37,6 +37,10 @@ export const BGYCloudLoginPage = (): any => {
   const loginFn = (e) => {
     setIsLogin(e)
   }
+  useEffect(() => {
+    AvatarService.fetchAvatarList()
+  }, [])
+
   // 获取页面路径的code参数
   const getUrlParam = (name) => { // 获取URL指定参数
     var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)') // 构造一个含有目标参数的正则表达式对象
@@ -46,32 +50,31 @@ export const BGYCloudLoginPage = (): any => {
     //return null // 返回参数值
   }
   useEffect(() => {
-    // getCode()
-    
-  }, [])
-
-  useEffect(() => {
     if (avatarList.length > 0) {
         console.log('defaultPeople-----------------' + avatarList[0].name)
         selectAvatar(avatarList[0], 0)
+        var API_LOGIN_ID = getUrlParam('API_LOGIN_ID')
+        localStorage.setItem('API_LOGIN_ID',API_LOGIN_ID)
+        var API_AVATARS_ID = getUrlParam('API_AVATARS_ID')
+        localStorage.setItem('API_AVATARS_ID',API_AVATARS_ID)
+        var AVATAR_THUMBNAIL = decodeURIComponent(getUrlParam('AVATAR_THUMBNAIL'))
+        var AVATAR_NICKNAME = decodeURIComponent(getUrlParam('AVATAR_NICKNAME'))
+        var AVATAR_MODELRESOURCE = decodeURIComponent(getUrlParam('AVATAR_MODELRESOURCE'))
+        console.log('===============',AVATAR_MODELRESOURCE)
+
+        setAvatar(API_AVATARS_ID,AVATAR_MODELRESOURCE,AVATAR_THUMBNAIL)
+        var AVATAR_INDEX = getUrlParam('AVATAR_INDEX')
+        localStorage.setItem('AVATAR_INDEX',AVATAR_INDEX)
+        AuthService.updateUsername(userId, AVATAR_NICKNAME)
+        var TOKEN = getUrlParam('TOKEN')
+        localStorage.setItem('token',TOKEN)
+        var GUIDEID = getUrlParam('GUIDEID')
+        if(GUIDEID){
+          localStorage.setItem('guideId',GUIDEID)
+        }
+        history.replace('/location/BGYFW')
+        setTimeout(() => window.location.reload(), 1500)
     }
-    var API_LOGIN_ID = getUrlParam('API_LOGIN_ID')
-    localStorage.setItem('API_LOGIN_ID',API_LOGIN_ID)
-    var API_AVATARS_ID = getUrlParam('API_AVATARS_ID')
-    localStorage.setItem('API_AVATARS_ID',API_AVATARS_ID)
-    var AVATAR_THUMBNAIL = decodeURIComponent(getUrlParam('AVATAR_THUMBNAIL'))
-    var AVATAR_NICKNAME = decodeURIComponent(getUrlParam('AVATAR_NICKNAME'))
-    var AVATAR_MODELRESOURCE = decodeURIComponent(getUrlParam('AVATAR_MODELRESOURCE'))
-    console.log('===============',AVATAR_MODELRESOURCE)
-    var AVATAR_INDEX = getUrlParam('AVATAR_INDEX')
-    localStorage.setItem('AVATAR_INDEX',AVATAR_INDEX)
-    AuthService.updateUsername(userId, AVATAR_NICKNAME)
-    setAvatar(API_AVATARS_ID,AVATAR_MODELRESOURCE,AVATAR_THUMBNAIL)
-    var TOKEN = getUrlParam('TOKEN')
-    localStorage.setItem('token',TOKEN)
-    var GUIDEID = getUrlParam('GUIDEID')
-    localStorage.setItem('guideId',GUIDEID)
-    history.replace('/location/BGYFW')
 
 }, [avatarList])
 
@@ -82,10 +85,10 @@ const selectAvatar = (avatarResources: AvatarInterface, index: Number) => {
   // setSelectedAvatar(avatarResources.thumbnailResource.url)
 }
  //头像保存
- const setAvatar = (avatarId: string, avatarURL: string, thumbnailURL: string) => {
+ const  setAvatar = (avatarId: string, avatarURL: string, thumbnailURL: string) => {
   if (hasComponent(Engine.instance.currentWorld.localClientEntity, AvatarEffectComponent)) return
-  if (authState.user?.value)
-      AvatarService.updateUserAvatarId(authState.user.id.value!, avatarId, avatarURL, thumbnailURL)
+  if (userId)
+      AvatarService.updateUserAvatarId(userId, avatarId, avatarURL, thumbnailURL)
 }
   return (
     <div className='cloudRenderPage-container' style={{ pointerEvents: 'auto',width:'100vw',height:'100vh' }}>

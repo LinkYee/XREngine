@@ -8,7 +8,6 @@ import { defineConfig, loadEnv, UserConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import PkgConfig from 'vite-plugin-package-config'
-import legacyPlugin from '@vitejs/plugin-legacy';
 import { getClientSetting } from './scripts/getClientSettings'
 
 const merge = (src, dest) =>
@@ -99,10 +98,10 @@ export default defineConfig(async () => {
 //        algorithm: 'brotliCompress',
         deleteOriginFile: true
       }),
-      legacyPlugin({
-        targets: ['ios_saf 13', 'safari 14'],
-        additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
-      }),
+ //     legacyPlugin({
+ //       targets: ['ios_saf 13', 'safari 14'],
+ //       additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+ //     }),
     ],
     server: {
       hmr: false,
@@ -117,7 +116,7 @@ export default defineConfig(async () => {
       }
     },
     build: {
-      target: 'es2015',
+      target: 'esnext',
       sourcemap: 'inline',
       minify: 'esbuild',
       dynamicImportVarsOptions: {
@@ -150,6 +149,8 @@ export default defineConfig(async () => {
     returned.base = `https://${process.env.STORAGE_CLOUDFRONT_DOMAIN}/client/`
   else if (process.env.SERVE_CLIENT_FROM_STORAGE_PROVIDER === 'true' && process.env.STORAGE_PROVIDER === 'local') {
     returned.base = `https://${process.env.LOCAL_STORAGE_PROVIDER}/client/`
+  }else{
+    returned.base = `https://bgyfw.qingmeta.cn/`
   }
   return await getProjectConfigExtensions(returned)
 })

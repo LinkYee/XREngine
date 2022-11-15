@@ -35,41 +35,11 @@
     <link rel="icon" type="image/png" sizes="16x16" href="<%- favicon16px %>" data-react-helmet="true" />
     <link rel="manifest" href="<%- webmanifestLink %>" data-react-helmet="true" />
     <!-- <link href="http//://fonts.cdnfonts.com/css/arial-rounded-mt-bold" rel="stylesheet"> -->
-    <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script>
       var global = globalThis
       var exports = { __esModule: true }
     </script>
-    <script src="https://cdn.bootcss.com/PreloadJS/1.0.1/preloadjs.js"></script>
     <script>
-      const startPreLoad = () => {
-        let manifest = [
-          { src: "https://meta-static.qingmeta.cn/bgyModel/BGYNew.glb" },
-          { src: "https://meta-static.qingmeta.cn/BGYvideo/bgyBgm.mp3" },
-          { src: "https://meta-static.qingmeta.cn/bgyModel/TimeLine.glb" },
-          { src: "https://meta-static.qingmeta.cn/bgyModel/BiGuiYuan_Card.glb" },
-          { src: "https://meta-static.qingmeta.cn/bgyModel/BiGuiYuan_CongBao.glb" },
-          { src: "https://meta-static.qingmeta.cn/bgyModel/sky.glb" },
-        ]
-        for (let i = 1; i <= 150; i++) {
-          manifest.push({ src: `https://meta-static.qingmeta.cn/BGYAnimateTrans/image-${`${i}`.padStart(3, '0')}.jpeg` })
-        }
-        if (createjs && createjs.LoadQueue) {
-          let preload = new createjs.LoadQueue(true)
-          preload.addEventListener("fileload", () => {
-            console.log('所需资源正在逐一预加载')
-          })
-          preload.addEventListener('complete', () => {
-            console.log('预加载任务已完成')
-          })
-          console.log('资源文件开始预加载===================>')
-          preload.loadManifest(manifest)
-        }
-      }
-      
-      if(href.includes('/bgyLogin')) {
-        setTimeout(function(){startPreLoad();}, 15000)
-      }
       function docReady(fn) {
         // see if DOM is already available
         if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -99,7 +69,6 @@
         document.body.removeEventListener('click', unlockAudio)
         document.body.removeEventListener('touchstart', unlockAudio)
       }
-     
        //where earlier you did:
        docReady(function(){
           document.body.addEventListener('click', unlockAudio);
@@ -107,7 +76,6 @@
        })
     </script>
   </head>
-
   <body>
     <div id="loginroot"></div>
     <script type="module" src="/src/main.tsx"></script>
