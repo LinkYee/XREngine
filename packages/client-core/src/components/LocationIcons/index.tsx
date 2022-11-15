@@ -26,12 +26,12 @@ export const LocationIcons = () => {
           <UserMediaWindows />
           {/*<InstanceChatWrapper />*/}
         </div>
-        {/*<Shelves />*/}
-        {/*<ARPlacement />*/}
-        {/*<XRLoading />*/}
-        {/*<MediaIconsBox />*/}
+        <Shelves />
+        <ARPlacement />
+        <XRLoading />
+        <MediaIconsBox />
         <TouchGamepad />
-        {/*<Fullscreen />*/}
+        {/* {iOS && <Fullscreen />} */}
       </div>
     </>
   )
