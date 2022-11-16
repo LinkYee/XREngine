@@ -100,7 +100,7 @@ export const UserMenu = (props: Props): any => {
                 return (
                   <span
                     key={index}
-                    style={{display: index<2? 'none':'block' }}
+                    style={{display: index < 2 ? 'none':'block' }}
                     id={id + '_' + index}
                     onClick={() => setCurrentActiveMenu({ view: id })}
                     className={`${styles.materialIconBlock} ${
