@@ -149,8 +149,6 @@ export default defineConfig(async () => {
     returned.base = `https://${process.env.STORAGE_CLOUDFRONT_DOMAIN}/client/`
   else if (process.env.SERVE_CLIENT_FROM_STORAGE_PROVIDER === 'true' && process.env.STORAGE_PROVIDER === 'local') {
     returned.base = `https://${process.env.LOCAL_STORAGE_PROVIDER}/client/`
-  }else{
-    returned.base = `https://bgyfw.qingmeta.cn/`
   }
   return await getProjectConfigExtensions(returned)
 })
