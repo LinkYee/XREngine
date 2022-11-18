@@ -24,7 +24,7 @@ export const LocationIcons = () => {
       <div id='ctrlBox' style={{ opacity: 1 - loadingSystemState.loadingScreenOpacity.value }}>
         <div className={`${styles.rightSidebar}`}>
           <UserMediaWindows />
-          {/* <InstanceChatWrapper /> */}
+          <InstanceChatWrapper />
         </div>
         <Shelves />
         <ARPlacement />

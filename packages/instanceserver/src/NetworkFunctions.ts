@@ -260,7 +260,7 @@ export const handleConnectingPeer = async (network: SocketWebRTCServerNetwork, s
     {
       targetObjectId: network.app.instance.id,
       targetObjectType: 'instance',
-      text: `${user.name} joined` + (spectating ? ' as spectator' : ''),
+      text: `${user.name} ` + (spectating ? '作为旁观者' : '') + '已加入',
       isNotification: true
     },
     {
@@ -308,7 +308,7 @@ export function disconnectClientIfConnected(network: SocketWebRTCServerNetwork, 
 
     // kick old client instead of new one
     logger.info('Client already exists, kicking the old client and disconnecting')
-    client.socket?.emit(MessageTypes.Kick.toString(), 'You joined this world on another device')
+    client.socket?.emit(MessageTypes.Kick.toString(), '你在另外一台设备上进入了空间')
     client.socket?.disconnect()
     handleDisconnect(network, client.socket!)
 
@@ -421,7 +421,7 @@ export async function handleDisconnect(network: SocketWebRTCServerNetwork, socke
       {
         targetObjectId: network.app.instance.id,
         targetObjectType: 'instance',
-        text: `${userName} left`,
+        text: `${userName} 离开了空间`,
         isNotification: true
       },
       {
