@@ -121,6 +121,8 @@ const RolePage: React.FC<RoleState> = (props) => {
         if(!targetLocation || targetLocation == ''){
             targetLocation = "/location/default"
             localStorage.removeItem("location")
+        }else{
+            targetLocation = decodeURIComponent(targetLocation)
         }
         history.push(targetLocation)
     }
