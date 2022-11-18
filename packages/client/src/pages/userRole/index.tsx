@@ -291,7 +291,7 @@ const RolePage: React.FC<RoleState> = (props) => {
                     <div className='people-input-box'>
                         <input
                             className='people-input'
-                            style={{ border: 'none', height: '100%', width: '100%', borderRadius: 'inherit', padding: '0 8px' }}
+                            style={{ border: 'none', height: '100%', borderRadius: 'inherit', padding: '0 8px' }}
                             placeholder='请输入名字'
                             onChange={(e) => {
                                 peopleChange(e.target.value)
