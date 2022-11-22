@@ -1,13 +1,5 @@
 import './index.scss'
 import React, { useEffect, useState } from 'react'
-import Axios, {
-    AxiosRequestConfig,
-    AxiosResponse,
-    AxiosError,
-    AxiosInstance,
-} from "axios";
-
-
 import { AvatarInterface } from '@xrengine/common/src/interfaces/AvatarInterface'
 import { AudioEffectPlayer } from '@xrengine/engine/src/audio/systems/MediaSystem'
 import { AvatarEffectComponent } from '@xrengine/engine/src/avatar/components/AvatarEffectComponent'
@@ -23,13 +15,7 @@ import { AvatarService, AvatarState } from '../../../../client-core/src/user/ser
 import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
 
 import CommonTip from '../component/commenTip'
-import RoleTipPage from './tip'
-import VideoPage from '../component/video'
-import Screen from '../component/screen'
 
-import bg2 from '../../assets/img/bg2.png'
-import avatar from '../../assets/img/avatar.png'
-import people from '../../assets/img/people.png'
 import rolebtn from '../../assets/img/rolebtn.png'
 import { NotificationService } from "@xrengine/client-core/src/common/services/NotificationService";
 import { getChannelTypeIdFromTransport } from '../../../../client-core/src/transports/SocketWebRTCClientFunctions';
@@ -52,13 +38,7 @@ const RolePage: React.FC<RoleState> = (props) => {
     var invite = num[1]
 
     var avatarList = []
-    if (invite === 'admin') {
-        avatarList = list
-    } else {
-        //avatarList = list.slice(0, 6)
-        avatarList = list.filter((item) => (item.id != 'f66c1ed0-5d93-11ed-9a42-4f37a9e7a10f' && item.id != '525db7d0-5d94-11ed-9a42-4f37a9e7a10f' && item.id != '8e97cf10-5d94-11ed-9a42-4f37a9e7a10f' && item.id != '66aa2e80-5e7f-11ed-9a42-4f37a9e7a10f' && item.id != '735521d0-5e7f-11ed-9a42-4f37a9e7a10f' && item.id != '81870340-5e7f-11ed-9a42-4f37a9e7a10f'))
-        //avatarList  = list.slice(3);
-    }
+    avatarList = list
     //const avatarList = list
     // const defaultPeople = list[0].name
     const selfUser = useAuthState().user
@@ -70,46 +50,18 @@ const RolePage: React.FC<RoleState> = (props) => {
 
     // console.log('defaultPeople-----------------' + defaultPeople)
 
-
     const [aPeople, setaPeople] = useState('')
     const [selectTrue, setselectTrue] = useState(true)
     const [selectedAvatar, setSelectedAvatar] = useState<any>('')
     const [peopleName, setpeopleName] = useState<string>('')
     const [tipText, settipText] = useState<string>('')
     const [showTip, setshowTip] = useState<boolean>(false)
-    const [showSubTip, setshowSubTip] = useState<boolean>(true)
-    const [showvideo, setshowvideo] = useState<boolean>(false)
-    const [screenOrt, setscreenOrt] = useState<boolean>(false)
-    useEffect(() => {
-        if (!showvideo) {
-            // gotoHome()
-            return
-        }
-        let myAnima: any | null = document.getElementById('myAnima');
-        let i = 1
-        const timer = setInterval(() => {
-            if (myAnima) {
-                myAnima['src'] = `https://xr-resources.yee.link/BGYAnimateTrans/image-${`${i++}`.padStart(3, '0')}.jpeg`
-            }
-            if (i >= 150) {
-                clearInterval(timer)
-                console.log('过渡动画执行完成')
-                gotoHome()
-                // myAnima.parent.removeChild(myAnima)
-            }
-        }, 1000 / 24)
-    }, [showvideo])
     useEffect(() => {
         if (avatarList.length > 0 && selectTrue) {
             console.log('defaultPeople-----------------' + avatarList[0].name)
             selectAvatar(avatarList[0], 0)
         }
     }, [avatarList])
-    console.log('我是list', avatarList)
-    useEffect(() => {
-        setScreenOrientation()
-        console.log('屏幕是否为横屏模式' + screenOrt)
-    }, [screenOrt])
 
     const selectAvatar = (avatarResources: AvatarInterface, index: Number) => {
         localStorage.setItem('AVATAR_INDEX', index + '')
@@ -117,20 +69,6 @@ const RolePage: React.FC<RoleState> = (props) => {
         setSelectedAvatar(avatarResources)
         setselectTrue(false)
         // setSelectedAvatar(avatarResources.thumbnailResource.url)
-    }
-
-    window.addEventListener("resize", () => {
-        setScreenOrientation()
-    });
-
-    //监听横屏竖屏
-    const setScreenOrientation = () => {
-        // if (window.matchMedia("(orientation: portrait)").matches) {
-        //     setscreenOrt(true)
-        // }
-        // if (window.matchMedia("(orientation: landscape)").matches) {
-        setscreenOrt(false)
-        // }
     }
     //用户名验证
     const peopleBlur = (val: string) => {
@@ -172,82 +110,21 @@ const RolePage: React.FC<RoleState> = (props) => {
             localStorage.setItem('AVATAR_MODELRESOURCE', selectedAvatar?.modelResource?.url || '')
             localStorage.setItem('AVATAR_THUMBNAIL', selectedAvatar?.thumbnailResource?.url || '')
             setSelectedAvatar('')
-            //业务接口
-            // Axios({
-            //     url: 'https://biz-api.xr-bgy-prd.yee.link/user/edit',
-            //     method: 'post',
-            //     data: {
-            //         username: peopleName,
-            //         facade: selectedAvatar.id,
-            //         profile_picture: selectedAvatar.thumbnailResource.url
-            //     },
-            //     headers: { 'Content-Type': 'application/json' }
-            // }).then(res => {
-            //     if (res.data.code == 200) {
-            //         //播放视频之后再跳转
-            //         // setshowvideo(true)
-            //         // @TODO 隐藏视频
-            //         gotoHome()
-            //     } else {
-            //         NotificationService.dispatchNotify(res.data.code + '接口请求失败', { variant: 'error' })
-            //     }
-            // }).catch(err => {
-            //     let { message } = err;
-            //     if (message == "Network Error") {
-            //         message = "后端接口连接异常";
-            //     } else if (message.includes("timeout")) {
-            //         message = "系统接口请求超时";
-            //     } else if (message.includes("Request failed with status code")) {
-            //         message = "系统接口" + message.substr(message.length - 3) + "异常";
-            //     }
-            //     NotificationService.dispatchNotify(message, { variant: 'error' })
-
-            // })
             gotoHome()
         }
 
     }
-    const changeSub = () => {
-        setshowSubTip(false)
-    }
     //页面跳转
     const gotoHome = () => {
-        NotificationService.dispatchNotify('即将带您进入元宇宙', { variant: 'info' })
-        setshowvideo(false)
-        // if(isCloud){
-        //     history.replace('/bgyCloudRender')
-        // }else{
-        //     history.replace('/location/BGYFW')
-        // }
-        var query = window.location.href.substring(1)
-        var num = query.split("=")
-        var invite = num[1]
-
-        var u = navigator.userAgent, app = navigator.appVersion
-        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 // 其它安卓
-        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios
-        
-        if (isIOS) {
-            console.log('我是苹果用户')
-            if (invite == 'admin') {
-                console.log('苹果用户进入admin')
-                history.push('/location/zwzx202211-admin')//跳转到管理员场景
-            } else {
-                console.log('ios场景')
-                history.push('/location/zwzx202211-ios')//跳转到ios场景
-            }
-        } else if (isAndroid) {
-            console.log('我是安卓用户')
-            if (invite == 'admin') {
-                console.log('我是安卓管理员')
-                history.push('/location/zwzx202211-admin')//跳转到管理员场景
-            } else {
-                console.log('我是安卓普通用户')
-                history.push('/location/zwzx202211')//跳转到安卓场景
-            }
-        } else history.push('/location/zwzx202211')//跳转到安卓场景
-        console.log('我是其他用户')
-
+        NotificationService.dispatchNotify('即将带您进入元宇宙空间', { variant: 'info' })
+        let targetLocation = localStorage.getItem("location")
+        if(!targetLocation || targetLocation == ''){
+            targetLocation = "/location/default"
+            localStorage.removeItem("location")
+        }else{
+            targetLocation = decodeURIComponent(targetLocation)
+        }
+        history.push(targetLocation)
     }
     //tip
     const TipShow = (text: string) => {
@@ -258,13 +135,7 @@ const RolePage: React.FC<RoleState> = (props) => {
         }, 1500)
     }
     return <div className="role-container" >
-        {
-            showSubTip ? (
-                <RoleTipPage changeSub={changeSub} />
-            ) : (<div></div>)
-        }
         <div className='role-box'>
-            {/* <img className="bg2Style" src={bg2} alt="" style={{ height: '100%' }} /> */}
             <div className='role-content'>
                 {/* <div className='left-box'>
                     <div className='people-box'>
@@ -291,7 +162,7 @@ const RolePage: React.FC<RoleState> = (props) => {
                     <div className='people-input-box'>
                         <input
                             className='people-input'
-                            style={{ border: 'none', height: '100%', width: '100%', borderRadius: 'inherit', padding: '0 8px' }}
+                            style={{ border: 'none', height: '100%', borderRadius: 'inherit', padding: '0 8px' }}
                             placeholder='请输入名字'
                             onChange={(e) => {
                                 peopleChange(e.target.value)
@@ -317,13 +188,7 @@ const RolePage: React.FC<RoleState> = (props) => {
                 </div>
             </div>
         </div>
-        {
-            // showvideo ? (<VideoPage videoclassName={'videoStyle'} gotoHome={gotoHome} />) : null
-            showvideo ? (<img id="myAnima" className="animaImg" src="https://xr-resources.yee.link/BGYAnimateTrans/image-001.jpeg" />) : null
-        }
-
         <CommonTip tipText={tipText} showTip={showTip} />
-        <Screen screenOrt={screenOrt} />
     </div>
 }
 

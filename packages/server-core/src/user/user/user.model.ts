@@ -20,7 +20,7 @@ export default (app: Application) => {
       },
       name: {
         type: DataTypes.STRING,
-        defaultValue: (): string => 'Guest #' + Math.floor(Math.random() * (999 - 100 + 1) + 100),
+        defaultValue: (): string => '清元网友' + Math.floor(Math.random() * (999 - 100 + 1) + 100),
         allowNull: false
       },
       isGuest: {

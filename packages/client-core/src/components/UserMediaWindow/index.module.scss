@@ -1,11 +1,11 @@
 .party-chat-user {
-  margin: 20px auto;
+  margin: 10px auto;
   position: relative;
   display: flex;
 
   .video-wrapper {
-    height: 50px;
-    width: 50px;
+    height: 100px;
+    width: 100px;
     border-radius: 50px;
     border: 3px solid var(--iconButtonSelectedBackground);
     z-index: 11;
@@ -162,12 +162,9 @@
 
     button {
       z-index: 200;
-      width: 100%;
+      width: 40px;
       margin: 0 5px;
 
-      &.prizeBut {
-        color: #3FAAFF !important;
-      }
       &.mediaOn {
         color: lightseagreen !important;
       }
@@ -231,7 +228,7 @@
       display: flex;
       padding: 10px 10px 10px 25px;
       z-index: 10;
-      min-width: 100px;
+      min-width: 150px;
       width: auto;
     }
   }

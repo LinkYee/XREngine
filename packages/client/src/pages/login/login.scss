@@ -133,7 +133,7 @@ button:active {
     background-image: url("https://xr-resources.yee.link/ZWZXUser/bg/bg.jpg");
     background-size: 100% 100%;
     min-height: 300px;
-    border-radius: 5%;
+    border-radius: 25px;
 }
 
 .login-inp {
@@ -148,12 +148,13 @@ button:active {
 }
 
 .pho-login {
-    width: 80%;
+    width: 85%;
+    width: calc( 100% - 48px );
     height: 36px;
     margin-top: 2%;
     margin-left: 24px;
     display: flex;
-    justify-content: left;
+    justify-content: space-between;
     align-items: center;
     background-color: #fff;
     /* background: linear-gradient(101deg, #3FAAFF 0%, #9AA8FF 100%); */
@@ -182,7 +183,7 @@ button:active {
 .val-number {
     // position: absolute;
     color: #3388FF;
-    left: 33%;
+    margin-right: 10px; 
 }
 
 .box-login {
@@ -214,7 +215,7 @@ button:active {
     display: block;
     // width: 50%;
     // height: 5%;
-    margin: 2% 0 0 24px;
+    margin: 10px 0 20px 24px;
     // margin-left: 5%;
 }
 

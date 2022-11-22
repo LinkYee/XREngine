@@ -629,125 +629,160 @@ const UserMediaWindow = ({ peerId }: Props): JSX.Element => {
     rendered
   } = useUserMediaWindowHook({ peerId })
 
-  useEffect(() => {
-    localStorage.setItem('webmq', "[]");
-  }, [])
-
-  const prizeOpen = ()=>{
-    const prizeEle = document.getElementById('prizeContainer')
-    prizeEle.style.display = 'flex'
-    prizeEle.style.zIndex = '9999'
-    prizeEle.style.pointerEvents = 'auto'
-    let loginID =  window.localStorage.getItem('API_LOGIN_ID');
-    let mqstr = localStorage.getItem('webmq');
-    let mq: string[] = [];
-    if (mqstr&&mqstr.length!=0){
-      mq = JSON.parse(mqstr);
-    }
-    mq.push(loginID||"");
-    localStorage.setItem('webmq', JSON.stringify(mq));
-  }
-
   return (
-    <div
-      tabIndex={0}
-      id={peerId + '_container'}
-      className={classNames({
-        [styles['resizeable-screen']]: isScreen && !isPiP,
-        [styles['resizeable-screen-fullscreen']]: isScreen && isPiP,
-        [styles['party-chat-user']]: true,
-        [styles['self-user']]: peerId === 'cam_me',
-        [styles['no-video']]: videoStream == null,
-        [styles['video-paused']]: (videoStream && (videoProducerPaused || videoStreamPaused)) || !videoDisplayReady,
-        [styles.pip]: isPiP && !isScreen,
-        [styles.screenpip]: isPiP && isScreen
-      })}
-      style={{
-        pointerEvents: 'auto',
-        display: isSelfUser || rendered ? 'auto' : 'none'
-      }}
-      onClick={() => {
-        // if (isScreen && isPiP) togglePiP()
-        prizeOpen()
-      }}
-    >
+    <Draggable isPiP={isPiP}>
       <div
+        tabIndex={0}
+        id={peerId + '_container'}
         className={classNames({
-          [styles['video-wrapper']]: !isScreen,
-          [styles['screen-video-wrapper']]: isScreen,
-          [styles['border-lit']]: soundIndicatorOn
+          [styles['resizeable-screen']]: isScreen && !isPiP,
+          [styles['resizeable-screen-fullscreen']]: isScreen && isPiP,
+          [styles['party-chat-user']]: true,
+          [styles['self-user']]: peerId === 'cam_me',
+          [styles['no-video']]: videoStream == null,
+          [styles['video-paused']]: (videoStream && (videoProducerPaused || videoStreamPaused)) || !videoDisplayReady,
+          [styles.pip]: isPiP && !isScreen,
+          [styles.screenpip]: isPiP && isScreen
         })}
+        style={{
+          pointerEvents: 'auto',
+          display: isSelfUser || rendered ? 'auto' : 'none'
+        }}
+        onClick={() => {
+          if (isScreen && isPiP) togglePiP()
+        }}
       >
-        {(videoStream == null ||
-          videoStreamPaused ||
-          videoProducerPaused ||
-          videoProducerGlobalMute ||
-          !videoDisplayReady) && (
-          <img
-            src={getAvatarURLForUser(userAvatarDetails, isSelfUser ? selfUser?.id : user?.id)}
-            alt=""
-            crossOrigin="anonymous"
-            draggable={false}
-          />
-        )}
+        <div
+          className={classNames({
+            [styles['video-wrapper']]: !isScreen,
+            [styles['screen-video-wrapper']]: isScreen,
+            [styles['border-lit']]: soundIndicatorOn
+          })}
+        >
+          {(videoStream == null ||
+            videoStreamPaused ||
+            videoProducerPaused ||
+            videoProducerGlobalMute ||
+            !videoDisplayReady) && (
+            <img
+              src={getAvatarURLForUser(userAvatarDetails, isSelfUser ? selfUser?.id : user?.id)}
+              alt=""
+              crossOrigin="anonymous"
+              draggable={false}
+            />
+          )}
+          <video key={peerId + '_cam'} ref={videoRef} draggable={false} />
+        </div>
+        <audio key={peerId + '_audio'} ref={audioRef} />
+        <div className={styles['user-controls']}>
+          <div className={styles['username']}>{username}</div>
+          <div className={styles['controls']}>
+            <div className={styles['mute-controls']}>
+              {videoStream && !videoProducerPaused ? (
+                <Tooltip title={!videoProducerPaused && !videoStreamPaused ? 'Pause Video' : 'Resume Video'}>
+                  <IconButton
+                    size="large"
+                    className={classNames({
+                      [styles['icon-button']]: true,
+                      [styles.mediaOff]: videoStreamPaused,
+                      [styles.mediaOn]: !videoStreamPaused
+                    })}
+                    onClick={toggleVideo}
+                  >
+                    {videoStreamPaused ? <VideocamOff /> : <Videocam />}
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+              {enableGlobalMute && peerId !== 'cam_me' && peerId !== 'screen_me' && audioStream && (
+                <Tooltip
+                  title={
+                    !audioProducerGlobalMute
+                      ? (t('user:person.muteForEveryone') as string)
+                      : (t('user:person.unmuteForEveryone') as string)
+                  }
+                >
+                  <IconButton
+                    size="large"
+                    className={classNames({
+                      [styles['icon-button']]: true,
+                      [styles.mediaOff]: audioProducerGlobalMute,
+                      [styles.mediaOn]: !audioProducerGlobalMute
+                    })}
+                    onClick={toggleGlobalMute}
+                  >
+                    {audioProducerGlobalMute ? <VoiceOverOff /> : <RecordVoiceOver />}
+                  </IconButton>
+                </Tooltip>
+              )}
+              {audioStream && !audioProducerPaused ? (
+                <Tooltip
+                  title={
+                    (isSelfUser && audioStream?.paused === false
+                      ? t('user:person.muteMe')
+                      : isSelfUser && audioStream?.paused === true
+                      ? t('user:person.unmuteMe')
+                      : peerId !== 'cam_me' && peerId !== 'screen_me' && audioStream?.paused === false
+                      ? t('user:person.muteThisPerson')
+                      : t('user:person.unmuteThisPerson')) as string
+                  }
+                >
+                  <IconButton
+                    size="large"
+                    className={classNames({
+                      [styles['icon-button']]: true,
+                      [styles.mediaOff]: audioStreamPaused,
+                      [styles.mediaOn]: !audioStreamPaused
+                    })}
+                    onClick={toggleAudio}
+                  >
+                    {isSelfUser ? (
+                      audioStreamPaused ? (
+                        <MicOff />
+                      ) : (
+                        <Mic />
+                      )
+                    ) : audioStreamPaused ? (
+                      <VolumeOff />
+                    ) : (
+                      <VolumeUp />
+                    )}
+                  </IconButton>
+                </Tooltip>
+              ) : null}
+              <Tooltip title={t('user:person.openPictureInPicture') as string}>
+                <IconButton
+                  size="large"
+                  className={styles['icon-button']}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    togglePiP()
+                  }}
+                >
+                  <Launch className={styles.pipBtn} />
+                </IconButton>
+              </Tooltip>
+            </div>
+            {audioProducerGlobalMute && <div className={styles['global-mute']}>Muted by Admin</div>}
+            {audioStream && !audioProducerPaused && !audioProducerGlobalMute && (
+              <div className={styles['audio-slider']}>
+                {volume === 0 && <VolumeMute />}
+                {volume > 0 && volume < 0.7 && <VolumeDown />}
+                {volume >= 0.7 && <VolumeUp />}
+                <Slider
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={volume}
+                  onChange={adjustVolume}
+                  aria-labelledby="continuous-slider"
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-    // <Draggable isPiP={isPiP}>
-    //   <div
-    //     tabIndex={0}
-    //     id={peerId + '_container'}
-    //     className={classNames({
-    //       [styles['resizeable-screen']]: isScreen && !isPiP,
-    //       [styles['resizeable-screen-fullscreen']]: isScreen && isPiP,
-    //       [styles['party-chat-user']]: true,
-    //       [styles['self-user']]: peerId === 'cam_me',
-    //       [styles['no-video']]: videoStream == null,
-    //       [styles['video-paused']]: (videoStream && (videoProducerPaused || videoStreamPaused)) || !videoDisplayReady,
-    //       [styles.pip]: isPiP && !isScreen,
-    //       [styles.screenpip]: isPiP && isScreen
-    //     })}
-    //     style={{
-    //       pointerEvents: 'auto',
-    //       display: isSelfUser || rendered ? 'auto' : 'none'
-    //     }}
-    //     onClick={() => {
-    //       // if (isScreen && isPiP) togglePiP()
-    //       prizeOpen()
-    //     }}
-    //   >
-    //     <div
-    //       className={classNames({
-    //         [styles['video-wrapper']]: !isScreen,
-    //         [styles['screen-video-wrapper']]: isScreen,
-    //         [styles['border-lit']]: soundIndicatorOn
-    //       })}
-    //     >
-    //       {(videoStream == null ||
-    //         videoStreamPaused ||
-    //         videoProducerPaused ||
-    //         videoProducerGlobalMute ||
-    //         !videoDisplayReady) && (
-    //         <img
-    //           src={getAvatarURLForUser(userAvatarDetails, isSelfUser ? selfUser?.id : user?.id)}
-    //           alt=""
-    //           crossOrigin="anonymous"
-    //           draggable={false}
-    //         />
-    //       )}
-    //       <video key={peerId + '_cam'} ref={videoRef} draggable={false} />
-    //     </div>
-    //     <audio key={peerId + '_audio'} ref={audioRef} />
-    //     <div className={styles['user-controls']}>
-    //       {/* 用户名 */}
-    //       {/*<div className={styles['username']}>{username}</div>*/}
-    //       {/* 按钮 */}
-    //       <div className={styles['controls']}>
-    //          <button className={styles['prizeBut']} onClick={()=>{prizeOpen()}}>我的奖品</button>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </Draggable>
-
+    </Draggable>
   )
 }
 

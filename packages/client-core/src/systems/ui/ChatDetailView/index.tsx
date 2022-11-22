@@ -99,7 +99,7 @@ const ChatDetailView = () => {
           <XRInput
             className="messageInputBox"
             id="newMessage"
-            placeholder={'World Chat...'}
+            placeholder={'说点什么...'}
             name="newMessage"
             value={composingMessage}
             onChange={handleComposingMessageChange}
