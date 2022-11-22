@@ -187,7 +187,7 @@ export const MediaIconsBox = () => {
           </button>
         </>
       ) : null}
-      {supportsVR && (
+      {/* {supportsVR && (
         <button
           type="button"
           id="UserVR"
@@ -218,7 +218,7 @@ export const MediaIconsBox = () => {
         >
           {<ViewInArIcon />}
         </button>
-      )}
+      )} */}
       {engineState.spectating.value && (
         <button
           type="button"
