@@ -77,7 +77,7 @@ export class EngineRenderer {
   /** point at which we downgrade quality level (large delta) */
   maxRenderDelta = 1000 / 28 // 28 fps = 35 ms  (on some devices, rAF updates at 30fps, e.g., Low Power Mode)
   /** point at which we upgrade quality level (small delta) */
-  minRenderDelta = 1000 / 55 // 55 fps = 18 ms
+  minRenderDelta = 1000 / 40 // 55 fps = 18 ms
   /** Resoulion scale. **Default** value is 1. */
   scaleFactor = 1
 
@@ -272,7 +272,7 @@ export class EngineRenderer {
     this.movingAverage.update(Math.min(delta, 50))
     const averageDelta = this.movingAverage.mean
 
-    if (averageDelta > this.maxRenderDelta && qualityLevel > 1) {
+    if (averageDelta > this.maxRenderDelta && qualityLevel > 3) {
       qualityLevel--
     } else if (averageDelta < this.minRenderDelta && qualityLevel < this.maxQualityLevel) {
       qualityLevel++
